@@ -1,0 +1,13 @@
+" Open terminal in 'terminal' mode (can execute shell commands immediately)
+autocmd TermOpen * startinsert
+
+" Enter to 'terminal mode'
+" i
+
+" Open new terminal
+map <M-t> <C-g>term<CR>
+imap <M-t> <C-g>term<CR>
+
+" Leave terminal mode
+tnoremap <ESC><ESC> <C-\><C-N>
+

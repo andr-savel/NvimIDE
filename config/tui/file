@@ -1,0 +1,34 @@
+" Save all changed files
+noremap <C-s> :wa<CR>
+inoremap <C-s> <C-O>:wa<CR>
+
+" Close all files and quit
+noremap <M-q> :qa<CR>
+inoremap <M-q> <C-O>:qa<CR>
+"     in 'terminal' mode
+tnoremap <M-q> <C-\><C-N>:qa<CR>
+
+
+" ----------------------- TODO: should be changed to NERDTree and/or CtrlP plugin
+
+" Open file from current dir
+noremap <C-t> :Ex<CR>
+inoremap <C-t> <Esc>:Ex<CR>
+
+" Open file from selected path
+smap <C-t> <C-O>y:Ex <C-r>"<CR>
+
+" File browser (netrw) settings
+" let g:netrw_banner = 0
+
+augroup netrw_mapping
+    autocmd!
+    autocmd filetype netrw call NetrwMapping()
+augroup END
+
+function! NetrwMapping()
+    nmap <buffer> <M-Left> u
+    nmap <buffer> <M-Right> <S-u>
+    nmap <buffer> <C-n> %
+endfunction
+

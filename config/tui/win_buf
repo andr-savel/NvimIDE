@@ -1,0 +1,31 @@
+" To change current directory automatically according to opened file in current window
+set autochdir
+
+" Switch windows
+noremap <C-w> <C-w>w
+inoremap <C-w> <C-O><C-w>w
+cnoremap <C-w> <C-O><C-w>w
+onoremap <C-w> <C-O><C-w>w
+"     in 'terminal' mode
+tnoremap <C-w> <C-\><C-N><C-w>wi
+
+" Close window without closing buffer
+noremap <M-c> <C-w>c
+inoremap <M-c> <C-O><C-w>c
+cnoremap <M-c> <C-O><C-w>c
+onoremap <M-c> <C-O><C-w>c
+"     in 'terminal' mode
+tnoremap <M-c> <C-\><C-N><C-w>c
+
+" Close buffer without closing window
+noremap <silent> <M-z> :bn\|bd#<CR>
+inoremap <silent> <M-z> <C-O>:bn\|bd#<CR>
+
+" Split window vertically
+noremap <silent> <M-m> <C-w>v<C-w>w
+inoremap <silent> <M-m> <C-O><C-w>v<C-o><C-w>w
+
+
+"------------------------------------------
+" TODO: switch between buffers
+

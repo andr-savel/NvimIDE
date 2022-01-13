@@ -1,0 +1,14 @@
+" This file should contain mappings to single vim key-map for each user-defined key-map.
+" This requirement allows to use simple remap in 'autokey' program in future when neovim-qt usage is impossible (for example ssh port forwarding is prohibited and neovim-qt cannot be connected to nvim server) 
+
+
+" CTRL-SHIFT-Z is Redo
+map <C-S-z> <C-r>
+imap <C-S-z> <C-r>
+
+" CTRL-Tab is Next window
+map <C-Tab> <C-w>
+imap <C-Tab> <C-w>
+cmap <C-Tab> <C-w>
+omap <C-Tab> <C-w>
+

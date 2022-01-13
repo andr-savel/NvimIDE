@@ -1,0 +1,59 @@
+" set 'insert' mode as default
+start
+
+" prevent escape from moving the cursor one character to the left
+let CursorColumnI = 0 "the cursor column position in INSERT
+autocmd InsertEnter * let CursorColumnI = col('.')
+autocmd CursorMovedI * let CursorColumnI = col('.')
+autocmd InsertLeave * if col('.') != CursorColumnI | call cursor(0, col('.')+1) | endif
+
+" set 'selection', 'selectmode', 'mousemodel' and 'keymodel' for MS-Windows
+behave mswin
+
+" backspace and cursor keys wrap to previous/next line
+set backspace=indent,eol,start whichwrap+=<,>,[,]
+
+" CTRL-X is Cut
+vmap <C-x> d<Esc>i
+
+" CTRL-C is Copy
+vmap <C-c> y
+
+" TODO: to fix register content after replace-paste
+" CTRL-V is Paste
+map <C-v> gPi
+imap <C-v> <C-O>gP
+vmap <C-v> <C-O>gP
+snoremap <C-v> <C-g>gP
+cmap <C-v> <C-r>"
+"     in 'terminal' mode
+tmap <C-v> <C-\><C-N><C-v>
+
+" CTRL-Z is Undo
+noremap <C-z> u
+inoremap <C-z> <C-O>u
+smap <C-z> <Esc><C-z>
+
+" CTRL-R is Redo
+inoremap <C-r> <C-O><C-r>
+
+" CTRL-A is Select all
+noremap <C-A> gggH<C-O>G
+inoremap <C-A> <C-O>gg<C-O>gH<C-O>G
+cnoremap <C-A> <C-C>gggH<C-O>G
+onoremap <C-A> <C-C>gggH<C-O>G
+snoremap <C-A> <C-C>gggH<C-O>G
+xnoremap <C-A> <C-C>ggVG
+
+" Tab selected text
+snoremap <Tab> <C-g>>
+
+" Goto begin/end of file
+" <C-home>
+" <C-end>
+
+" Goto line
+noremap <C-g> :
+inoremap <C-g> <C-O>:
+snoremap <C-g> <Esc>:
+
