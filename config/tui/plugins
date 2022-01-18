@@ -1,0 +1,36 @@
+" Get VIM-PLUG plugin manager
+if empty(glob("~/.local/share/nvim/site/autoload/plug.vim"))
+    execute '!curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+endif
+
+call plug#begin()
+" The default plugin directory will be as follows:
+"   - Vim (Linux/macOS): '~/.vim/plugged'
+"   - Vim (Windows): '~/vimfiles/plugged'
+"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
+" You can specify a custom plugin directory by passing it as the argument
+"   - e.g. `call plug#begin('~/.vim/plugged')`
+"   - Avoid using standard Vim directory names like 'plugin'
+
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+
+call plug#end()
+
+
+" Plugins settings
+
+"     fzf
+let g:fzf_layout = { 'down': '30%' }
+"         set '0' delay to fast close fzf window by <Esc>
+let $ESCDELAY = '0'
+
+function! NvimIdeFindFiles()
+    call fzf#run(fzf#wrap({'source': 'cd ' . g:nvim_ide_project_root . '; ' . g:nvim_ide_fzf_source,
+                                   \ 'options': '--exact --layout=reverse-list --multi --cycle --history="$HOME/.local/share/nvim/plugged/fzf/history_file" '.
+                                   \            '--bind=alt-up:previous-history,alt-down:next-history,shift-down:toggle+down,shift-up:toggle+up',
+                                   \ 'dir': g:nvim_ide_project_root}))
+endfunction
+
+inoremap <C-k> <C-o>:call NvimIdeFindFiles()<CR>
+nnoremap <C-k> :call NvimIdeFindFiles()<CR>
+

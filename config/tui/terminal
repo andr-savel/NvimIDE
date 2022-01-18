@@ -1,6 +1,3 @@
-" Open terminal in 'terminal' mode (can execute shell commands immediately)
-autocmd TermOpen * startinsert
-
 " Enter to 'terminal mode'
 " i
 
@@ -8,6 +5,19 @@ autocmd TermOpen * startinsert
 map <M-t> <C-g>term<CR>
 imap <M-t> <C-g>term<CR>
 
-" Leave terminal mode
-tnoremap <ESC><ESC> <C-\><C-N>
+augroup NvimIdeTerminalAutocmds
+  autocmd!
+
+  " Open terminal in 'terminal' mode (can execute shell commands immediately)
+  autocmd TermOpen * startinsert
+
+  " Leave terminal mode
+  autocmd TermOpen * tnoremap <ESC><ESC> <C-\><C-N>
+  "     This line allow to use <Esc> to close fzf search window
+  autocmd FileType fzf tunmap <Esc><Esc>
+
+  " Change buffer mode to 'insert' when close terminal. It helps to open files selected with fzf in 'insert' mode
+  autocmd TermClose * call feedkeys("i")
+
+augroup END
 

@@ -1,0 +1,5 @@
+" Default values for optional project settings
+
+" Source for fzf
+let g:nvim_ide_fzf_source = get(g:, 'nvim_ide_fzf_source', 'rg --files')
+
