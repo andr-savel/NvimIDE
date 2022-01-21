@@ -1,5 +1,11 @@
 " Default values for optional project settings
 
 " Source for fzf
-let g:nvim_ide_fzf_source = get(g:, 'nvim_ide_fzf_source', 'rg --files')
+if !exists("g:nvim_ide_fzf_source")
+    let g:nvim_ide_fzf_source = 'rg --files'
+endif
 
+" Basic line for search in project files content using ripgrep
+if !exists("g:nvim_ide_content_search_rg_basic_cmd")
+    let g:nvim_ide_content_search_rg_basic_cmd = 'rg --vimgrep --smart-case'
+endif

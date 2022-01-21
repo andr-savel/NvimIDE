@@ -12,3 +12,7 @@ imap <C-Tab> <C-w>
 cmap <C-Tab> <C-w>
 omap <C-Tab> <C-w>
 
+" Search in project files content
+map <C-S-f> <C-M-f>
+imap <C-S-f> <C-M-f>
+

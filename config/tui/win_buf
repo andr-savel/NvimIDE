@@ -18,8 +18,35 @@ onoremap <M-c> <C-O><C-w>c
 tnoremap <M-c> <C-\><C-N><C-w>c
 
 " Close buffer without closing window
-noremap <silent> <M-z> :bn\|bd#<CR>
-inoremap <silent> <M-z> <C-O>:bn\|bd#<CR>
+" Do not switch to 'QuickFix' buffer on it's existence
+function! NvimIdeCloseCurrBuf()
+    let currBuf = bufnr()
+    if getbufinfo(currBuf)[0].changed == 1
+        throw "NvimIde: failed to close modified buffer"
+    endif
+
+    exe 'silent bn'
+
+    let err = ""
+    try
+        if getbufinfo(bufnr())[0].variables.current_syntax == 'qf'
+            exe 'silent bn'
+            if bufnr() == currBuf
+                let err = "NvimIde: failed to close the only file buffer"
+            endif
+        endif
+    catch
+    endtry
+
+    if len(err)
+        throw err
+    endif
+
+    exe 'bd '.currBuf
+endfunction
+
+noremap <silent> <M-z> :call NvimIdeCloseCurrBuf()<CR>
+inoremap <silent> <M-z> <C-O>:call NvimIdeCloseCurrBuf()<CR>
 
 " Split window vertically
 noremap <silent> <M-m> <C-w>v<C-w>w

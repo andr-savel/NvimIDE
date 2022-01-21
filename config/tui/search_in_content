@@ -1,0 +1,191 @@
+" Search in files content using ripgrep.
+" Main feature -- search by files on disk and modified files in vim in the same time (like search in files in IDEs).
+
+" Tmp files suffix
+let s:nvim_ide_tmp_files_suffix = "_nvim_ide_tmp"
+
+" Special script for searhing by file content
+let s:nvim_ide_content_search_grep_script_path = $HOME."/.local/share/nvim/nvim_ide_grep"
+
+function! NvimIdeGetAliveBuffersOutput()
+    redir => out
+    exe "silent! buffers"
+    silent! echo ""
+    redir END
+
+    return out
+endfunction
+
+function! NvimIdeGetChangedBufferIds()
+    let allBuffers = NvimIdeGetAliveBuffersOutput()
+    let changedBuffers = []
+    for i in split(allBuffers, "\n")
+        let s1 = 0
+        while i[s1] == ' '
+            let s1 += 1
+        endwhile
+
+        let s2 = stridx(i, ' ', s1) - 1
+        let id = str2nr(i[s1 : s2])
+
+        if getbufinfo(id)[0].changed
+            call add(changedBuffers, id)
+        endif
+    endfor
+
+    return changedBuffers
+endfunction
+
+function! NvimIdeGetBuffersRelativePaths(bIds)
+    let out = []
+    let startIdx = len(g:nvim_ide_project_root)
+    if g:nvim_ide_project_root[startIdx - 1] != '/'
+        let startIdx = startIdx + 1
+    endif
+    for bi in a:bIds
+        let fullPath = expand("#".bi.":p")
+        let idx = stridx(fullPath, g:nvim_ide_project_root)
+        if idx != -1
+            call add(out, fullPath[startIdx:])
+        endif
+    endfor
+
+    return out
+endfunction
+
+function! NvimIdeGetRipgrepExclusionString(changedBufs)
+    let modifiedFiles = NvimIdeGetBuffersRelativePaths(a:changedBufs)
+    let out = ""
+    for bn in modifiedFiles
+        let out = out.' -g \!'.bn
+    endfor
+
+    return out
+endfunction
+
+function! NvimIdeSaveToTmps(changedBufs)
+    let out = []
+    if len(a:changedBufs) == 0
+        return out
+    endif
+
+    let currBuf = bufnr()
+    for bi in a:changedBufs
+        let bufFilePath = expand("#".bi.":p")
+        if len(bufFilePath) == 0
+            continue
+        endif
+
+        let tmpF = bufFilePath.s:nvim_ide_tmp_files_suffix
+        exe 'silent b'.bi.'|w! '.tmpF
+        call add(out, tmpF)
+    endfor
+    exe 'silent b'.currBuf
+
+    return out
+endfunction
+
+function! NvimIdeGetSearchTerm(ptrn)
+    if empty(a:ptrn)
+      return expand("<cword>")
+    endif
+
+    return a:ptrn
+endfunction
+
+function! NvimIdeHighlightResults(isInsertMode, ptrn)
+    let @/=escape(substitute(a:ptrn, '"', '', 'g'), '|')
+
+    if a:isInsertMode
+        call feedkeys("\<C-o>:let &hlsearch=1\<CR>", 'n')
+    else
+        call feedkeys(":let &hlsearch=1\<CR>", 'n')
+    endif
+endfunction
+
+function NvimIdeSearchInFilesContentCore(isInsertMode, ptrn)
+    silent exe 'grep! "' . escape(a:ptrn, '()') . '"'
+    if len(getqflist())
+        exe 'copen'
+        redraw!
+        call NvimIdeHighlightResults(a:isInsertMode, a:ptrn)
+    else
+        cclose
+        redraw!
+        echo "Not found: " . a:ptrn
+    endif
+endfunction
+
+function! NvimIdeGenGrepScript(changedBufs)
+    let scriptContent = []
+    call add(scriptContent, '#!/bin/bash')
+    let searcher = g:nvim_ide_content_search_rg_basic_cmd.' '.NvimIdeGetRipgrepExclusionString(a:changedBufs)." $1 "
+    if len(a:changedBufs) > 0
+        let searcher = searcher." | sed -e s/".s:nvim_ide_tmp_files_suffix."//g"
+    endif
+    call add(scriptContent, searcher)
+
+    call writefile(scriptContent, s:nvim_ide_content_search_grep_script_path)
+    silent exe '!chmod +x '.s:nvim_ide_content_search_grep_script_path
+endfunction
+
+function! NvimIdeRemoveTmps(savedTmps)
+    if len(a:savedTmps) == 0
+        return
+    endif
+
+    let strToDel = ""
+    for i in a:savedTmps
+        let strToDel = strToDel." ".i
+    endfor
+
+    silent exe '!rm '.strToDel
+endfunction
+
+function! NvimIdeSearchInFilesContent(isInsertMode, ptrn)
+    cclose
+
+    let toSearch = NvimIdeGetSearchTerm(a:ptrn)
+    if len(toSearch) == 0
+        echo "Empty search pattern"
+        return
+    endif
+
+    let changedBuffers = NvimIdeGetChangedBufferIds()
+    call NvimIdeGenGrepScript(changedBuffers)
+    let searcher = s:nvim_ide_content_search_grep_script_path
+    let savedTmps = NvimIdeSaveToTmps(changedBuffers)
+    let numSavedTmps = len(savedTmps)
+
+
+    let l:grepprg_au = &grepprg
+    let l:grepformat_au = &grepformat
+    let l:te = &t_te
+    let l:ti = &t_ti
+    let l:autochdir_au = &autochdir
+    let l:shellpipe_au=&shellpipe
+
+    let &grepprg = searcher
+    let &grepformat = "%f:%l:%c:%m"
+    set t_te=
+    set t_ti=
+    set noautochdir
+    let &shellpipe="&>"
+    let l:cwd_au = getcwd()
+    exe 'cd '.g:nvim_ide_project_root
+
+    call NvimIdeSearchInFilesContentCore(a:isInsertMode, toSearch)
+    call NvimIdeRemoveTmps(savedTmps)
+
+    exe 'cd '.l:cwd_au
+    let &shellpipe=l:shellpipe_au
+    let &autochdir=l:autochdir_au
+    let &t_te=l:te
+    let &t_ti=l:ti
+    let &grepformat = l:grepformat_au
+    let &grepprg = l:grepprg_au
+endfunction
+
+command! -nargs=* NvimRg :call NvimIdeSearchInFilesContent(0, <q-args>)
+command! -nargs=* NvimRgI :call NvimIdeSearchInFilesContent(1, <q-args>)
+

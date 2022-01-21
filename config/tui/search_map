@@ -1,0 +1,36 @@
+" Search in bufer
+"     Call search
+set ignorecase
+set smartcase
+noremap  <C-F> /
+inoremap <C-F> <C-O>/
+cnoremap <C-F> <C-O>/
+smap <C-F> <C-O>y/<C-r>"
+
+"     Continue search
+" TODO: nnoremap works incorrect: when cursor in (1,1) pos, then it dos not search (possibly stop after <Left> failure)
+nnoremap <f3> <Left>ngn<C-g>
+inoremap <f3> <Left><C-O>n<C-O>gn<C-g>
+smap <f3> <Esc><f3>
+
+" Search in files content
+"     Close search results window
+nnoremap <silent> <Esc><Esc> :cclose<CR>
+inoremap <silent> <Esc><Esc> <C-o>:cclose<CR>
+
+"     Call search
+nnoremap <C-M-f> :NvimRg 
+inoremap <C-M-f> <C-o>:NvimRgI 
+
+"     Next/prev search result
+"         item
+nnoremap <M-down> :cn<CR>
+inoremap <M-down> <C-o>:cn<CR>
+nnoremap <M-up> :cp<CR>
+inoremap <M-up> <C-o>:cp<CR>
+"         file
+nnoremap <C-M-down> :cnf<CR>
+inoremap <C-M-down> <C-o>:cnf<CR>
+nnoremap <C-M-up> :cpf<CR>
+inoremap <C-M-up> <C-o>:cpf<CR>
+
