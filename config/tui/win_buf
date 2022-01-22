@@ -53,8 +53,6 @@ noremap <silent> <M-m> <C-w>v<C-w>w
 inoremap <silent> <M-m> <C-O><C-w>v<C-o><C-w>w
 
 " Switch buffers
-let g:fzf_preview_window = []
-
 function! NvimIdeBuffers()
     let l:cwd_au = getcwd()
     exe 'cd '.g:nvim_ide_project_root

@@ -14,10 +14,6 @@ inoremap <f3> <Left><C-O>n<C-O>gn<C-g>
 smap <f3> <Esc><f3>
 
 " Search files
-let g:fzf_layout = { 'down': '30%' }
-"     set '0' delay to fast close fzf window by <Esc>
-let $ESCDELAY = '0'
-
 function! NvimIdeFindFiles()
     call fzf#run(fzf#wrap({'source': 'cd ' . g:nvim_ide_project_root . '; ' . g:nvim_ide_fzf_source,
                                    \ 'options': '--exact --layout=reverse-list --multi --cycle --history="$HOME/.local/share/nvim/plugged/fzf/history_file" '.
