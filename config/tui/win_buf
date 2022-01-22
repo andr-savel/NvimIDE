@@ -52,7 +52,34 @@ inoremap <silent> <M-z> <C-O>:call NvimIdeCloseCurrBuf()<CR>
 noremap <silent> <M-m> <C-w>v<C-w>w
 inoremap <silent> <M-m> <C-O><C-w>v<C-o><C-w>w
 
+" Switch buffers
+let g:fzf_preview_window = []
 
-"------------------------------------------
-" TODO: switch between buffers
+function! NvimIdeBuffers()
+    let l:cwd_au = getcwd()
+    exe 'cd '.g:nvim_ide_project_root
+    call fzf#vim#buffers({'options': ['--layout=reverse', '--cycle', '--exact']})
+    exe 'cd '.l:cwd_au
+endfunction
+
+inoremap <C-PageUp> <C-o>:call NvimIdeBuffers()<CR>
+nnoremap <C-PageUp> :call NvimIdeBuffers()<CR>
+inoremap <C-PageDown> <C-o>:call NvimIdeBuffers()<CR>
+nnoremap <C-PageDown> :call NvimIdeBuffers()<CR>
+
+" Win/Buf navigation using 'jumps'
+" TODO: test 'set jumpoptions+=stack' behaviour
+
+augroup NvimIdeWindows
+    autocmd!
+    autocmd VimEnter * clearjumps
+augroup END
+
+noremap <M-left> <C-o>
+inoremap <M-left> <C-o><C-o>
+snoremap <M-left> <Esc><C-o>
+
+noremap <M-right> <C-i>
+inoremap <M-right> <C-o><C-i>
+snoremap <M-right> <Esc><C-i>
 

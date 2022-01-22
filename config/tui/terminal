@@ -19,5 +19,9 @@ augroup NvimIdeTerminalAutocmds
   " Change buffer mode to 'insert' when close terminal. It helps to open files selected with fzf in 'insert' mode
   autocmd TermClose * call feedkeys("i")
 
+  " Move up/down for buffers
+  autocmd FileType fzf tnoremap <C-PageUp> <up>
+  autocmd FileType fzf tnoremap <C-PageDown> <down>
 augroup END
+
 
