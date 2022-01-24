@@ -1,4 +1,4 @@
-source $HOME/.config/nvim/tui/project_defaults
+source $HOME/.config/nvim/tui/project
 
 source $HOME/.config/nvim/tui/plugins
 

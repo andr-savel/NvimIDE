@@ -62,8 +62,10 @@ endfunction
 
 inoremap <C-PageUp> <C-o>:call NvimIdeBuffers()<CR>
 nnoremap <C-PageUp> :call NvimIdeBuffers()<CR>
+tnoremap <C-PageUp> <C-\><C-N>:call NvimIdeBuffers()<CR>
 inoremap <C-PageDown> <C-o>:call NvimIdeBuffers()<CR>
 nnoremap <C-PageDown> :call NvimIdeBuffers()<CR>
+tnoremap <C-PageDown> <C-\><C-N>:call NvimIdeBuffers()<CR>
 
 " Win/Buf navigation using 'jumps'
 " TODO: test 'set jumpoptions+=stack' behaviour

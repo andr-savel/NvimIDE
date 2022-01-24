@@ -5,23 +5,48 @@
 map <M-t> <C-g>term<CR>
 imap <M-t> <C-g>term<CR>
 
+let s:is_in_fzf = 0
+function! s:FzfMaps()
+    let s:is_in_fzf = 1
+
+    " Allows to use <Esc> to close fzf search window
+    tunmap <Esc><Esc>
+
+    " Move up/down for buffers
+    tnoremap <C-PageUp> <up>
+    tnoremap <C-PageDown> <down>
+endfunction
+
+function! s:ActionsOnTermClose()
+    " Change buffer mode to 'insert' when close terminal. It helps to open files selected with fzf in 'insert' mode
+    call feedkeys("i")
+
+    if s:is_in_fzf
+        " Restore key maps for switch buffers
+        tnoremap <C-PageUp> <C-\><C-N>:call NvimIdeBuffers()<CR>
+        tnoremap <C-PageDown> <C-\><C-N>:call NvimIdeBuffers()<CR>
+
+        " Restore key map for 'leave terminal mode'
+        tnoremap <ESC><ESC> <C-\><C-N>
+
+        let s:is_in_fzf = 0
+    endif
+endfunction
+
 augroup NvimIdeTerminalAutocmds
-  autocmd!
+    autocmd!
 
-  " Open terminal in 'terminal' mode (can execute shell commands immediately)
-  autocmd TermOpen * startinsert
+    " Open terminal in 'terminal' mode (can execute shell commands immediately)
+    autocmd TermOpen * startinsert
 
-  " Leave terminal mode
-  autocmd TermOpen * tnoremap <ESC><ESC> <C-\><C-N>
-  "     This line allow to use <Esc> to close fzf search window
-  autocmd FileType fzf tunmap <Esc><Esc>
+    " Leave terminal mode
+    autocmd TermOpen * tnoremap <ESC><ESC> <C-\><C-N>
 
-  " Change buffer mode to 'insert' when close terminal. It helps to open files selected with fzf in 'insert' mode
-  autocmd TermClose * call feedkeys("i")
+    " Tune fzf maps
+    autocmd FileType fzf call s:FzfMaps()
 
-  " Move up/down for buffers
-  autocmd FileType fzf tnoremap <C-PageUp> <up>
-  autocmd FileType fzf tnoremap <C-PageDown> <down>
+    " Postprocess and maps restore
+    autocmd TermClose * call s:ActionsOnTermClose()
 augroup END
 
-
+"TODO: enter to 'terminal' mode on 'switch buffer'

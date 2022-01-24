@@ -16,7 +16,7 @@ smap <f3> <Esc><f3>
 " Search files
 function! NvimIdeFindFiles()
     call fzf#run(fzf#wrap({'source': 'cd ' . g:nvim_ide_project_root . '; ' . g:nvim_ide_fzf_source,
-                                   \ 'options': '--exact --layout=reverse-list --multi --cycle --history="$HOME/.local/share/nvim/plugged/fzf/history_file" '.
+                                   \ 'options': '--exact --layout=reverse-list --multi --cycle --history='.NvimIdeGetProjectExtraFilesDir().'/fzf_search_files_history '.
                                    \            '--bind=alt-up:previous-history,alt-down:next-history,shift-down:toggle+down,shift-up:toggle+up',
                                    \ 'dir': g:nvim_ide_project_root}))
 endfunction

@@ -5,7 +5,9 @@
 let s:nvim_ide_tmp_files_suffix = "_nvim_ide_tmp"
 
 " Special script for searhing by file content
-let s:nvim_ide_content_search_grep_script_path = $HOME."/.local/share/nvim/nvim_ide_grep"
+function! s:GetGrepScriptPath()
+    return NvimIdeGetProjectExtraFilesDir().'/search_in_content_grep'
+endfunction
 
 function! NvimIdeGetAliveBuffersOutput()
     redir => out
@@ -125,8 +127,8 @@ function! NvimIdeGenGrepScript(changedBufs)
     endif
     call add(scriptContent, searcher)
 
-    call writefile(scriptContent, s:nvim_ide_content_search_grep_script_path)
-    silent exe '!chmod +x '.s:nvim_ide_content_search_grep_script_path
+    call writefile(scriptContent, s:GetGrepScriptPath())
+    silent exe '!chmod +x '.s:GetGrepScriptPath()
 endfunction
 
 function! NvimIdeRemoveTmps(savedTmps)
@@ -153,7 +155,7 @@ function! NvimIdeSearchInFilesContent(isInsertMode, ptrn)
 
     let changedBuffers = NvimIdeGetChangedBufferIds()
     call NvimIdeGenGrepScript(changedBuffers)
-    let searcher = s:nvim_ide_content_search_grep_script_path
+    let searcher = s:GetGrepScriptPath()
     let savedTmps = NvimIdeSaveToTmps(changedBuffers)
     let numSavedTmps = len(savedTmps)
 

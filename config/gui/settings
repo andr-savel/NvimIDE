@@ -1,0 +1,6 @@
+" Allow mouse actions
+set mouse=a
+
+" Deselect current selection to prevent extend selection on scroll
+snoremap <ScrollWheelUp> <Esc><ScrollWheelUp>
+snoremap <ScrollWheelDown> <Esc><ScrollWheelDown>

@@ -57,3 +57,8 @@ noremap <C-g> :
 inoremap <C-g> <C-O>:
 snoremap <C-g> <Esc>:
 
+"------------------------
+" TODO: try 'Nord' theme
+" TODO: try statusline
+"    https://github.com/itchyny/lightline.vim
+" TODO: try git_gutter
