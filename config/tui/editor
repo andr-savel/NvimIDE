@@ -35,7 +35,9 @@ inoremap <C-z> <C-O>u
 smap <C-z> <Esc><C-z>
 
 " CTRL-R is Redo
-inoremap <C-r> <C-O><C-r>
+nnoremap <C-M-z> <C-r>
+inoremap <C-M-z> <C-O><C-r>
+snoremap <C-M-z> <Esc><C-r>
 
 " CTRL-A is Select all
 noremap <C-A> gggH<C-O>G

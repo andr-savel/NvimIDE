@@ -95,22 +95,12 @@ function! NvimIdeGetSearchTerm(ptrn)
     return a:ptrn
 endfunction
 
-function! NvimIdeHighlightResults(isInsertMode, ptrn)
-    let @/=escape(substitute(a:ptrn, '"', '', 'g'), '|')
-
-    if a:isInsertMode
-        call feedkeys("\<C-o>:let &hlsearch=1\<CR>", 'n')
-    else
-        call feedkeys(":let &hlsearch=1\<CR>", 'n')
-    endif
-endfunction
-
 function NvimIdeSearchInFilesContentCore(isInsertMode, ptrn)
     silent exe 'grep! "' . escape(a:ptrn, '()') . '"'
     if len(getqflist())
         exe 'copen'
         redraw!
-        call NvimIdeHighlightResults(a:isInsertMode, a:ptrn)
+        call NvimIdeQuickfixPostprocess(a:isInsertMode, a:ptrn)
     else
         cclose
         redraw!

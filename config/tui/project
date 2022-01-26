@@ -16,7 +16,7 @@ endif
 let s:project_extra_files_dir = ''
 function! NvimIdeGetProjectExtraFilesDir()
     if s:project_extra_files_dir == ''
-        let s:project_extra_files_dir = g:nvim_ide_project_root.'/nvim_ide_project_extra'
+        let s:project_extra_files_dir = g:nvim_ide_project_root.'/.nvim_ide_project_extra'
         if !isdirectory(s:project_extra_files_dir)
             call mkdir(s:project_extra_files_dir)
         endif

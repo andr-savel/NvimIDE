@@ -2,8 +2,8 @@
 " i
 
 " Open new terminal
-map <M-t> <C-g>term<CR>
-imap <M-t> <C-g>term<CR>
+map <C-t> <C-g>term<CR>
+imap <C-t> <C-g>term<CR>
 
 let s:is_in_fzf = 0
 function! s:FzfMaps()

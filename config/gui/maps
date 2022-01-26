@@ -3,8 +3,8 @@
 
 
 " CTRL-SHIFT-Z is Redo
-map <C-S-z> <C-r>
-imap <C-S-z> <C-r>
+map <C-S-z> <C-M-z>
+imap <C-S-z> <C-M-z>
 
 " CTRL-Tab is Next window
 map <C-Tab> <C-w>

@@ -24,24 +24,7 @@ endfunction
 inoremap <C-k> <C-o>:call NvimIdeFindFiles()<CR>
 nnoremap <C-k> :call NvimIdeFindFiles()<CR>
 
-" Search in project files content
-"     Close search results window
-nnoremap <silent> <Esc><Esc> :cclose<CR>
-inoremap <silent> <Esc><Esc> <C-o>:cclose<CR>
-
 "     Call search
 nnoremap <C-M-f> :NvimRg 
 inoremap <C-M-f> <C-o>:NvimRgI 
-
-"     Next/prev search result
-"         item
-nnoremap <M-down> :cn<CR>
-inoremap <M-down> <C-o>:cn<CR>
-nnoremap <M-up> :cp<CR>
-inoremap <M-up> <C-o>:cp<CR>
-"         file
-nnoremap <C-M-down> :cnf<CR>
-inoremap <C-M-down> <C-o>:cnf<CR>
-nnoremap <C-M-up> :cpf<CR>
-inoremap <C-M-up> <C-o>:cpf<CR>
 

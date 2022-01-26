@@ -83,3 +83,60 @@ noremap <M-right> <C-i>
 inoremap <M-right> <C-o><C-i>
 snoremap <M-right> <Esc><C-i>
 
+" Quickfix window
+
+let s:has_quickfix_movements = 0
+augroup NvimIdeQuickfix
+    autocmd!
+    autocmd BufReadPost quickfix let s:has_quickfix_movements = 0
+augroup END
+
+"     Next/prev in quickfix window. Quickfix is used for search results, 'LSP usage' results, etc.
+function! NvimIdeNextQFItem()
+    if s:has_quickfix_movements
+        cn
+    else
+        cc
+    endif
+    let s:has_quickfix_movements = 1
+endfunction
+
+" TODO: implement same kays for next/prev for LSP diagnostic errors when they are exists
+"     item
+nnoremap <M-down> :call NvimIdeNextQFItem()<CR>
+inoremap <M-down> <C-o>:call NvimIdeNextQFItem()<CR>
+nnoremap <M-up> :cp<CR>
+inoremap <M-up> <C-o>:cp<CR>
+"     file
+nnoremap <C-M-down> :cnf<CR>
+inoremap <C-M-down> <C-o>:cnf<CR>
+nnoremap <C-M-up> :cpf<CR>
+inoremap <C-M-up> <C-o>:cpf<CR>
+
+"     Close quickfix window.
+function! NvimIdeClearAndCloseQuickfix()
+    cclose
+    cexpr []
+endfunction
+
+nnoremap <silent> <Esc><Esc> :call NvimIdeClearAndCloseQuickfix()<CR>
+inoremap <silent> <Esc><Esc> <C-o>:call NvimIdeClearAndCloseQuickfix()<CR>
+
+
+" Highlight function
+function! NvimIdeHighlightResults(isInsertMode, ptrn)
+    let @/=escape(substitute(a:ptrn, '"', '', 'g'), '|')
+
+    if a:isInsertMode
+        call feedkeys("\<C-o>:let &hlsearch=1\<CR>", 'n')
+    else
+        call feedkeys(":let &hlsearch=1\<CR>", 'n')
+    endif
+endfunction
+
+function! NvimIdeQuickfixPostprocess(isInsertMode, ptrn)
+    call NvimIdeHighlightResults(a:isInsertMode, a:ptrn)
+    " Goto previous windows (probably with code)
+    " wincmd p
+endfunction
+
