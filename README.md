@@ -18,5 +18,5 @@ Then nvim should be started with mentioned config file (this file will be source
     
 or
 
-    nvim-qt -- -cmd "source /path/to/project/config/file"
+    nvim-qt -- --cmd "source /path/to/project/config/file"
 
