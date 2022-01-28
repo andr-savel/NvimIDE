@@ -36,74 +36,12 @@ Plug 'ray-x/lsp_signature.nvim'
 call plug#end()
 
 
-" Plugins settings
 
-"     fzf
-let g:fzf_preview_window = []
-let g:fzf_layout = {'window': {'width': 0.9, 'height': 0.6}}
-"         set '0' delay to fast close fzf window by <Esc>
-let $ESCDELAY = '0'
+" Plugin settings
+source $HOME/.config/nvim/tui/plugin_settings/fzf
+source $HOME/.config/nvim/tui/plugin_settings/nvim-cmp
+source $HOME/.config/nvim/tui/plugin_settings/nvim-lspconfig
 
-"     nvim-cmp
-lua << EOF
-    local cmp = require('cmp')
-    cmp.setup {
-        completion = {
-            -- Select first item automatically
-            completeopt = 'menu,menuone,noinsert'
-        },
-        snippet = {
-            -- REQUIRED - you must specify a snippet engine
-            expand = function(args)
-                vim.fn["vsnip#anonymous"](args.body)
-            end
-        },
-        mapping = {
-            ['<C-Space>'] = cmp.mapping.complete(),
-            ['<CR>'] = cmp.mapping.confirm {
-                behavior = cmp.ConfirmBehavior.Replace,
-                select = true,
-            },
-            ['<Tab>'] = function(fallback)
-                if cmp.visible() then
-                    cmp.confirm()
-                else
-                    fallback()
-                end
-            end,
-            ['<Esc><Esc>'] = function(fallback)
-                if cmp.visible() then
-                    cmp.close()
-                else
-                    fallback()
-                end
-            end
-        },
-        sources = {
-            {name = 'nvim_lsp'},
-            {name = 'vsnip'}
-        }
-    }
-
-    -- TODO: behaviour and mappings should be the same with lsp completion
-    cmp.setup.cmdline(':', {
-        sources = cmp.config.sources(
-            {{
-                name = 'path'
-            }},
-            {{
-                name = 'cmdline'
-            }}
-        )
-    })
-EOF
-
-"     lsp_signature
-lua << EOF
-    require("lsp_signature").on_attach({
-        hint_enable = false
-    })
-EOF
 
 
 " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

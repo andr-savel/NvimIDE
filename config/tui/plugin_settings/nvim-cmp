@@ -1,0 +1,53 @@
+lua << EOF
+    local cmp = require('cmp')
+    cmp.setup {
+        completion = {
+            -- Select first item automatically
+            completeopt = 'menu,menuone,noinsert'
+        },
+        snippet = {
+            -- REQUIRED - you must specify a snippet engine
+            expand = function(args)
+                vim.fn["vsnip#anonymous"](args.body)
+            end
+        },
+        mapping = {
+            ['<C-Space>'] = cmp.mapping.complete(),
+            ['<CR>'] = cmp.mapping.confirm {
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = true,
+            },
+            ['<Tab>'] = function(fallback)
+                if cmp.visible() then
+                    cmp.confirm()
+                else
+                    fallback()
+                end
+            end,
+            ['<Esc><Esc>'] = function(fallback)
+                if cmp.visible() then
+                    cmp.close()
+                else
+                    fallback()
+                end
+            end
+        },
+        sources = {
+            {name = 'nvim_lsp'},
+            {name = 'vsnip'}
+        }
+    }
+
+    -- TODO: to make path/cmdline completion behaviour and mappings the same with lsp completion
+    cmp.setup.cmdline(':', {
+        sources = cmp.config.sources(
+            {{
+                name = 'path'
+            }},
+            {{
+                name = 'cmdline'
+            }}
+        )
+    })
+EOF
+

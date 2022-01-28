@@ -35,6 +35,11 @@ lua << EOF
 
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F4>', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F4>', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+
+        -- 'lsp_signature' plugin initialized here. Otherwize (on standalone initialization) floating window not appear after multiple files editing and save.
+        require("lsp_signature").on_attach({
+            hint_enable = false
+        })
     end
 
     -- Server-specific settings
