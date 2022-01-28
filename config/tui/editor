@@ -19,6 +19,8 @@ vmap <C-x> d<Esc>i
 " CTRL-C is Copy
 vmap <C-c> y
 
+" TODO: copy selected text to system clipboard. Possibly it is not needed. Mouse mode possibly can be intellectually switched-off and text select by mouse can be copy/paste by terminal <C-S-c>/<C-S-v> or center mouse click.
+
 " TODO: to fix register content after replace-paste
 " CTRL-V is Paste
 map <C-v> gPi
@@ -59,8 +61,5 @@ noremap <C-g> :
 inoremap <C-g> <C-O>:
 snoremap <C-g> <Esc>:
 
-"------------------------
-" TODO: try 'Nord' theme
-" TODO: try statusline
-"    https://github.com/itchyny/lightline.vim
-" TODO: try git_gutter
+" TODO: to tune identation
+" TODO: to tune brackets auto-insert (possibly it can be done via snippets plugin)

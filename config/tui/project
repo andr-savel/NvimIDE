@@ -1,5 +1,8 @@
 " Default values for optional project settings
 
+" TODO: skip parts of initialization if g:nvim_ide_project_root is not specified in project config
+" TODO: skip C++ lsp configuration if g:nvim_ide_cpp_compilation_database_command is not specified in project config
+
 "     Source for fzf
 if !exists("g:nvim_ide_fzf_source")
     let g:nvim_ide_fzf_source = 'rg --files'

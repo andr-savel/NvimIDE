@@ -17,6 +17,22 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'neovim/nvim-lspconfig'
 
+Plug 'hrsh7th/cmp-nvim-lsp'
+"  TODO: try 'hrsh7th/cmp-buffer' for completion in 'search in file'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+
+Plug 'ray-x/lsp_signature.nvim'
+
+" TODO: setup debugger support via DAP
+" TODO: setup diff tool (diff file against repository)
+" TODO: project compilation and errors in quickfix [c++, go]
+" TODO: setup specific key maps via 'AutoKey' application to avoid nvim-qt usage (after this nvim from terminal can be used)
+
 call plug#end()
 
 
@@ -27,4 +43,76 @@ let g:fzf_preview_window = []
 let g:fzf_layout = {'window': {'width': 0.9, 'height': 0.6}}
 "         set '0' delay to fast close fzf window by <Esc>
 let $ESCDELAY = '0'
+
+"     nvim-cmp
+lua << EOF
+    local cmp = require('cmp')
+    cmp.setup {
+        completion = {
+            -- Select first item automatically
+            completeopt = 'menu,menuone,noinsert'
+        },
+        snippet = {
+            -- REQUIRED - you must specify a snippet engine
+            expand = function(args)
+                vim.fn["vsnip#anonymous"](args.body)
+            end
+        },
+        mapping = {
+            ['<C-Space>'] = cmp.mapping.complete(),
+            ['<CR>'] = cmp.mapping.confirm {
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = true,
+            },
+            ['<Tab>'] = function(fallback)
+                if cmp.visible() then
+                    cmp.confirm()
+                else
+                    fallback()
+                end
+            end,
+            ['<Esc><Esc>'] = function(fallback)
+                if cmp.visible() then
+                    cmp.close()
+                else
+                    fallback()
+                end
+            end
+        },
+        sources = {
+            {name = 'nvim_lsp'},
+            {name = 'vsnip'}
+        }
+    }
+
+    -- TODO: behaviour and mappings should be the same with lsp completion
+    cmp.setup.cmdline(':', {
+        sources = cmp.config.sources(
+            {{
+                name = 'path'
+            }},
+            {{
+                name = 'cmdline'
+            }}
+        )
+    })
+EOF
+
+"     lsp_signature
+lua << EOF
+    require("lsp_signature").on_attach({
+        hint_enable = false
+    })
+EOF
+
+
+" <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    " [TODO] to see the following colorscheme: https://github.com/ray-x/aurora
+    " https://github.com/itchyny/lightline.vim
+    " https://github.com/tyrannicaltoucan/vim-quantum
+
+    " TODO: try 'Nord' theme
+    " TODO: try statusline
+    "    https://github.com/itchyny/lightline.vim
+    " TODO: try git_gutter
 

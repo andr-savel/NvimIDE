@@ -1,11 +1,16 @@
 function! NvimIdeGetReferences(isInsertMode)
     lua vim.lsp.buf.references()
+" TODO: only requested symbol should be highlighted (not simple highlight). Or do not highligh references.
     call NvimIdeQuickfixPostprocess(a:isInsertMode, expand("<cword>"))
 endfunction
 
 lua << EOF
+    local lspconfig = require('lspconfig')
+
     -- Common settings and maps
     local opts = {noremap=true, silent=true}
+
+    -- vim.lsp.set_log_level("debug")
 
     vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -38,23 +43,39 @@ lua << EOF
             init_options = {
                 compilationDatabaseCommand = vim.g["nvim_ide_cpp_compilation_database_command"],
                 cache = {
-                    directory = vim.fn["NvimIdeGetProjectExtraFilesDir"]() .. "/ccls-cache",
+                    directory = vim.fn["NvimIdeGetProjectExtraFilesDir"]() .. "/ccls-cache"
+                },
+                diagnostics = {
+                    onChange = 50
+                },
+                completion = {
+                    -- Disable snippets on confirmed completion (insert the name of selected function/variable without parameters)
+                    placeholder = false
                 }
             }
         }
     }
 
+    -- TODO: find all implementations of virtual functions. ccsl can do it only if cursor stand on pure virtual function (maybe clangd better here)
+    -- TODO: find symbol/class by name. Possibly fzf should be used to filter candidates
+    -- TODO: try clangd (it can be faster and do not reindex whole project first cpp file open)
+
     -- Set common settings and setup servers
-    for name, lsp in pairs(servers) do
+    local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    for lsp, settings in pairs(servers) do
         -- Common settings for all servers
-        lsp["on_attach"] = on_attach
-        lsp["flags"] = {
+        settings["on_attach"] = on_attach
+        settings["flags"] = {
             -- This will be the default in neovim 0.7+
             debounce_text_changes = 150
         }
+        settings["root_dir"] = function(nm)
+            return vim.g["nvim_ide_project_root"] 
+        end
+        settings["capabilities"] = capabilities
 
         -- Setup final set of settings fo particular server
-        require('lspconfig')[name].setup(lsp)
+        lspconfig[lsp].setup(settings)
     end
 EOF
 
