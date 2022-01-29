@@ -1,6 +1,40 @@
 " set 'insert' mode as default
 start
 
+" enable mouse only for 'insert', 'visual' and 'command' mode
+set mouse=ivc
+
+" Deselect current selection to prevent extend selection on scroll
+snoremap <ScrollWheelUp> <Esc><ScrollWheelUp>
+snoremap <ScrollWheelDown> <Esc><ScrollWheelDown>
+
+" display line numbers
+set number
+
+" always display sign column (for example, lsp diagnostic erros set appropriate character here)
+set signcolumn=yes
+highlight clear SignColumn
+
+" tab settings
+set tabstop=4
+set shiftwidth=4
+set smarttab
+set expandtab
+
+augroup NvimIdePerLangAutoCmds
+    autocmd!
+
+    " tabs but not spaces for golang
+    autocmd FileType go set noexpandtab
+augroup END
+
+" indents
+set autoindent
+set smartindent
+
+" TODO: to use ClosePairs, AutoClose, DelimitMate and AutoClose plugins to autoclose brackets
+" TODO: clangformat should be intorduced for c++. Or 'cindent' and 'cinoptions' vim options
+
 " prevent escape from moving the cursor one character to the left
 let CursorColumnI = 0 "the cursor column position in INSERT
 autocmd InsertEnter * let CursorColumnI = col('.')
@@ -19,7 +53,7 @@ vmap <C-x> d<Esc>i
 " CTRL-C is Copy
 vmap <C-c> y
 
-" TODO: copy selected text to system clipboard. Possibly it is not needed. Mouse mode possibly can be intellectually switched-off and text select by mouse can be copy/paste by terminal <C-S-c>/<C-S-v> or center mouse click.
+" TODO: copy selected text to system clipboard (possibly it is not needed)
 
 " TODO: to fix register content after replace-paste
 " CTRL-V is Paste
@@ -61,5 +95,3 @@ noremap <C-g> :
 inoremap <C-g> <C-O>:
 snoremap <C-g> <Esc>:
 
-" TODO: to tune identation
-" TODO: to tune brackets auto-insert (possibly it can be done via snippets plugin)

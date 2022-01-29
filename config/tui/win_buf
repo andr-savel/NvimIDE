@@ -85,6 +85,8 @@ snoremap <M-right> <Esc><C-i>
 
 " Quickfix window
 
+" TODO: 'has_quickfix_movements' detection should be rewritten: set var local for quickfix buffer which indicates should we move farward or not
+
 let s:has_quickfix_movements = 0
 augroup NvimIdeQuickfix
     autocmd!

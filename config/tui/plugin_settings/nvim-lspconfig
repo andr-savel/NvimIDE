@@ -38,7 +38,9 @@ lua << EOF
 
         -- 'lsp_signature' plugin initialized here. Otherwize (on standalone initialization) floating window not appear after multiple files editing and save.
         require("lsp_signature").on_attach({
-            hint_enable = false
+            hint_enable = false,
+            -- Default value "LspSignatureActiveParameter" is changed to "IncSearch" to highlight current parameter in each color scheme
+            hi_parameter = "IncSearch"
         })
     end
 
