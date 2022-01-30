@@ -121,9 +121,8 @@ function! NvimIdeClearAndCloseQuickfix()
     cexpr []
 endfunction
 
-nnoremap <silent> <Esc><Esc> :call NvimIdeClearAndCloseQuickfix()<CR>
-inoremap <silent> <Esc><Esc> <C-o>:call NvimIdeClearAndCloseQuickfix()<CR>
-
+" TODO: possibly detection quickfix existence should be checked to close it under condition and move to insert mode
+nnoremap <silent> <Esc> :call NvimIdeClearAndCloseQuickfix()<CR>i
 
 " Highlight function
 function! NvimIdeHighlightResults(isInsertMode, ptrn)

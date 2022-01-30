@@ -24,7 +24,7 @@ lua << EOF
                     fallback()
                 end
             end,
-            ['<Esc><Esc>'] = function(fallback)
+            ['<Esc>'] = function(fallback)
                 if cmp.visible() then
                     cmp.close()
                 else
