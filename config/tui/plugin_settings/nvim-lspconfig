@@ -42,6 +42,17 @@ lua << EOF
             -- Default value "LspSignatureActiveParameter" is changed to "IncSearch" to highlight current parameter in each color scheme
             hi_parameter = "IncSearch"
         })
+
+        -- TODO: trigger file reindex on modification (currently symbol usage oes not updated on file modification in buffer but before saving)
+
+        -- Highlight symbol under cursor
+        require('illuminate').on_attach(client)
+        vim.cmd([[hi LspReferenceText cterm=bold,underline gui=bold,underline]])
+        vim.cmd([[hi LspReferenceRead cterm=bold,underline gui=bold,underline]])
+        vim.cmd([[hi LspReferenceWrite cterm=bold,underline gui=bold,underline]])
+        vim.cmd([[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]])
+        vim.cmd([[autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()]])
+        vim.cmd([[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]])
     end
 
     -- Server-specific settings

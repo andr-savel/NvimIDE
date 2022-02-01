@@ -4,6 +4,9 @@ start
 " enable mouse only for 'insert', 'visual' and 'command' mode
 set mouse=ivc
 
+" set blinking cursor
+set guicursor=i-ci-ve:ver25-blinkon100
+
 " Deselect current selection to prevent extend selection on scroll
 snoremap <ScrollWheelUp> <Esc><ScrollWheelUp>
 snoremap <ScrollWheelDown> <Esc><ScrollWheelDown>

@@ -17,6 +17,9 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'neovim/nvim-lspconfig'
 
+" TODO: get rid of this plugin (implement this functionality manually)
+Plug 'RRethy/vim-illuminate'
+
 Plug 'hrsh7th/cmp-nvim-lsp'
 "  TODO: try 'hrsh7th/cmp-buffer' for completion in 'search in file'
 Plug 'hrsh7th/cmp-path'
@@ -43,7 +46,6 @@ source $HOME/.config/nvim/tui/plugin_settings/nvim-cmp
 source $HOME/.config/nvim/tui/plugin_settings/nvim-lspconfig
 
 
-
 " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     " [TODO] to see the following colorscheme: https://github.com/ray-x/aurora
     " https://github.com/itchyny/lightline.vim
@@ -56,3 +58,17 @@ source $HOME/.config/nvim/tui/plugin_settings/nvim-lspconfig
 
 " fuzzy finding of symbols: https://github.com/RishabhRD/nvim-lsputils
 " https://github.com/nvim-lualine/lualine.nvim     statusline. also look at themes from this plugin and select one
+
+
+" TODO: https://github.com/folke/trouble.nvim   -- try to use trouble window with grouping-by-file instead of plain quickfix
+
+" TODO try 'kyazdani42/nvim-web-devicons'
+
+"------------------
+"DAP:
+"  https://github.com/mfussenegger/nvim-dap
+"  https://github.com/rcarriga/nvim-dap-ui
+"  https://github.com/danielnehrig/nvim
+
+"or
+"  https://github.com/puremourning/vimspector
