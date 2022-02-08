@@ -56,12 +56,29 @@ lua << EOF
     end
 
     -- Server-specific settings
+    function GetCCLSCacheDir()
+        return vim.fn["NvimIdeGetProjectExtraFilesDir"]() .. "/ccls-cache"
+    end
+
+    function GetCCLSInitialBlacklist()
+        if vim.fn["empty"](vim.fn["glob"](GetCCLSCacheDir())) == 1 then
+            return {}
+        end
+
+        return {"."}
+    end
+
     local servers = {
         ccls = {
             init_options = {
                 compilationDatabaseCommand = vim.g["nvim_ide_cpp_compilation_database_command"],
                 cache = {
-                    directory = vim.fn["NvimIdeGetProjectExtraFilesDir"]() .. "/ccls-cache"
+                    directory = GetCCLSCacheDir()
+                },
+                index = {
+                    onChange = true,
+                    -- Whole project should be reindexed on startup ony when ccls-cache dir is absent
+                    initialBlacklist = GetCCLSInitialBlacklist()
                 },
                 diagnostics = {
                     onChange = 50
@@ -77,6 +94,7 @@ lua << EOF
     -- TODO: find all implementations of virtual functions. ccsl can do it only if cursor stand on pure virtual function (maybe clangd better here)
     -- TODO: find symbol/class by name. Possibly fzf should be used to filter candidates
     -- TODO: try clangd (it can be faster and do not reindex whole project first cpp file open)
+    -- TODO: goto symbol definition only if current file has been reindexed (currently this function uses old index and it leads to errors)
 
     -- Set common settings and setup servers
     local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())

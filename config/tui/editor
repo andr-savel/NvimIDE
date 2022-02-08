@@ -1,8 +1,8 @@
 " set 'insert' mode as default
 start
 
-" enable mouse only for 'insert', 'visual' and 'command' mode
-set mouse=ivc
+" enable mouse only for all modes
+set mouse=a
 
 " set blinking cursor
 set guicursor=i-ci-ve:ver25-blinkon100
@@ -51,7 +51,7 @@ behave mswin
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
 " CTRL-X is Cut
-vmap <C-x> d<Esc>i
+vnoremap <C-x> d<Esc>i
 
 " CTRL-C is Copy
 vmap <C-c> y

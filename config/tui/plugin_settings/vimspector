@@ -1,0 +1,182 @@
+" Create '.vimspector.json' file. Vimspector needs it to detect root of the project.
+call system("touch " . g:nvim_ide_project_root . "/.vimspector.json")
+
+function! s:SetupVimspector()
+    packadd! vimspector
+
+    let vimspectorPath = stdpath('data') . '/plugged/vimspector'
+    if !empty(glob(vimspectorPath))
+        if empty(glob(vimspectorPath . '/gadgets/linux/CodeLLDB'))
+            VimspectorInstall CodeLLDB
+        endif
+    endif
+endfunction
+
+augroup NvimIdeAddVimspector
+    autocmd!
+    autocmd VimEnter * call s:SetupVimspector()
+augroup END
+
+function! s:PrintBufferIdForDebuggerTerminal()
+    let winId = win_getid()
+    let bufId = winbufnr(winId)
+    if stridx(getbufinfo(bufId)[0].name, 'vimspector/gadgets') != -1
+        call win_gotoid(winId)
+        q
+
+        echo bufId
+    endif
+endfunction
+
+function! CloseInitialDebuggerTerminalAndGetItsBufId()
+    redir => termBufId
+    exe "silent! windo call s:PrintBufferIdForDebuggerTerminal()"
+    silent! echo ""
+    redir END
+
+    for i in split(termBufId, "\n")
+        return str2nr(i)
+    endfor
+endfunction
+
+function! s:CustomiseUI()
+    call win_gotoid(g:vimspector_session_windows.output)
+    q
+
+    call win_gotoid(g:vimspector_session_windows.code)
+    setlocal scrolloff=999
+    wincmd H
+
+    call win_gotoid(g:vimspector_session_windows.stack_trace)
+    wincmd J
+    15wincmd _
+
+    stopi
+endfunction
+
+let s:DebuggerTerminalBufferId = -1
+
+function! s:SetUpTerminal()
+    " Close the terminal window and get terminal buffer id
+    let s:DebuggerTerminalBufferId = CloseInitialDebuggerTerminalAndGetItsBufId()
+
+    call win_gotoid(g:vimspector_session_windows.stack_trace)
+    if s:DebuggerTerminalBufferId != -1
+        vsplit
+        wincmd r
+        exe "b".s:DebuggerTerminalBufferId
+    endif
+
+    stopi
+endfunction
+
+function! s:CloseTerm()
+    while s:DebuggerTerminalBufferId != -1
+        try
+            exe "bd".s:DebuggerTerminalBufferId
+            let s:DebuggerTerminalBufferId = -1
+        catch
+        endtry
+        sleep 200m
+    endwhile
+
+    start
+endfunction
+
+augroup NvimIdeVimspector
+    autocmd!
+
+    autocmd User VimspectorUICreated call s:CustomiseUI()
+    autocmd User VimspectorTerminalOpened call s:SetUpTerminal()
+
+    autocmd User VimspectorDebugEnded call s:CloseTerm()
+augroup END
+
+function! NvimIdeDebugAttach()
+    call vimspector#LaunchWithConfigurations({
+    \    "Attach C++": {
+    \        "adapter": "CodeLLDB",
+    \        "configuration": {
+    \            "request": "attach",
+    \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}"
+    \        },
+    \        "breakpoints": { 
+    \            "exception": {     
+    \                "cpp_throw": "Y",
+    \                "cpp_catch": "N"
+    \            }
+    \        }
+    \    }
+    \ })
+endfunction
+
+function! NvimIdeDebugLaunchOrContinue()
+    if exists("g:vimspector_session_windows")
+        call vimspector#Continue()
+    else
+        call vimspector#LaunchWithConfigurations({
+        \    "Launch C++": {
+        \        "adapter": "CodeLLDB",
+        \        "configuration": {
+        \            "request": "launch",
+        \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}",
+        \            "args": ["*${CommandLineArgs:" . g:nvim_ide_debuggee_binary_args . "}"],
+        \            "externalConsole": v:true
+        \        },
+        \        "breakpoints": {
+        \            "exception": {     
+        \                "cpp_throw": "Y",
+        \                "cpp_catch": "N"
+        \            }
+        \        }
+        \    }
+        \ })
+    endif
+endfunction
+
+function! NvimIdeDebugClose()
+    if exists("g:vimspector_session_windows")
+        call vimspector#Reset()
+    endif
+endfunction
+
+" Mappings
+nnoremap <F5> :call NvimIdeDebugLaunchOrContinue()<CR>
+inoremap <F5> <C-o>:call NvimIdeDebugLaunchOrContinue()<CR>
+snoremap <F5> <Esc>:call NvimIdeDebugLaunchOrContinue()<CR>
+
+nnoremap <C-d> :call NvimIdeDebugAttach()<CR>
+inoremap <C-d> <C-o>:call NvimIdeDebugAttach()<CR>
+snoremap <C-d> <Esc>:call NvimIdeDebugAttach()<CR>
+
+nnoremap <F6> :call NvimIdeDebugClose()<CR>
+inoremap <F6> <C-o>:call NvimIdeDebugClose()<CR>
+snoremap <F6> <Esc>:call NvimIdeDebugClose()<CR>
+
+nnoremap <F10> :call vimspector#StepOver()<CR>
+inoremap <F10> <C-o>:call vimspector#StepOver()<CR>
+snoremap <F10> <Esc>:call vimspector#StepOver()<CR>
+
+nnoremap <F11> :call vimspector#StepInto()<CR>
+inoremap <F11> <C-o>:call vimspector#StepInto()<CR>
+snoremap <F11> <Esc>:call vimspector#StepInto()<CR>
+
+nnoremap <F12> :call vimspector#StepOut()<CR>
+inoremap <F12> <C-o>:call vimspector#StepOut()<CR>
+snoremap <F12> <Esc>:call vimspector#StepOut()<CR>
+
+nnoremap <F9> :call vimspector#ToggleBreakpoint()<CR>
+inoremap <F9> <C-o>:call vimspector#ToggleBreakpoint()<CR>
+snoremap <F9> <Esc>:call vimspector#ToggleBreakpoint()<CR>
+
+command! NvimIdeListBP :call vimspector#ListBreakpoints()
+
+
+function! s:SetCondBP()
+    let options = {}
+    let options['condition'] = input('Enter condition expression: ')
+    call vimspector#ToggleBreakpoint(options)
+endfunction
+
+command! NvimIdeSetCondBP :call s:SetCondBP()
+

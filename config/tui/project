@@ -28,3 +28,12 @@ function! NvimIdeGetProjectExtraFilesDir()
     return s:project_extra_files_dir
 endfunction
 
+"     Settings for debugger
+if !exists("g:nvim_ide_debuggee_binary_path")
+    let g:nvim_ide_debuggee_binary_path = ''
+endif
+
+if !exists("g:nvim_ide_debuggee_binary_args")
+    let g:nvim_ide_debuggee_binary_args = ''
+endif
+

@@ -4,10 +4,24 @@ set autochdir
 " Switch windows
 noremap <C-w> <C-w>w
 inoremap <C-w> <C-O><C-w>w
+snoremap <C-w> <Esc><C-w>w
 cnoremap <C-w> <C-O><C-w>w
 onoremap <C-w> <C-O><C-w>w
 "     in 'terminal' mode
 tnoremap <C-w> <C-\><C-N><C-w>wi
+
+" Switch tabs
+noremap <silent> <C-Up> :tabprev<CR>
+inoremap <silent> <C-Up> <C-O>:tabprev<CR>
+snoremap <silent> <C-Up> <Esc>:tabprev<CR>
+cnoremap <silent> <C-Up> <C-O>:tabprev<CR>
+onoremap <silent> <C-Up> <C-O>:tabprev<CR>
+
+noremap <silent> <C-Down> :tabnext<CR>
+inoremap <silent> <C-Down> <C-O>:tabnext<CR>
+snoremap <silent> <C-Down> <Esc>:tabnext<CR>
+cnoremap <silent> <C-Down> <C-O>:tabnext<CR>
+onoremap <silent> <C-Down> <C-O>:tabnext<CR>
 
 " Close window without closing buffer
 noremap <M-c> <C-w>c

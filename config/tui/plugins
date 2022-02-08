@@ -31,6 +31,8 @@ Plug 'hrsh7th/vim-vsnip'
 
 Plug 'ray-x/lsp_signature.nvim'
 
+Plug 'puremourning/vimspector'
+
 " TODO: setup debugger support via DAP
 " TODO: setup diff tool (diff file against repository)
 " TODO: project compilation and errors in quickfix [c++, go]
@@ -44,6 +46,9 @@ call plug#end()
 source $HOME/.config/nvim/tui/plugin_settings/fzf
 source $HOME/.config/nvim/tui/plugin_settings/nvim-cmp
 source $HOME/.config/nvim/tui/plugin_settings/nvim-lspconfig
+source $HOME/.config/nvim/tui/plugin_settings/vimspector
+
+
 
 
 " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -64,11 +69,3 @@ source $HOME/.config/nvim/tui/plugin_settings/nvim-lspconfig
 
 " TODO try 'kyazdani42/nvim-web-devicons'
 
-"------------------
-"DAP:
-"  https://github.com/mfussenegger/nvim-dap
-"  https://github.com/rcarriga/nvim-dap-ui
-"  https://github.com/danielnehrig/nvim
-
-"or
-"  https://github.com/puremourning/vimspector
