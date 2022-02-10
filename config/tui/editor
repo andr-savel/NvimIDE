@@ -4,6 +4,16 @@ start
 " enable mouse only for all modes
 set mouse=a
 
+" Line highlight
+"     Enable cursor line position tracking
+set cursorline
+
+"     Remove the underline from enabling cursorline
+" highlight clear CursorLine
+
+" Remove '~' char for empty lines
+set fillchars=eob:\
+
 " set blinking cursor
 set guicursor=i-ci-ve:ver25-blinkon100
 

@@ -89,13 +89,13 @@ augroup NvimIdeWindows
     autocmd VimEnter * clearjumps
 augroup END
 
-noremap <M-left> <C-o>
-inoremap <M-left> <C-o><C-o>
-snoremap <M-left> <Esc><C-o>
+noremap <M-left> <C-o>zz
+inoremap <M-left> <C-o><C-o><C-o>zz
+snoremap <M-left> <Esc><C-o>zz
 
-noremap <M-right> <C-i>
-inoremap <M-right> <C-o><C-i>
-snoremap <M-right> <Esc><C-i>
+noremap <M-right> <C-i>zz
+inoremap <M-right> <C-o><C-i><C-o>zz
+snoremap <M-right> <Esc><C-i>zz
 
 " Quickfix window
 

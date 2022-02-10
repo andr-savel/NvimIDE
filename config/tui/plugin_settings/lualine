@@ -1,0 +1,19 @@
+lua << END
+    require'lualine'.setup {
+        options = {
+            icons_enabled = false, -- TODO: tune nvim-web-devicons
+            theme = 'gruvbox-material',
+            component_separators = { left = '', right = ''},
+            section_separators = { left = '', right = ''}
+        },
+        sections = {
+            lualine_a = {'mode'},
+            lualine_b = {},
+            lualine_c = {'filename'},
+            lualine_x = {"require'lsp-status'.status()", 'encoding', 'filetype'},
+            lualine_y = {'progress'},
+            lualine_z = {'location'}
+        }
+    }
+END
+

@@ -6,25 +6,51 @@ endfunction
 
 lua << EOF
     local lspconfig = require('lspconfig')
+    local lsp_status = require('lsp-status')
+
+    -- TODO: tune nvim-web-devicons and get rid of this lsp_status section
+    lsp_status.config({
+        indicator_errors = 'E',
+        indicator_warnings = 'W',
+        indicator_info = 'i',
+        indicator_hint = '?',
+        indicator_ok = 'Ok',
+    })
 
     -- Common settings and maps
     local opts = {noremap=true, silent=true}
 
     -- vim.lsp.set_log_level("debug")
 
+    lsp_status.register_progress()
     vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics, {
             update_in_insert = true
         }
     )
-    -- TODO: display counter of diagnostic problems for current buffer in status string
 
     -- Use an on_attach function to only map the following keys
     -- after the language server attaches to the current buffer
+
+    goto_definition_and_center_line = function(mode)
+        local util = require 'vim.lsp.util'
+        local params = util.make_position_params()
+        local default_definition_handler = require("vim.lsp.handlers")['textDocument/definition']
+        local custom_definition_handler = function(err, result, ctx, config)
+            default_definition_handler(err, result, ctx, config)
+            special_symbol = ""
+            if mode == "i" then
+                special_symbol = vim.api.nvim_replace_termcodes("<C-o>", true, false, true)
+            end
+            vim.fn.feedkeys(special_symbol .. "zz")
+        end
+        vim.lsp.buf_request(0, 'textDocument/definition', params, custom_definition_handler)
+    end
+
     local on_attach = function(client, bufnr)
         -- Maps
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F2>', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F2>', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F2>', '<cmd>lua goto_definition_and_center_line("n")<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F2>', '<cmd>lua goto_definition_and_center_line("i")<CR>', opts)
 
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-u>', '<cmd>lua vim.fn["NvimIdeGetReferences"](0)<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-u>', '<cmd>lua vim.fn["NvimIdeGetReferences"](1)<CR>', opts)
@@ -43,16 +69,16 @@ lua << EOF
             hi_parameter = "IncSearch"
         })
 
-        -- TODO: trigger file reindex on modification (currently symbol usage oes not updated on file modification in buffer but before saving)
-
         -- Highlight symbol under cursor
         require('illuminate').on_attach(client)
-        vim.cmd([[hi LspReferenceText cterm=bold,underline gui=bold,underline]])
-        vim.cmd([[hi LspReferenceRead cterm=bold,underline gui=bold,underline]])
-        vim.cmd([[hi LspReferenceWrite cterm=bold,underline gui=bold,underline]])
+        vim.cmd([[hi LspReferenceText cterm=underline gui=underline]])
+        vim.cmd([[hi LspReferenceRead cterm=underline gui=underline]])
+        vim.cmd([[hi LspReferenceWrite cterm=underline gui=underline]])
         vim.cmd([[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]])
         vim.cmd([[autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()]])
         vim.cmd([[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]])
+
+        lsp_status.on_attach(client)
     end
 
     -- Server-specific settings
@@ -98,6 +124,7 @@ lua << EOF
 
     -- Set common settings and setup servers
     local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    capabilities = vim.tbl_extend('keep', capabilities, lsp_status.capabilities)
     for lsp, settings in pairs(servers) do
         -- Common settings for all servers
         settings["on_attach"] = on_attach
