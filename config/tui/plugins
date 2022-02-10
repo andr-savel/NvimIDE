@@ -53,7 +53,7 @@ call plug#end()
 " Plugin settings
 source $HOME/.config/nvim/tui/plugin_settings/fzf
 source $HOME/.config/nvim/tui/plugin_settings/nvim-cmp
-source $HOME/.config/nvim/tui/plugin_settings/nvim-lspconfig
+source $HOME/.config/nvim/tui/plugin_settings/lsp
 source $HOME/.config/nvim/tui/plugin_settings/vimspector
 source $HOME/.config/nvim/tui/plugin_settings/colortheme
 source $HOME/.config/nvim/tui/plugin_settings/syntax_highlight
