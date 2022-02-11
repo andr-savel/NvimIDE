@@ -1,19 +1,44 @@
 lua << END
+    local format_file_name = function(str)
+        local s, e = str:find(vim.g["nvim_ide_project_root"], 1, true)
+        local ret = ""
+        if e == nil then
+            ret = str
+        else
+            local ind = e + 1
+            if str:sub(ind, ind) == "/" then
+                ind = ind + 1
+            end
+            ret = str:sub(ind)
+        end
+
+        local sM = ret:find("[", 1, true)
+        if sM then
+            return ret:sub(sM) .. " " .. ret:sub(1, sM - 1)
+        end
+
+        return ret
+    end
+
     require'lualine'.setup {
         options = {
             icons_enabled = false, -- TODO: tune nvim-web-devicons
             theme = 'gruvbox-material',
             component_separators = { left = '', right = ''},
-            section_separators = { left = '', right = ''}
+            section_separators = { left = '', right = ''},
+            disabled_filetypes = {},
+            always_divide_middle = true
         },
         sections = {
             lualine_a = {'mode'},
             lualine_b = {},
-            lualine_c = {'filename'},
-            lualine_x = {"require'lsp-status'.status()", 'encoding', 'filetype'},
+            lualine_c = {{'filename', file_status = true, path = 2, fmt = format_file_name}},
+            lualine_x = {"require'lsp-status'.status()"},
             lualine_y = {'progress'},
             lualine_z = {'location'}
-        }
+        },
+        tabline = {},
+        extensions = {}
     }
 END
 

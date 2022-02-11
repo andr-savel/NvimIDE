@@ -8,13 +8,17 @@ lua << EOF
     local lspconfig = require('lspconfig')
     local lsp_status = require('lsp-status')
 
-    -- TODO: tune nvim-web-devicons and get rid of this lsp_status section
     lsp_status.config({
+        current_function = false,
+        show_filename = false,
+
+        -- TODO: tune nvim-web-devicons and get rid of the following section
         indicator_errors = 'E',
         indicator_warnings = 'W',
         indicator_info = 'i',
         indicator_hint = '?',
         indicator_ok = 'Ok',
+        status_symbol = ''
     })
 
     -- Common settings and maps

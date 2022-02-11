@@ -1,8 +1,11 @@
-" set 'insert' mode as default
+" Set 'insert' mode as default
 start
 
-" enable mouse only for all modes
+" Enable mouse only for all modes
 set mouse=a
+
+" Do not show mode in cmd line
+set noshowmode
 
 " Line highlight
 "     Enable cursor line position tracking
@@ -108,3 +111,5 @@ noremap <C-g> :
 inoremap <C-g> <C-O>:
 snoremap <C-g> <Esc>:
 
+
+command! NvimIdeFullFilePath :echo expand("%:p")
