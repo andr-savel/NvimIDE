@@ -100,6 +100,8 @@ lua << EOF
 
     local servers = {
         ccls = {
+            -- TODO: move ccls log into vim.fn["NvimIdeGetProjectExtraFilesDir"]() directory
+
             init_options = {
                 compilationDatabaseCommand = vim.g["nvim_ide_cpp_compilation_database_command"],
                 cache = {

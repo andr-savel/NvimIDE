@@ -15,14 +15,10 @@ set cursorline
 " highlight clear CursorLine
 
 " Remove '~' char for empty lines
-set fillchars=eob:\
+set fillchars=eob:\ 
 
 " set blinking cursor
 set guicursor=i-ci-ve:ver25-blinkon100
-
-" Deselect current selection to prevent extend selection on scroll
-snoremap <ScrollWheelUp> <Esc><ScrollWheelUp>
-snoremap <ScrollWheelDown> <Esc><ScrollWheelDown>
 
 " display line numbers
 set number
@@ -110,6 +106,18 @@ snoremap <Tab> <C-g>>
 noremap <C-g> :
 inoremap <C-g> <C-O>:
 snoremap <C-g> <Esc>:
+
+" Proper scroll
+noremap <silent> <PageUp> 1000<C-u>
+noremap <silent> <PageDown> 1000<C-d>
+inoremap <silent> <PageUp> <C-o>1000<C-u>
+inoremap <silent> <PageDown> <C-o>1000<C-d>
+snoremap <silent> <PageUp> <Esc>1000<C-u>
+snoremap <silent> <PageDown> <Esc>1000<C-d>
+
+" Deselect current selection to prevent extend selection on scroll
+snoremap <ScrollWheelUp> <Esc><ScrollWheelUp>
+snoremap <ScrollWheelDown> <Esc><ScrollWheelDown>
 
 
 command! NvimIdeFullFilePath :echo expand("%:p")

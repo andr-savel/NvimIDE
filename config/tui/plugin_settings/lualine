@@ -1,23 +1,48 @@
 lua << END
-    local format_file_name = function(str)
-        local s, e = str:find(vim.g["nvim_ide_project_root"], 1, true)
-        local ret = ""
-        if e == nil then
-            ret = str
+    local function modified()
+        if vim.bo.modified then
+            return "[+]"
+        elseif vim.bo.modifiable == false or vim.bo.readonly == true then
+            return "[-]"
+        end
+        return ""
+    end
+
+    local function count(base, pattern)
+        return select(2, string.gsub(base, pattern, ''))
+    end
+
+    local function shorten_path(path, sep)
+        -- ('([^/])[^/]+%/', '%1/', 1)
+        return path:gsub(string.format('([^%s])[^%s]+%%%s', sep, sep, sep), '%1' .. sep, 1)
+    end
+
+    local filename = function()
+        local nm = vim.fn.expand('%:p')
+        if nm == "" then
+            nm = "[No Name]"
         else
-            local ind = e + 1
-            if str:sub(ind, ind) == "/" then
-                ind = ind + 1
+            local _, e = nm:find(vim.g["nvim_ide_project_root"], 1, true)
+            if e then
+                local ind = e + 1
+                if nm:sub(ind, ind) == "/" then
+                    ind = ind + 1
+                end
+                nm = nm:sub(ind)
             end
-            ret = str:sub(ind)
         end
 
-        local sM = ret:find("[", 1, true)
-        if sM then
-            return ret:sub(sM) .. " " .. ret:sub(1, sM - 1)
+        local shorting_target = 40
+        local windwidth = vim.fn.winwidth(0)
+        local estimated_space_available = windwidth - shorting_target
+        local path_separator = '/'
+        for _ = 0, count(nm, path_separator) do
+            if windwidth <= 84 or #nm > estimated_space_available then
+                nm = shorten_path(nm, path_separator)
+            end
         end
 
-        return ret
+        return modified() .. " " .. nm
     end
 
     require'lualine'.setup {
@@ -32,7 +57,7 @@ lua << END
         sections = {
             lualine_a = {'mode'},
             lualine_b = {},
-            lualine_c = {{'filename', file_status = true, path = 2, fmt = format_file_name}},
+            lualine_c = {filename},
             lualine_x = {"require'lsp-status'.status()"},
             lualine_y = {'progress'},
             lualine_z = {'location'}
