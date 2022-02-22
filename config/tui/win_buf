@@ -23,6 +23,10 @@ snoremap <silent> <C-Down> <Esc>:tabnext<CR>
 cnoremap <silent> <C-Down> <C-O>:tabnext<CR>
 onoremap <silent> <C-Down> <C-O>:tabnext<CR>
 
+" Close tab
+noremap <M-q> :tabclose<CR>
+inoremap <M-q> <C-O>:tabclose<CR>
+
 " Close window without closing buffer
 noremap <M-c> <C-w>c
 inoremap <M-c> <C-O><C-w>c

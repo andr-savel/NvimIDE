@@ -60,19 +60,18 @@ behave mswin
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
 " CTRL-X is Cut
-vnoremap <C-x> d<Esc>i
+vnoremap <C-x> "0d<Esc>i
 
 " CTRL-C is Copy
 vmap <C-c> y
 
 " TODO: copy selected text to system clipboard (possibly it is not needed)
 
-" TODO: to fix register content after replace-paste
 " CTRL-V is Paste
-map <C-v> gPi
-imap <C-v> <C-O>gP
-vmap <C-v> <C-O>gP
-snoremap <C-v> <C-g>gP
+map <C-v> "0gPi
+imap <C-v> <C-O>"0gP
+vmap <C-v> <C-O>"0gP
+snoremap <C-v> <C-g>"0gP
 cmap <C-v> <C-r>"
 "     in 'terminal' mode
 tmap <C-v> <C-\><C-N><C-v>

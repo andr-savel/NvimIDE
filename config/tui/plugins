@@ -41,8 +41,10 @@ Plug 'bfrg/vim-cpp-modern'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 
+Plug 'nvim-lua/plenary.nvim'
+Plug 'sindrets/diffview.nvim'
 
-" TODO: setup diff tool (diff file against repository)
+
 " TODO: project compilation and errors in quickfix [c++, go]
 " TODO: setup specific key maps via 'AutoKey' application to avoid nvim-qt usage (after this nvim from terminal can be used)
 
@@ -58,6 +60,7 @@ source $HOME/.config/nvim/tui/plugin_settings/vimspector
 source $HOME/.config/nvim/tui/plugin_settings/colortheme
 source $HOME/.config/nvim/tui/plugin_settings/syntax_highlight
 source $HOME/.config/nvim/tui/plugin_settings/lualine
+source $HOME/.config/nvim/tui/plugin_settings/diffview
 
 
 
