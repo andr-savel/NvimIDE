@@ -66,7 +66,6 @@ lua << EOF
               local opt = {noremap = true, silent = true, nowait = true}
               vim.api.nvim_buf_set_keymap(bufnr, "n", "<M-down>", "]c", opt)
               vim.api.nvim_buf_set_keymap(bufnr, "n", "<M-up>", "[c", opt)
-              vim.api.nvim_buf_set_keymap(bufnr, "n", "<F5>", vim.cmd("DiffviewRefresh"), opt)
           end,
           view_closed = function(view)
               vim.cmd('startinsert')

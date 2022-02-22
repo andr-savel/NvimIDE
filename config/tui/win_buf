@@ -112,19 +112,26 @@ augroup NvimIdeQuickfix
 augroup END
 
 "     Next/prev in quickfix window. Quickfix is used for search results, 'LSP usage' results, etc.
-function! NvimIdeNextQFItem()
+function! NvimIdeNextQFItem(mode)
     if s:has_quickfix_movements
         cn
     else
         cc
     endif
     let s:has_quickfix_movements = 1
+
+    let special_symbol = ""
+    if a:mode == "i"
+        let special_symbol = nvim_replace_termcodes("<C-o>", v:true, v:false, v:true)
+    endif
+
+    call feedkeys(special_symbol . "zz")
 endfunction
 
 " TODO: implement same kays for next/prev for LSP diagnostic errors when they are exists
 "     item
-nnoremap <M-down> :call NvimIdeNextQFItem()<CR>
-inoremap <M-down> <C-o>:call NvimIdeNextQFItem()<CR>
+nnoremap <M-down> :call NvimIdeNextQFItem("")<CR>
+inoremap <M-down> <C-o>:call NvimIdeNextQFItem("i")<CR>
 nnoremap <M-up> :cp<CR>
 inoremap <M-up> <C-o>:cp<CR>
 "     file
