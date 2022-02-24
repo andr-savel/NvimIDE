@@ -35,6 +35,7 @@ Plug 'puremourning/vimspector'
 
 Plug 'sainnhe/gruvbox-material'
 " Plug 'sainnhe/sonokai'
+" Plug 'ray-x/aurora'
 
 Plug 'bfrg/vim-cpp-modern'
 
@@ -66,8 +67,6 @@ source $HOME/.config/nvim/tui/plugin_settings/diffview
 
 
 " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    " [TODO] to see the following colorscheme: https://github.com/ray-x/aurora
-
     " TODO: try git_gutter https://github.com/airblade/vim-gitgutter    (possibly it is better than diff tool)
 
 " fuzzy finding of symbols: https://github.com/RishabhRD/nvim-lsputils

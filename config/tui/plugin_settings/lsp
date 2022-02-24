@@ -5,6 +5,25 @@ function! NvimIdeGetReferences(isInsertMode)
 endfunction
 
 lua << EOF
+    -- Utils
+    function center_text(mode)
+        special_symbol = ""
+        if mode == "i" then
+            special_symbol = vim.api.nvim_replace_termcodes("<C-o>", true, false, true)
+        end
+        vim.fn.feedkeys(special_symbol .. "zz")
+    end
+
+    function GetCCLSInitialBlacklist()
+        if vim.fn["empty"](vim.fn["glob"](GetCCLSCacheDir())) == 1 then
+            return {}
+        end
+
+        return {"."}
+    end
+
+
+    -- LSP setup
     local lspconfig = require('lspconfig')
     local lsp_status = require('lsp-status')
 
@@ -42,13 +61,14 @@ lua << EOF
         local default_definition_handler = require("vim.lsp.handlers")['textDocument/definition']
         local custom_definition_handler = function(err, result, ctx, config)
             default_definition_handler(err, result, ctx, config)
-            special_symbol = ""
-            if mode == "i" then
-                special_symbol = vim.api.nvim_replace_termcodes("<C-o>", true, false, true)
-            end
-            vim.fn.feedkeys(special_symbol .. "zz")
+            center_text(mode)
         end
         vim.lsp.buf_request(0, 'textDocument/definition', params, custom_definition_handler)
+    end
+
+    goto_next_diagnostics = function(mode)
+        vim.diagnostic.goto_next()
+        center_text(mode)
     end
 
     local on_attach = function(client, bufnr)
@@ -63,8 +83,8 @@ lua << EOF
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-r>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-r>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
 
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F4>', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F4>', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F4>', '<cmd>lua goto_next_diagnostics("n")<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F4>', '<cmd>lua goto_next_diagnostics("i")<CR>', opts)
 
         -- 'lsp_signature' plugin initialized here. Otherwize (on standalone initialization) floating window not appear after multiple files editing and save.
         require("lsp_signature").on_attach({
@@ -90,14 +110,6 @@ lua << EOF
         return vim.fn["NvimIdeGetProjectExtraFilesDir"]() .. "/ccls-cache"
     end
 
-    function GetCCLSInitialBlacklist()
-        if vim.fn["empty"](vim.fn["glob"](GetCCLSCacheDir())) == 1 then
-            return {}
-        end
-
-        return {"."}
-    end
-
     local servers = {
         ccls = {
             -- TODO: move ccls log into vim.fn["NvimIdeGetProjectExtraFilesDir"]() directory
@@ -118,6 +130,17 @@ lua << EOF
                 completion = {
                     -- Disable snippets on confirmed completion (insert the name of selected function/variable without parameters)
                     placeholder = false
+                }
+            }
+        },
+        gopls = {
+            cmd = {"gopls", "serve"},
+            settings = {
+                gopls = {
+                    analyses = {
+                        unusedparams = true,
+                    },
+                    staticcheck = true,
                 }
             }
         }
