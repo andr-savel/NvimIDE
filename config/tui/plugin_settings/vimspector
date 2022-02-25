@@ -9,6 +9,10 @@ function! s:SetupVimspector()
         if empty(glob(vimspectorPath . '/gadgets/linux/CodeLLDB'))
             VimspectorInstall CodeLLDB
         endif
+
+        if empty(glob(vimspectorPath . '/gadgets/linux/delve'))
+            VimspectorInstall delve
+        endif
     endif
 endfunction
 
@@ -93,44 +97,76 @@ augroup NvimIdeVimspector
 augroup END
 
 function! NvimIdeDebugAttach()
-    call vimspector#LaunchWithConfigurations({
-    \    "Attach C++": {
-    \        "adapter": "CodeLLDB",
-    \        "configuration": {
-    \            "request": "attach",
-    \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}"
-    \        },
-    \        "breakpoints": { 
-    \            "exception": {     
-    \                "cpp_throw": "Y",
-    \                "cpp_catch": "N"
-    \            }
-    \        }
-    \    }
-    \ })
-endfunction
-
-function! NvimIdeDebugLaunchOrContinue()
-    if exists("g:vimspector_session_windows")
-        call vimspector#Continue()
-    else
+    if &filetype == "cpp" || &filetype == "c" || &filetype == "objc" || &filetype == "rust"
         call vimspector#LaunchWithConfigurations({
-        \    "Launch C++": {
+        \    "Attach C++": {
         \        "adapter": "CodeLLDB",
         \        "configuration": {
-        \            "request": "launch",
-        \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}",
-        \            "args": ["*${CommandLineArgs:" . g:nvim_ide_debuggee_binary_args . "}"],
-        \            "externalConsole": v:true
+        \            "request": "attach",
+        \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}"
         \        },
         \        "breakpoints": {
-        \            "exception": {     
+        \            "exception": {
         \                "cpp_throw": "Y",
         \                "cpp_catch": "N"
         \            }
         \        }
         \    }
         \ })
+    elseif &filetype == "go"
+        " TODO: should be repaired. Currently it fails with error: cannot unmarshal string into "processId" of type int
+        call vimspector#LaunchWithConfigurations({
+        \    "Attach Go": { 
+        \        "adapter": "delve",
+        \        "filetypes": ["go"],
+        \        "configuration": {
+        \            "type": "go",
+        \            "request": "attach",
+        \            "mode": "local",
+        \            "processId": "${PID}"
+        \        }
+        \    }
+        \ })
+    endif
+endfunction
+
+function! NvimIdeDebugLaunchOrContinue()
+    if exists("g:vimspector_session_windows")
+        call vimspector#Continue()
+    else
+        if &filetype == "cpp" || &filetype == "c" || &filetype == "objc" || &filetype == "rust"
+            call vimspector#LaunchWithConfigurations({
+            \    "Launch C++": {
+            \        "adapter": "CodeLLDB",
+            \        "configuration": {
+            \            "filetypes": ["cpp", "c", "objc", "rust"],
+            \            "request": "launch",
+            \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}",
+            \            "args": ["*${CommandLineArgs:" . g:nvim_ide_debuggee_binary_args . "}"],
+            \            "externalConsole": v:true
+            \        },
+            \        "breakpoints": {
+            \            "exception": {     
+            \                "cpp_throw": "Y",
+            \                "cpp_catch": "N"
+            \            }
+            \        }
+            \    }
+            \ })
+        elseif &filetype == "go"
+            call vimspector#LaunchWithConfigurations({
+            \    "Launch Go": { 
+            \        "adapter": "delve",
+            \        "filetypes": ["go"],
+            \        "configuration": {
+            \            "request": "launch",
+            \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}",
+            \            "args": ["*${CommandLineArgs:" . g:nvim_ide_debuggee_binary_args . "}"],
+            \            "mode": "debug"
+            \        }
+            \    }
+            \ })
+        endif
     endif
 endfunction
 
