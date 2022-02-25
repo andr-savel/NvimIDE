@@ -10,6 +10,7 @@ The following steps should be done to install NvimIde:
     pip3 install neovim
 ```
 3) Install go language server
+
 For new go versions
 ```
     go install golang.org/x/tools/gopls@latest
