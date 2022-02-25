@@ -216,5 +216,3 @@ endfunction
 
 command! NvimIdeSetCondBP :call s:SetCondBP()
 
-" TODO: plugin should be configured with go DAP (delve)
-
