@@ -52,7 +52,9 @@ Plug 'sindrets/diffview.nvim'
 
 call plug#end()
 
-
+" Install plugins and close installation status window
+PlugInstall
+wincmd c
 
 " Plugin settings
 source $HOME/.config/nvim/tui/plugin_settings/fzf

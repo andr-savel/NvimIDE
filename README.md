@@ -3,13 +3,14 @@ nvim/nvim-qt configuration for C++/Python/Go
 
 ## Installation
 The following steps should be done to install NvimIde:
-1) Install nvim or nvim-qt
+1) Install 'nvim' (or 'nvim-qt'), 'curl'
 2) Install python support for nvim
 ```
     pip install neovim
     pip3 install neovim
 ```
-3) Install go language server
+3) Install C/C++ language server 'ccls'
+4) Install go language server
 
 For new go versions
 ```
@@ -21,13 +22,13 @@ For old go versions:
     go get golang.org/x/tools/gopls@latest
     export PATH=$HOME/go/bin:$PATH
 ```
-4) Start nvim and install plugins
+5) Link files from this repo nvim dir
 ```
-    nvim +PlugInstall
+    ln -s <cloned_repo_path>/config ~/.config/nvim
 ```
-5) Make sure that all plugins has been installed
-6) Close nvim
-7) Start nvim again
+6) Start nvim and make sure that all plugins has been installed
+7) Close nvim
+8) Start nvim again (part of DAP adapters for 'vimpector' plugin will be installed on this stage)
 
 ## Usage
 To use NvimIde project config file should be created. See 'doc/project.conf' example for details.
