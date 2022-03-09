@@ -96,6 +96,10 @@ augroup NvimIdeVimspector
     autocmd User VimspectorDebugEnded call s:CloseTerm()
 augroup END
 
+function! s:FindDebuggeePID()
+    return str2nr(system("pidof " . g:nvim_ide_debuggee_binary_path))
+endfunction
+
 function! NvimIdeDebugAttach()
     if &filetype == "cpp" || &filetype == "c" || &filetype == "objc" || &filetype == "rust"
         call vimspector#LaunchWithConfigurations({
@@ -114,16 +118,20 @@ function! NvimIdeDebugAttach()
         \    }
         \ })
     elseif &filetype == "go"
-        " TODO: should be repaired. Currently it fails with error: cannot unmarshal string into "processId" of type int
+        let debuggeePID = s:FindDebuggeePID()
+        if !debuggeePID
+            echoerr("Cannot find running process '" . g:nvim_ide_debuggee_binary_path . "'")
+            return
+        endif
+
         call vimspector#LaunchWithConfigurations({
         \    "Attach Go": { 
         \        "adapter": "delve",
         \        "filetypes": ["go"],
         \        "configuration": {
-        \            "type": "go",
         \            "request": "attach",
         \            "mode": "local",
-        \            "processId": "${PID}"
+        \            "processId#json": debuggeePID
         \        }
         \    }
         \ })
@@ -154,6 +162,10 @@ function! NvimIdeDebugLaunchOrContinue()
             \    }
             \ })
         elseif &filetype == "go"
+            " To build binary with debug info please add
+            "     -gcflags='all=-N -l'
+            " to 'go build ...' command.
+            " Also '-i' flag possibly should be removed from 'go build ...' command.
             call vimspector#LaunchWithConfigurations({
             \    "Launch Go": { 
             \        "adapter": "delve",
@@ -162,7 +174,7 @@ function! NvimIdeDebugLaunchOrContinue()
             \            "request": "launch",
             \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}",
             \            "args": ["*${CommandLineArgs:" . g:nvim_ide_debuggee_binary_args . "}"],
-            \            "mode": "debug"
+            \            "mode": "exec"
             \        }
             \    }
             \ })
