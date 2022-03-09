@@ -71,10 +71,19 @@ noremap <silent> <M-m> <C-w>v<C-w>w
 inoremap <silent> <M-m> <C-O><C-w>v<C-o><C-w>w
 
 " Switch buffers
+function! s:ShowFzfBuffers()
+    call fzf#vim#buffers({'options': ['--layout=reverse', '--cycle', '--exact']})
+endfunction
+
 function! NvimIdeBuffers()
+    if !exists("g:nvim_ide_project_root")
+        call s:ShowFzfBuffers()
+        return
+    endif
+
     let l:cwd_au = getcwd()
     exe 'cd '.g:nvim_ide_project_root
-    call fzf#vim#buffers({'options': ['--layout=reverse', '--cycle', '--exact']})
+    call s:ShowFzfBuffers()
     exe 'cd '.l:cwd_au
 endfunction
 

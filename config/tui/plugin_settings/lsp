@@ -118,11 +118,25 @@ lua << EOF
     end
 
     local servers = {
-        ccls = {
+        gopls = {
+            cmd = {"gopls", "serve"},
+            settings = {
+                gopls = {
+                    analyses = {
+                        unusedparams = true,
+                    },
+                    staticcheck = true,
+                }
+            }
+        }
+    }
+
+    if vim.g.nvim_ide_cpp_compilation_database_command then
+        servers["ccls"] = {
             -- TODO: move ccls log into vim.fn["NvimIdeGetProjectExtraFilesDir"]() directory
 
             init_options = {
-                compilationDatabaseCommand = vim.g["nvim_ide_cpp_compilation_database_command"],
+                compilationDatabaseCommand = vim.g.nvim_ide_cpp_compilation_database_command,
                 cache = {
                     directory = GetCCLSCacheDir()
                 },
@@ -139,19 +153,8 @@ lua << EOF
                     placeholder = false
                 }
             }
-        },
-        gopls = {
-            cmd = {"gopls", "serve"},
-            settings = {
-                gopls = {
-                    analyses = {
-                        unusedparams = true,
-                    },
-                    staticcheck = true,
-                }
-            }
         }
-    }
+    end
 
     -- TODO: find all implementations of virtual functions. ccsl can do it only if cursor stand on pure virtual function (maybe clangd better here)
     -- TODO: find symbol/class by name. Possibly fzf should be used to filter candidates
