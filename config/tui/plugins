@@ -21,7 +21,6 @@ Plug 'nvim-lua/lsp-status.nvim'
 Plug 'RRethy/vim-illuminate'
 
 Plug 'hrsh7th/cmp-nvim-lsp'
-"  TODO: try 'hrsh7th/cmp-buffer' for completion in 'search in file'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
@@ -72,13 +71,10 @@ source $HOME/.config/nvim/tui/plugin_settings/lualine
 
 
 " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    " TODO: try git_gutter https://github.com/airblade/vim-gitgutter    (possibly it is better than diff tool)
-
 " fuzzy finding of symbols: https://github.com/RishabhRD/nvim-lsputils
 
 
 " TODO: https://github.com/folke/trouble.nvim   -- try to use trouble window with grouping-by-file instead of plain quickfix
 
-" https://github.com/fatih/vim-go
 " https://github.com/vim-python/python-syntax
 

@@ -111,7 +111,7 @@ endfunction
 function! NvimIdeGenGrepScript(changedBufs)
     let scriptContent = []
     call add(scriptContent, '#!/bin/bash')
-    let searcher = g:nvim_ide_content_search_rg_basic_cmd.' '.NvimIdeGetRipgrepExclusionString(a:changedBufs)." $1 "
+    let searcher = g:nvim_ide_content_search_rg_basic_cmd.' '.NvimIdeGetRipgrepExclusionString(a:changedBufs)." \"$1\" "
     if len(a:changedBufs) > 0
         let searcher = searcher." | sed -e s/".s:nvim_ide_tmp_files_suffix."//g"
     endif
@@ -134,10 +134,12 @@ function! NvimIdeRemoveTmps(savedTmps)
     silent exe '!rm '.strToDel
 endfunction
 
-function! NvimIdeSearchInFilesContent(isInsertMode, ptrn)
+function! NvimIdeSearchInFilesContent(isInsertMode, extPtrn)
+    let ptrn = input("Project search: ", a:extPtrn)
+
     cclose
 
-    let toSearch = NvimIdeGetSearchTerm(a:ptrn)
+    let toSearch = NvimIdeGetSearchTerm(ptrn)
     if len(toSearch) == 0
         echo "Empty search pattern"
         return
@@ -177,7 +179,4 @@ function! NvimIdeSearchInFilesContent(isInsertMode, ptrn)
     let &grepformat = l:grepformat_au
     let &grepprg = l:grepprg_au
 endfunction
-
-command! -nargs=* NvimRg :call NvimIdeSearchInFilesContent(0, <q-args>)
-command! -nargs=* NvimRgI :call NvimIdeSearchInFilesContent(1, <q-args>)
 
