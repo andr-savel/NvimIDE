@@ -29,6 +29,7 @@ To build with debug info use the following command instead:
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug ..
 ```
 After this manipulations NvimIde ready to index C/C++ code using g:nvim_ide_cpp_compilation_database_command
+
 6) Install go language server
 
 For new go versions
