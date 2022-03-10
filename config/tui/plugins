@@ -77,4 +77,4 @@ source $HOME/.config/nvim/tui/plugin_settings/lualine
 " TODO: https://github.com/folke/trouble.nvim   -- try to use trouble window with grouping-by-file instead of plain quickfix
 
 " https://github.com/vim-python/python-syntax
-
+" TODO: try https://github.com/kevinhwang91/nvim-bqf

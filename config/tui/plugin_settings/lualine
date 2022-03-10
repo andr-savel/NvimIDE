@@ -1,4 +1,10 @@
 lua << END
+    local colors = {
+--      black         = '#080808',
+      grey          = '#4B5263',
+      grey_inactive = '#3B4048'
+    }
+
     local function modified()
         if vim.bo.modified then
             return "[+]"
@@ -45,10 +51,24 @@ lua << END
         return modified() .. " " .. nm
     end
 
+    local custom_gruvbox_material = require'lualine.themes.gruvbox-material'
+    custom_gruvbox_material.normal.b.bg = colors.grey
+    custom_gruvbox_material.insert.b.bg = colors.grey
+    custom_gruvbox_material.visual.b.bg = colors.grey
+    custom_gruvbox_material.normal.c.bg = colors.grey
+    custom_gruvbox_material.insert.c.bg = colors.grey
+    custom_gruvbox_material.visual.c.bg = colors.grey
+    custom_gruvbox_material.command.c.bg = colors.grey
+
+    custom_gruvbox_material.inactive.a.bg = colors.grey_inactive
+    custom_gruvbox_material.inactive.b.bg = colors.grey_inactive
+    custom_gruvbox_material.inactive.c.bg = colors.grey_inactive
+
+
     require'lualine'.setup {
         options = {
             icons_enabled = false, -- TODO: tune nvim-web-devicons
-            theme = 'gruvbox-material',
+            theme = custom_gruvbox_material,
             component_separators = { left = '', right = ''},
             section_separators = { left = '', right = ''},
             disabled_filetypes = {},
@@ -63,7 +83,7 @@ lua << END
             lualine_z = {'location'}
         },
         tabline = {},
-        extensions = {}
+        extensions = {'quickfix'}
     }
 END
 

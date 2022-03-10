@@ -5,10 +5,6 @@ function! NvimIdeGetReferences(isInsertMode)
 endfunction
 
 
-" Map <Esc> to close 'signature' floating window if it exests. Note that '<M-/>' map should be in sync with 'lsp_signature.toggle_key' value
-inoremap <silent> <expr> <Esc> (len(filter(nvim_list_wins(), {k,v->nvim_win_get_config(v).relative == "win"})) == 1 ? '<C-o>:call feedkeys("\<M-/>")<CR>' : '<Esc>')
-
-
 lua << EOF
     -- Utils
     function center_text(mode)
@@ -96,7 +92,7 @@ lua << EOF
             hint_enable = false,
             -- Default value "LspSignatureActiveParameter" is changed to "IncSearch" to highlight current parameter in each color scheme
             hi_parameter = "IncSearch",
-            -- '<M-/>' key should be in sync with <Esc> mapping above
+            -- '<M-/>' key should be in sync with <Esc> mapping in 'editor' file
             toggle_key = "<M-/>"
         })
 
