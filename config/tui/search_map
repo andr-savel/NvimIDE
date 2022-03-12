@@ -1,11 +1,21 @@
+function! NvimIdeLocalSearch(mode)
+    let @/ = expand("<cword>")
+
+    let special_symbol = ""
+    if a:mode == "i"
+        let special_symbol = nvim_replace_termcodes("<C-o>", v:true, v:false, v:true)
+    endif
+
+    call feedkeys(special_symbol . "/")
+endfunction
+
 " Search in bufer
 "     Call search
 set ignorecase
 set smartcase
-noremap  <C-F> /
-inoremap <C-F> <C-O>/
-cnoremap <C-F> <C-O>/
-smap <C-F> <C-O>y/<C-r>"
+nnoremap <C-F> :noh <bar> call NvimIdeLocalSearch("n")<CR>
+inoremap <C-F> <C-O>:noh <bar> call NvimIdeLocalSearch("i")<CR>
+snoremap <C-F> <C-O>y/<C-r>"
 
 "     Continue search
 " TODO: nnoremap works incorrect: when cursor in (1,1) pos, then it dos not search (possibly stop after <Left> failure)

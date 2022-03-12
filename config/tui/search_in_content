@@ -134,8 +134,13 @@ function! NvimIdeRemoveTmps(savedTmps)
     silent exe '!rm '.strToDel
 endfunction
 
+let g:nvim_ide_null_input_word = '___nvim_ide_null_input___'
+
 function! NvimIdeSearchInFilesContent(isInsertMode, extPtrn)
-    let ptrn = input("Project search: ", a:extPtrn)
+    let ptrn = input({'prompt':'Project search: ', 'default':a:extPtrn, 'cancelreturn':g:nvim_ide_null_input_word})
+    if ptrn == g:nvim_ide_null_input_word
+        return
+    endif
 
     cclose
 
