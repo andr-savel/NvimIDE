@@ -1,5 +1,6 @@
 function! NvimIdeLocalSearch(mode)
     let @/ = expand("<cword>")
+    " TODO: to add 'expand("<cword>")' into search history only after non-null search
 
     let special_symbol = ""
     if a:mode == "i"
@@ -19,8 +20,8 @@ snoremap <C-F> <C-O>y/<C-r>"
 
 "     Continue search
 " TODO: nnoremap works incorrect: when cursor in (1,1) pos, then it dos not search (possibly stop after <Left> failure)
-nnoremap <f3> <Left>ngn<C-g>
-inoremap <f3> <Left><C-O>n<C-O>gn<C-g>
+nnoremap <f3> <Left>nzzgn<C-g>
+inoremap <f3> <Left><C-O>n<C-O>zz<C-O>gn<C-g>
 smap <f3> <Esc><f3>
 
 " Search files

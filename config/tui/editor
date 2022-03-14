@@ -33,6 +33,11 @@ set shiftwidth=4
 set smarttab
 set expandtab
 
+" Show warning message on search after last match (and do not show search progress 'x/y')
+set shortmess+=S
+"     and improve visibility of warning messages
+hi WarningMsg ctermfg=black ctermbg=yellow guifg=black guibg=yellow gui=None
+
 augroup NvimIdePerLangAutoCmds
     autocmd!
 
@@ -59,19 +64,20 @@ behave mswin
 " backspace and cursor keys wrap to previous/next line
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
+" copy/paste to/from system clipboard
+set clipboard+=unnamedplus
+
 " CTRL-X is Cut
-vnoremap <C-x> "0d<Esc>i
+vnoremap <C-x> d<Esc>i
 
 " CTRL-C is Copy
 vmap <C-c> y
 
-" TODO: copy selected text to system clipboard (possibly it is not needed)
-
 " CTRL-V is Paste
-map <C-v> "0gPi
-imap <C-v> <C-O>"0gP
-vmap <C-v> <C-O>"0gP
-snoremap <C-v> <C-g>"0gP
+map <C-v> gPi
+imap <C-v> <C-O>gP
+vmap <C-v> <C-O>gP
+snoremap <C-v> <C-g>"_dgP
 cmap <C-v> <C-r>"
 "     in 'terminal' mode
 tmap <C-v> <C-\><C-N><C-v>
