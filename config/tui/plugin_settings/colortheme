@@ -13,3 +13,22 @@ colorscheme gruvbox-material
 " colorscheme sonokai
 
 " colorscheme aurora
+
+
+" Custom color settings
+"     Do not use apecial highlight for sign column
+highlight clear SignColumn
+
+"     Line highlight
+"         Enable cursor line position tracking
+set cursorline
+
+"         Remove the underline from enabling cursorline
+" highlight clear CursorLine
+
+"     Improve visibility of warning messages
+hi WarningMsg ctermfg=black ctermbg=yellow guifg=black guibg=yellow gui=None
+
+"     Set color for bracket pairs
+hi MatchParen guibg=darkcyan guifg=NONE
+

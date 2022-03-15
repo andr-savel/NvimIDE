@@ -72,7 +72,7 @@ inoremap <silent> <M-m> <C-O><C-w>v<C-o><C-w>w
 
 " Switch buffers
 function! s:ShowFzfBuffers()
-    call fzf#vim#buffers({'options': ['--layout=reverse', '--cycle', '--exact']})
+    call fzf#vim#buffers()
 endfunction
 
 function! NvimIdeBuffers()

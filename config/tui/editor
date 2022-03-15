@@ -12,13 +12,6 @@ nnoremap <MiddleMouse> <LeftMouse>gP
 " Do not show mode in cmd line
 set noshowmode
 
-" Line highlight
-"     Enable cursor line position tracking
-set cursorline
-
-"     Remove the underline from enabling cursorline
-" highlight clear CursorLine
-
 " Remove '~' char for empty lines
 set fillchars=eob:\ 
 
@@ -30,7 +23,6 @@ set number
 
 " always display sign column (for example, lsp diagnostic erros set appropriate character here)
 set signcolumn=yes
-highlight clear SignColumn
 
 " tab settings
 set tabstop=4
@@ -40,8 +32,6 @@ set expandtab
 
 " Show warning message on search after last match (and do not show search progress 'x/y')
 set shortmess+=S
-"     and improve visibility of warning messages
-hi WarningMsg ctermfg=black ctermbg=yellow guifg=black guibg=yellow gui=None
 
 augroup NvimIdePerLangAutoCmds
     autocmd!
@@ -83,7 +73,7 @@ map <C-v> gPi
 imap <C-v> <C-O>gP
 vmap <C-v> <C-O>gP
 snoremap <C-v> <C-g>"_dgP
-cmap <C-v> <C-r>"
+cmap <C-v> <C-r>=getreg()<CR>
 "     in 'terminal' mode
 tmap <C-v> <C-\><C-N><C-v>
 

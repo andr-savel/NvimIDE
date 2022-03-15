@@ -42,15 +42,16 @@ For old go versions:
     go get golang.org/x/tools/gopls@latest
     export PATH=$HOME/go/bin:$PATH
 ```
-7) To use system clipboard please install 'xclip'.
+7) To use fast search in whole project install 'ripgrep'
+8) To use system clipboard please install 'xclip'.
 
-8) Link files from this repo nvim dir
+9) Link files from this repo nvim dir
 ```
     ln -s <cloned_repo_path>/config ~/.config/nvim
 ```
-9) Start nvim and make sure that all plugins has been installed
-10) Close nvim
-11) Start nvim again (part of DAP adapters for 'vimpector' plugin will be installed on this stage)
+10) Start nvim and make sure that all plugins has been installed
+11) Close nvim
+12) Start nvim again (part of DAP adapters for 'vimpector' plugin will be installed on this stage)
 
 ## Usage
 To use NvimIde project config file should be created. See 'doc/project.conf' example for details.
