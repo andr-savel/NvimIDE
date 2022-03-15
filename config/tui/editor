@@ -4,6 +4,11 @@ start
 " Enable mouse only for all modes
 set mouse=a
 
+" Copy selected or yanked text by <MiddleMouse> button
+snoremap <MiddleMouse> <C-g>y<LeftMouse><C-g>gP
+inoremap <MiddleMouse> <LeftMouse><C-o>gP
+nnoremap <MiddleMouse> <LeftMouse>gP
+
 " Do not show mode in cmd line
 set noshowmode
 
