@@ -1,12 +1,15 @@
-function! NvimIdeGetReferences(isInsertMode)
-    lua vim.lsp.buf.references()
-" TODO: only requested symbol should be highlighted (not simple highlight). Or do not highligh references.
-    call NvimIdeQuickfixPostprocess(a:isInsertMode, expand("<cword>"))
-endfunction
-
-
 lua << EOF
     -- Utils
+    function exec_lsp_method(method, custom_handler)
+        local util = require 'vim.lsp.util'
+        local params = util.make_position_params()
+        vim.lsp.buf_request(0, method, params, custom_handler)
+    end
+
+    function get_lsp_method_default_handler(method)
+        return require("vim.lsp.handlers")[method]
+    end
+
     function center_text(mode)
         special_symbol = ""
         if mode == "i" then
@@ -56,23 +59,32 @@ lua << EOF
     -- Use an on_attach function to only map the following keys
     -- after the language server attaches to the current buffer
 
-    goto_definition_and_center_line = function(mode)
-        local util = require 'vim.lsp.util'
-        local params = util.make_position_params()
-        local default_definition_handler = require("vim.lsp.handlers")['textDocument/definition']
-        local custom_definition_handler = function(err, result, ctx, config)
-            default_definition_handler(err, result, ctx, config)
+    function show_definition(mode)
+        method = 'textDocument/definition'
+        exec_lsp_method(method, function(err, result, ctx, config)
+            get_lsp_method_default_handler(method)(err, result, ctx, config)
             center_text(mode)
-        end
-        vim.lsp.buf_request(0, 'textDocument/definition', params, custom_definition_handler)
+        end)
     end
 
-    goto_next_diagnostics = function(mode)
+    function show_references()
+        method = 'textDocument/references'
+        exec_lsp_method(method, function(err, result, ctx, config)
+            strToHl = vim.fn.expand("<cword>")
+            get_lsp_method_default_handler(method)(err, result, ctx, config)
+            if #vim.fn.getqflist() then
+                vim.cmd("copen")
+                vim.fn.matchadd("Search", strToHl)
+            end
+        end)
+    end
+
+    function goto_next_diagnostics(mode)
         vim.diagnostic.goto_next()
         center_text(mode)
     end
 
-    get_symbols = function(extSym)
+    function get_symbols(extSym)
         null_input_word = '___nvim_ide_null_input___'
         sym = vim.fn.input({prompt='Workspace symbol: ', default=extSym, cancelreturn=null_input_word})
         if sym == null_input_word then
@@ -93,8 +105,8 @@ lua << EOF
 
     local on_attach = function(client, bufnr)
         -- Maps
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F2>', '<cmd>lua goto_definition_and_center_line("n")<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F2>', '<cmd>lua goto_definition_and_center_line("i")<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F2>', '<cmd>lua show_definition("n")<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F2>', '<cmd>lua show_definition("i")<CR>', opts)
 
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F1>', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F1>', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
@@ -103,8 +115,8 @@ lua << EOF
         vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-l>', '<C-o><cmd>lua get_symbols("")<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 's', '<C-l>', '<C-o>y<cmd>lua get_symbols(vim.fn.getreg())<CR>', opts)
 
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-u>', '<cmd>lua vim.fn["NvimIdeGetReferences"](0)<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-u>', '<cmd>lua vim.fn["NvimIdeGetReferences"](1)<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-u>', '<cmd>lua show_references()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-u>', '<cmd>lua show_references()<CR>', opts)
         -- TODO: highlight 'references result'
 
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-r>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
