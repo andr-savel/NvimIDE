@@ -78,3 +78,7 @@ source $HOME/.config/nvim/tui/plugin_settings/lualine
 
 " https://github.com/vim-python/python-syntax
 " TODO: try https://github.com/kevinhwang91/nvim-bqf
+
+" TODO: see
+"     https://github.com/dyng/ctrlsf.vim 
+" to see how to highlight only found items
