@@ -202,7 +202,7 @@ local function workspace_symbol_handler(bang, err, result, ctx, _)
     end
 
     if not result or vim.tbl_isempty(result) then
-        print("Workspace Symbol not found")
+        fn.NvimIdeEchoWarning("Workspace Symbol not found")
         return
     end
 

@@ -72,10 +72,20 @@ lua << EOF
         center_text(mode)
     end
 
-    get_symbols = function()
-        sym = vim.fn.input("Workspace symbol: ")
-        if sym == "" then
+    get_symbols = function(extSym)
+        null_input_word = '___nvim_ide_null_input___'
+        sym = vim.fn.input({prompt='Workspace symbol: ', default=extSym, cancelreturn=null_input_word})
+        if sym == null_input_word then
             return 
+        end
+
+        if sym == "" then
+            sym = vim.fn.expand("<cword>")
+            vim.fn.histadd("input", sym)
+        end
+
+        if sym == "" then
+            return
         end
 
         nvim_ide_workspace_symbol(0, sym)
@@ -89,8 +99,9 @@ lua << EOF
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F1>', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F1>', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
 
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-l>', '<cmd>lua get_symbols()<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-l>', '<C-o><cmd>lua get_symbols()<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-l>', '<cmd>lua get_symbols("")<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-l>', '<C-o><cmd>lua get_symbols("")<CR>', opts)
+        vim.api.nvim_buf_set_keymap(bufnr, 's', '<C-l>', '<C-o>y<cmd>lua get_symbols(vim.fn.getreg())<CR>', opts)
 
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-u>', '<cmd>lua vim.fn["NvimIdeGetReferences"](0)<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-u>', '<cmd>lua vim.fn["NvimIdeGetReferences"](1)<CR>', opts)
