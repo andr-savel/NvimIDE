@@ -1,5 +1,6 @@
 let g:fzf_preview_window = []
 let g:fzf_layout = {'window': {'width': 0.9, 'height': 0.6}}
+let g:nvim_ide_fzf_bind = 'alt-up:previous-history,alt-down:next-history,shift-down:toggle+down,shift-up:toggle+up'
 let $FZF_DEFAULT_OPTS = '--info=hidden --layout=reverse --cycle --exact'
 
 "         set '0' delay to fast close fzf window by <Esc>

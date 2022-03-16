@@ -59,6 +59,7 @@ wincmd c
 source $HOME/.config/nvim/tui/plugin_settings/fzf
 source $HOME/.config/nvim/tui/plugin_settings/nvim-cmp
 if exists("g:nvim_ide_project_root")
+    luafile $HOME/.config/nvim/tui/plugin_settings/fzf_lsp.lua
     source $HOME/.config/nvim/tui/plugin_settings/lsp
     source $HOME/.config/nvim/tui/plugin_settings/vimspector
     source $HOME/.config/nvim/tui/plugin_settings/diffview

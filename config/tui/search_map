@@ -32,7 +32,7 @@ function! NvimIdeFindFiles()
     endif
     call fzf#run(fzf#wrap({'source': 'cd ' . l:dir . '; ' . g:nvim_ide_fzf_source,
                                    \ 'options': '--prompt="File> " --multi --history='.NvimIdeGetProjectExtraFilesDir().'/fzf_search_files_history '.
-                                   \            '--bind=alt-up:previous-history,alt-down:next-history,shift-down:toggle+down,shift-up:toggle+up',
+                                   \            '--bind=' . g:nvim_ide_fzf_bind,
                                    \ 'dir': l:dir}))
 endfunction
 
