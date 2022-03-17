@@ -137,7 +137,6 @@ function! NvimIdeNextQFItem(mode)
     call feedkeys(special_symbol . "zz")
 endfunction
 
-" TODO: implement same kays for next/prev for LSP diagnostic errors when they are exists
 "     item
 nnoremap <M-down> :call NvimIdeNextQFItem("")<CR>
 inoremap <M-down> <C-o>:call NvimIdeNextQFItem("i")<CR>

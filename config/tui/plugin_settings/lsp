@@ -75,7 +75,13 @@ lua << EOF
             lsp_reference_default_handler(err, result, ctx, config)
             if #vim.fn.getqflist() then
                 vim.cmd("copen")
-                vim.fn.matchadd("Search", strToHl)
+                vim.fn.clearmatches()
+
+                ptrnLen = #strToHl
+                for i, lItem in pairs(vim.fn.getqflist()) do
+                    print(i, #vim.fn.getline(i) - #lItem.text + lItem.col, ptrnLen)
+                    vim.fn.matchaddpos("Search", {{i, #vim.fn.getline(i) - #lItem.text + lItem.col, ptrnLen}})
+                end
             end
         end)
     end
@@ -118,7 +124,6 @@ lua << EOF
 
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-u>', '<cmd>lua show_references()<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-u>', '<cmd>lua show_references()<CR>', opts)
-        -- TODO: highlight 'references result'
 
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-r>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
         vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-r>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
