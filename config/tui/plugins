@@ -47,8 +47,6 @@ Plug 'sindrets/diffview.nvim'
 " TODO: project compilation and errors in quickfix [c++, go]
 " TODO: setup specific key maps via 'AutoKey' application to avoid nvim-qt usage (after this nvim from terminal can be used)
 
-" TODO: try 'lspsaga' plugin (possibly it s better than ray-x/lsp_signature.nvim). Also it contains a lot of interesting features.
-
 call plug#end()
 
 " Install plugins and close installation status window
@@ -72,14 +70,7 @@ source $HOME/.config/nvim/tui/plugin_settings/lualine
 
 
 " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-" fuzzy finding of symbols: https://github.com/RishabhRD/nvim-lsputils
-
-
 " TODO: https://github.com/folke/trouble.nvim   -- try to use trouble window with grouping-by-file instead of plain quickfix
 
 " https://github.com/vim-python/python-syntax
-" TODO: try https://github.com/kevinhwang91/nvim-bqf
 
-" TODO: see
-"     https://github.com/dyng/ctrlsf.vim 
-" to see how to highlight only found items

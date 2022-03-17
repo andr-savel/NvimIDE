@@ -6,9 +6,12 @@ lua << EOF
         vim.lsp.buf_request(0, method, params, custom_handler)
     end
 
-    function get_lsp_method_default_handler(method)
-        return require("vim.lsp.handlers")[method]
-    end
+    local lsp_handlers = require("vim.lsp.handlers")
+    lsp_method_definition = 'textDocument/definition'
+    lsp_method_reference = 'textDocument/references'
+
+    lsp_definition_default_handler = lsp_handlers[lsp_method_definition]
+    lsp_reference_default_handler = lsp_handlers[lsp_method_reference]
 
     function center_text(mode)
         special_symbol = ""
@@ -60,18 +63,16 @@ lua << EOF
     -- after the language server attaches to the current buffer
 
     function show_definition(mode)
-        method = 'textDocument/definition'
-        exec_lsp_method(method, function(err, result, ctx, config)
-            get_lsp_method_default_handler(method)(err, result, ctx, config)
+        exec_lsp_method(lsp_method_definition, function(err, result, ctx, config)
+            lsp_definition_default_handler(err, result, ctx, config)
             center_text(mode)
         end)
     end
 
     function show_references()
-        method = 'textDocument/references'
-        exec_lsp_method(method, function(err, result, ctx, config)
+        exec_lsp_method(lsp_method_reference, function(err, result, ctx, config)
             strToHl = vim.fn.expand("<cword>")
-            get_lsp_method_default_handler(method)(err, result, ctx, config)
+            lsp_reference_default_handler(err, result, ctx, config)
             if #vim.fn.getqflist() then
                 vim.cmd("copen")
                 vim.fn.matchadd("Search", strToHl)
