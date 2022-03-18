@@ -49,7 +49,12 @@ For old go versions:
 ```
     ln -s <cloned_repo_path>/config ~/.config/nvim
 ```
-10) Start nvim and make sure that all plugins has been installed
+10) Start nvim
+First run leads to many errors because no plugins have been installed.
+Please install it manually via
+```
+:PlugInstall
+```
 11) Close nvim
 12) Start nvim again (part of DAP adapters for 'vimpector' plugin will be installed on this stage)
 

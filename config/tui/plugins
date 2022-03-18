@@ -49,9 +49,9 @@ Plug 'sindrets/diffview.nvim'
 
 call plug#end()
 
-" Install plugins and close installation status window
-PlugInstall
-wincmd c
+" Automatic plugins installation and close installation status window (switched-off because has errors on status window close. please install plugins manually)
+"PlugInstall
+"wincmd c
 
 " Plugin settings
 source $HOME/.config/nvim/tui/plugin_settings/fzf
