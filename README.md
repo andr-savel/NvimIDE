@@ -45,9 +45,9 @@ For old go versions:
 7) To use fast search in whole project install 'ripgrep'
 8) To use system clipboard please install 'xclip'.
 
-9) Link files from this repo nvim dir
+9) Link files from this repo to nvim dir
 ```
-    ln -s <cloned_repo_path>/config ~/.config/nvim
+    ln -s <cloned_repo_path>/config/* ~/.config/nvim
 ```
 10) Start nvim
 First run leads to many errors because no plugins have been installed.
@@ -56,7 +56,7 @@ Please install it manually via
 :PlugInstall
 ```
 11) Close nvim
-12) Start nvim again (part of DAP adapters for 'vimpector' plugin will be installed on this stage)
+12) Start nvim again with --cmd option (see below) to install part of DAP adapters for 'vimpector' plugin
 
 ## Usage
 To use NvimIde project config file should be created. See 'doc/project.conf' example for details.
