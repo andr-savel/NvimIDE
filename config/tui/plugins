@@ -35,13 +35,16 @@ Plug 'sainnhe/gruvbox-material'
 " Plug 'sainnhe/sonokai'
 " Plug 'ray-x/aurora'
 
-Plug 'bfrg/vim-cpp-modern'
+" Plug 'bfrg/vim-cpp-modern'
+
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 
 Plug 'nvim-lua/plenary.nvim'
 Plug 'sindrets/diffview.nvim'
+Plug 'APZelos/blamer.nvim'
 
 
 " TODO: project compilation and errors in quickfix [c++, go]
@@ -56,6 +59,8 @@ call plug#end()
 " Plugin settings
 source $HOME/.config/nvim/tui/plugin_settings/fzf
 source $HOME/.config/nvim/tui/plugin_settings/nvim-cmp
+luafile $HOME/.config/nvim/tui/plugin_settings/treesitter.lua
+source $HOME/.config/nvim/tui/plugin_settings/blamer
 if exists("g:nvim_ide_project_root")
     luafile $HOME/.config/nvim/tui/plugin_settings/fzf_lsp.lua
     luafile $HOME/.config/nvim/tui/plugin_settings/lsp.lua
@@ -63,7 +68,7 @@ if exists("g:nvim_ide_project_root")
     source $HOME/.config/nvim/tui/plugin_settings/diffview
 endif
 source $HOME/.config/nvim/tui/plugin_settings/colortheme
-source $HOME/.config/nvim/tui/plugin_settings/syntax_highlight
+" source $HOME/.config/nvim/tui/plugin_settings/syntax_highlight
 source $HOME/.config/nvim/tui/plugin_settings/lualine
 
 

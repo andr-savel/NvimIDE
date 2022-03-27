@@ -1,0 +1,3 @@
+nnoremap <C-b> :BlamerToggle<CR>
+inoremap <C-b> <C-o>:BlamerToggle<CR>
+
