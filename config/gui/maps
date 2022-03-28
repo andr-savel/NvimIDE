@@ -6,12 +6,6 @@
 map <C-S-z> <C-M-z>
 imap <C-S-z> <C-M-z>
 
-" CTRL-Tab is Next window
-map <C-Tab> <C-w>
-imap <C-Tab> <C-w>
-cmap <C-Tab> <C-w>
-omap <C-Tab> <C-w>
-
 " Search in project files content
 map <C-S-f> <C-M-f>
 imap <C-S-f> <C-M-f>
