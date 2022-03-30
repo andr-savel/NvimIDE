@@ -200,7 +200,6 @@ if vim.g.nvim_ide_cpp_compilation_database_command then
         cmd = {"clangd", "--background-index", "--compile-commands-dir", vim.g.nvim_ide_project_root, "-j", vim.fn.string(vim.g.nvim_ide_cpp_language_server_threads)},
         filetypes = {"c", "cpp", "objc", "objcpp"},
     }
-    -- TODO: try different --completion-style values
 end
 
 -- Set common settings and setup servers

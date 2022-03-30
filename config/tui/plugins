@@ -58,7 +58,7 @@ call plug#end()
 
 " Plugin settings
 source $HOME/.config/nvim/tui/plugin_settings/fzf
-source $HOME/.config/nvim/tui/plugin_settings/nvim-cmp
+luafile $HOME/.config/nvim/tui/plugin_settings/nvim-cmp.lua
 luafile $HOME/.config/nvim/tui/plugin_settings/treesitter.lua
 source $HOME/.config/nvim/tui/plugin_settings/blamer
 if exists("g:nvim_ide_project_root")
