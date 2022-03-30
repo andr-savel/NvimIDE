@@ -46,8 +46,11 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'sindrets/diffview.nvim'
 Plug 'APZelos/blamer.nvim'
 
+Plug 'tpope/vim-dispatch'
+
 
 " TODO: project compilation and errors in quickfix [c++, go]
+" TODO: add python lsp/dap support
 " TODO: setup specific key maps via 'AutoKey' application to avoid nvim-qt usage (after this nvim from terminal can be used)
 
 call plug#end()
@@ -60,7 +63,6 @@ call plug#end()
 source $HOME/.config/nvim/tui/plugin_settings/fzf
 luafile $HOME/.config/nvim/tui/plugin_settings/nvim-cmp.lua
 luafile $HOME/.config/nvim/tui/plugin_settings/treesitter.lua
-source $HOME/.config/nvim/tui/plugin_settings/blamer
 if exists("g:nvim_ide_project_root")
     luafile $HOME/.config/nvim/tui/plugin_settings/fzf_lsp.lua
     luafile $HOME/.config/nvim/tui/plugin_settings/lsp.lua
@@ -70,6 +72,8 @@ endif
 source $HOME/.config/nvim/tui/plugin_settings/colortheme
 " source $HOME/.config/nvim/tui/plugin_settings/syntax_highlight
 source $HOME/.config/nvim/tui/plugin_settings/lualine
+source $HOME/.config/nvim/tui/plugin_settings/blamer
+source $HOME/.config/nvim/tui/plugin_settings/vim-dispatcher
 
 
 
