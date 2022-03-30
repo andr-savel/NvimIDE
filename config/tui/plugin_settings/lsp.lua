@@ -20,15 +20,6 @@ function center_text(mode)
     vim.fn.feedkeys(special_symbol .. "zz")
 end
 
-function GetCCLSInitialBlacklist()
-    if vim.fn["empty"](vim.fn["glob"](GetCCLSCacheDir())) == 1 then
-        return {}
-    end
-
-    return {"."}
-end
-
-
 -- LSP setup
 local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
@@ -152,9 +143,6 @@ local on_attach = function(client, bufnr)
 end
 
 -- Server-specific settings
-function GetCCLSCacheDir()
-    return vim.fn["NvimIdeGetProjectExtraFilesDir"]() .. "/ccls-cache"
-end
 
 local servers = {
     gopls = {
@@ -171,6 +159,19 @@ local servers = {
 }
 
 if vim.g.nvim_ide_cpp_compilation_database_command then
+--[[
+    function GetCCLSCacheDir()
+        return vim.fn["NvimIdeGetProjectExtraFilesDir"]() .. "/ccls-cache"
+    end
+
+    function GetCCLSInitialBlacklist()
+        if vim.fn["empty"](vim.fn["glob"](GetCCLSCacheDir())) == 1 then
+            return {}
+        end
+
+        return {"."}
+    end
+
     servers["ccls"] = {
         init_options = {
             compilationDatabaseCommand = vim.g.nvim_ide_cpp_compilation_database_command,
@@ -191,10 +192,16 @@ if vim.g.nvim_ide_cpp_compilation_database_command then
             }
         }
     }
-end
+--]]
 
--- TODO: try clangd (it can be faster and do not reindex whole project first cpp file open)
--- TODO: goto symbol definition only if current file has been reindexed (currently this function uses old index and it leads to errors)
+    local compile_commands_path = vim.g.nvim_ide_project_root .. "/compile_commands.json"
+    vim.fn.system("cd " .. vim.g.nvim_ide_project_root .. "; " .. vim.g.nvim_ide_cpp_compilation_database_command .. " > " .. compile_commands_path)
+    servers["clangd"] = {
+        cmd = {"clangd", "--background-index", "--compile-commands-dir", vim.g.nvim_ide_project_root},
+        filetypes = {"c", "cpp", "objc", "objcpp"},
+    }
+    -- TODO: try different --completion-style values
+end
 
 -- Set common settings and setup servers
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())

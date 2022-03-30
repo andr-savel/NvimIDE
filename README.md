@@ -9,7 +9,9 @@ The following steps should be done to install NvimIde:
     pip install neovim
     pip3 install neovim
 ```
-3) Install C/C++ language server 'ccls' (it is better to clone git repo and compile it)
+3) Install C/C++ language server 'clangd'.
+It is possible to use 'ccls': uncomment appropriate code in lsp.lua
+
 4) Install lldb (C/C++ debugger)
 5) Install 'compdb' (creates compilation database for C/C++ projects)
 ```
