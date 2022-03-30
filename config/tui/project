@@ -29,6 +29,13 @@ function! NvimIdeGetProjectExtraFilesDir()
     return s:project_extra_files_dir
 endfunction
 
+"     num threads for C/C++ language server
+if exists("g:nvim_ide_cpp_compilation_database_command")
+    if !exists("g:nvim_ide_cpp_language_server_threads")
+        let g:nvim_ide_cpp_language_server_threads = 4
+    endif
+endif
+
 "     Settings for debugger
 if !exists("g:nvim_ide_debuggee_binary_path")
     let g:nvim_ide_debuggee_binary_path = ''
