@@ -48,8 +48,9 @@ Plug 'APZelos/blamer.nvim'
 
 Plug 'tpope/vim-dispatch'
 
+Plug 'windwp/nvim-autopairs'
 
-" TODO: project compilation and errors in quickfix [c++, go]
+
 " TODO: add python lsp/dap support
 " TODO: setup specific key maps via 'AutoKey' application to avoid nvim-qt usage (after this nvim from terminal can be used)
 
@@ -74,6 +75,7 @@ source $HOME/.config/nvim/tui/plugin_settings/colortheme
 source $HOME/.config/nvim/tui/plugin_settings/lualine
 source $HOME/.config/nvim/tui/plugin_settings/blamer
 source $HOME/.config/nvim/tui/plugin_settings/vim-dispatcher
+luafile $HOME/.config/nvim/tui/plugin_settings/nvim-autopairs.lua
 
 
 
