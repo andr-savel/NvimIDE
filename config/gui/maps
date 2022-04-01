@@ -10,3 +10,6 @@ imap <C-S-z> <C-M-z>
 map <C-S-f> <C-M-f>
 imap <C-S-f> <C-M-f>
 
+
+" TODO: setup specific key maps via 'AutoKey' application to avoid nvim-qt usage (after this nvim from terminal can be used)
+

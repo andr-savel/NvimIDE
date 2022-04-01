@@ -50,9 +50,10 @@ Plug 'tpope/vim-dispatch'
 
 Plug 'windwp/nvim-autopairs'
 
+" TODO: possibly useful plugin: https://github.com/folke/trouble.nvim
+
 
 " TODO: add python lsp/dap support
-" TODO: setup specific key maps via 'AutoKey' application to avoid nvim-qt usage (after this nvim from terminal can be used)
 
 call plug#end()
 
@@ -81,7 +82,5 @@ luafile $HOME/.config/nvim/tui/plugin_settings/nvim-autopairs.lua
 
 
 " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-" TODO: https://github.com/folke/trouble.nvim   -- try to use trouble window with grouping-by-file instead of plain quickfix
-
 " https://github.com/vim-python/python-syntax
 
