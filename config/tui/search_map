@@ -40,6 +40,6 @@ inoremap <C-k> <C-o>:call NvimIdeFindFiles()<CR>
 nnoremap <C-k> :call NvimIdeFindFiles()<CR>
 
 "     Call search
-nnoremap <C-M-f> :call NvimIdeSearchInFilesContent(0, "")<CR>
-inoremap <C-M-f> <C-o>:call NvimIdeSearchInFilesContent(1, "")<CR>
-snoremap <C-M-f> <C-o>y:call NvimIdeSearchInFilesContent(0, getreg())<CR>
+nnoremap <M-f> :call NvimIdeSearchInFilesContent(0, "")<CR>
+inoremap <M-f> <C-o>:call NvimIdeSearchInFilesContent(1, "")<CR>
+snoremap <M-f> <C-o>y:call NvimIdeSearchInFilesContent(0, getreg())<CR>

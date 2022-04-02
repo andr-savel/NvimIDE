@@ -79,10 +79,10 @@ noremap <C-z> u
 inoremap <C-z> <C-O>u
 smap <C-z> <Esc><C-z>
 
-" CTRL-R is Redo
-nnoremap <C-M-z> <C-r>
-inoremap <C-M-z> <C-O><C-r>
-snoremap <C-M-z> <Esc><C-r>
+" ALT-z is Redo
+nnoremap <M-z> <C-r>
+inoremap <M-z> <C-O><C-r>
+snoremap <M-z> <Esc><C-r>
 
 " CTRL-A is Select all
 noremap <C-A> gggH<C-O>G

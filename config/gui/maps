@@ -3,12 +3,12 @@
 
 
 " CTRL-SHIFT-Z is Redo
-map <C-S-z> <C-M-z>
-imap <C-S-z> <C-M-z>
+map <C-S-z> <M-z>
+imap <C-S-z> <M-z>
 
 " Search in project files content
-map <C-S-f> <C-M-f>
-imap <C-S-f> <C-M-f>
+map <C-S-f> <M-f>
+imap <C-S-f> <M-f>
 
 
 " TODO: setup specific key maps via 'AutoKey' application to avoid nvim-qt usage (after this nvim from terminal can be used)

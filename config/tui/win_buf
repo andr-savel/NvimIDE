@@ -63,8 +63,8 @@ function! NvimIdeCloseCurrBuf()
     exe 'bd '.currBuf
 endfunction
 
-noremap <silent> <M-z> :call NvimIdeCloseCurrBuf()<CR>
-inoremap <silent> <M-z> <C-O>:call NvimIdeCloseCurrBuf()<CR>
+noremap <silent> <M-x> :call NvimIdeCloseCurrBuf()<CR>
+inoremap <silent> <M-x> <C-O>:call NvimIdeCloseCurrBuf()<CR>
 
 " Split window vertically
 noremap <silent> <M-m> <C-w>v<C-w>w
