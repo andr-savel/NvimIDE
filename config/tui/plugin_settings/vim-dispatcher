@@ -16,3 +16,6 @@ endfunction
 nnoremap <f8> :call NvimIdeBuild()<CR>
 inoremap <f8> <C-o>:call NvimIdeBuild()<CR>
 
+nnoremap <f7> :AbortDispatch<CR>
+inoremap <f7> <C-o>:AbortDispatch<CR>
+
