@@ -209,8 +209,6 @@ if vim.g.nvim_ide_cpp_compilation_database_command then
     }
 --]]
 
-    local compile_commands_path = vim.g.nvim_ide_project_root .. "/compile_commands.json"
-    vim.fn.system("cd " .. vim.g.nvim_ide_project_root .. "; " .. vim.g.nvim_ide_cpp_compilation_database_command .. " > " .. compile_commands_path)
     servers["clangd"] = {
         cmd = {"clangd", "--background-index", "--compile-commands-dir", vim.g.nvim_ide_project_root, "-j", vim.fn.string(vim.g.nvim_ide_cpp_language_server_threads)},
         filetypes = {"c", "cpp", "objc", "objcpp"},

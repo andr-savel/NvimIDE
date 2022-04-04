@@ -29,10 +29,25 @@ function! NvimIdeGetProjectExtraFilesDir()
     return s:project_extra_files_dir
 endfunction
 
-"     Num threads for C/C++ language server
+function! s:GetCompileCommandsPath()
+    return g:nvim_ide_project_root .. "/compile_commands.json"
+endfunction
+
+function! s:RegenCompdb()
+    call system("cd " .. g:nvim_ide_project_root .. "; " .. g:nvim_ide_cpp_compilation_database_command .. " > " .. s:GetCompileCommandsPath())
+    echo "Compilation database has been regenerated!"
+endfunction
+command! NvimIdeRegenCompdb :call s:RegenCompdb()
+
 if exists("g:nvim_ide_cpp_compilation_database_command")
+    "     Num threads for C/C++ language server
     if !exists("g:nvim_ide_cpp_language_server_threads")
         let g:nvim_ide_cpp_language_server_threads = 4
+    endif
+
+    "     Gen compilation database
+    if empty(glob(s:GetCompileCommandsPath()))
+        call s:RegenCompdb()
     endif
 endif
 
