@@ -56,6 +56,7 @@ For old go versions:
     ln -s <cloned_repo_path>/config/* ~/.config/nvim
 ```
 11) Start nvim
+
 First run leads to many errors because no plugins have been installed.
 Please install it manually via
 ```
