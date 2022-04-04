@@ -76,6 +76,13 @@ function! s:ShowFzfBuffers()
 endfunction
 
 function! NvimIdeBuffers()
+    if &filetype == "qf"
+        wincmd p
+        if &filetype == "qf"
+            return
+        endif
+    endif
+
     if !exists("g:nvim_ide_project_root")
         call s:ShowFzfBuffers()
         return
