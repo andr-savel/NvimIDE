@@ -154,8 +154,23 @@ local servers = {
                 },
                 staticcheck = true,
             }
-        }
-    }
+        },
+        single_file_support = true
+    },
+    pyright = {
+        cmd = {"pyright-langserver", "--stdio"},
+        filetypes = {"python"},
+        settings = {
+            python = {
+                analysis = {
+                    autoSearchPaths = true,
+                    diagnosticMode = "workspace",
+                    useLibraryCodeForTypes = true
+                }
+            }
+        },
+        single_file_support = true
+    },
 }
 
 if vim.g.nvim_ide_cpp_compilation_database_command then
@@ -199,6 +214,7 @@ if vim.g.nvim_ide_cpp_compilation_database_command then
     servers["clangd"] = {
         cmd = {"clangd", "--background-index", "--compile-commands-dir", vim.g.nvim_ide_project_root, "-j", vim.fn.string(vim.g.nvim_ide_cpp_language_server_threads)},
         filetypes = {"c", "cpp", "objc", "objcpp"},
+        single_file_support = true
     }
 end
 

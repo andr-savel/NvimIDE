@@ -78,9 +78,3 @@ source $HOME/.config/nvim/tui/plugin_settings/blamer
 source $HOME/.config/nvim/tui/plugin_settings/vim-dispatcher
 luafile $HOME/.config/nvim/tui/plugin_settings/nvim-autopairs.lua
 
-
-
-
-" <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-" https://github.com/vim-python/python-syntax
-
