@@ -139,7 +139,7 @@ function! NvimIdeDebugAttach()
 endfunction
 
 function! NvimIdeDebugLaunchOrContinue()
-    if exists("g:vimspector_session_windows")
+    if exists("g:vimspector_session_windows") && has_key(g:vimspector_session_windows, "tabpage")
         call vimspector#Continue()
     else
         if &filetype == "cpp" || &filetype == "c" || &filetype == "objc" || &filetype == "rust"
