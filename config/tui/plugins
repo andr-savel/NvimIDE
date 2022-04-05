@@ -49,6 +49,7 @@ Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-dispatch'
 
 Plug 'windwp/nvim-autopairs'
+Plug 'numToStr/Comment.nvim'
 
 " TODO: possibly useful plugin: https://github.com/folke/trouble.nvim
 
@@ -77,4 +78,5 @@ source $HOME/.config/nvim/tui/plugin_settings/lualine
 source $HOME/.config/nvim/tui/plugin_settings/blamer
 source $HOME/.config/nvim/tui/plugin_settings/vim-dispatcher
 luafile $HOME/.config/nvim/tui/plugin_settings/nvim-autopairs.lua
+luafile $HOME/.config/nvim/tui/plugin_settings/comment.nvim
 
