@@ -24,18 +24,44 @@ end
 local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
 
+local signs = {}
+local lsp_status_ok_sign = ''
+
+if vim.g.nvim_ide_allow_icons then
+    signs = {
+        Error = '',
+        Warn = '',
+        Info = '',
+        Hint = ''
+    }
+    lsp_status_ok_sign = ''
+else
+    signs = {
+        Error = 'E',
+        Warn = 'W',
+        Info = 'i',
+        Hint = 'h'
+    }
+    lsp_status_ok_sign = 'Ok'
+end
+
 lsp_status.config({
     current_function = false,
     show_filename = false,
 
-    -- TODO: tune nvim-web-devicons and get rid of the following section
-    indicator_errors = 'E',
-    indicator_warnings = 'W',
-    indicator_info = 'i',
-    indicator_hint = '?',
-    indicator_ok = 'Ok',
+    indicator_errors = signs.Error,
+    indicator_warnings = signs.Warn,
+    indicator_info = signs.Info,
+    indicator_hint = signs.Hint,
+    indicator_ok = lsp_status_ok_sign,
+
     status_symbol = ''
 })
+
+for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, {text = icon, texthl = hl, numhl = hl})
+end
 
 -- Common settings and maps
 local opts = {noremap=true, silent=true}

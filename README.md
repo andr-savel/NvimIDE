@@ -76,3 +76,17 @@ or
 ```
     nvim-qt -- --cmd "source /path/to/project/config/file"
 ```
+
+## Additional: patched font installation
+Patched font can be installed to display icons in nvim
+```
+mkdir -p ~/.local/share/fonts
+cd ~/.local/share/fonts
+wget 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraMono.zip'
+unzip FiraMono.zip
+fc-cache -fv
+```
+Then you need to select one of the installed fonts in your terminal emulator
+
+TODO: try other fonts from https://www.box64.ru/2020/02/fonts-for-programming.html
+

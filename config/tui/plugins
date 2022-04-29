@@ -63,6 +63,8 @@ call plug#end()
 "wincmd c
 
 " Plugin settings
+source $HOME/.config/nvim/tui/plugin_settings/colortheme
+luafile $HOME/.config/nvim/tui/plugin_settings/nvim-web-devicons.lua
 source $HOME/.config/nvim/tui/plugin_settings/fzf
 luafile $HOME/.config/nvim/tui/plugin_settings/nvim-cmp.lua
 luafile $HOME/.config/nvim/tui/plugin_settings/treesitter.lua
@@ -72,8 +74,6 @@ if exists("g:nvim_ide_project_root")
     source $HOME/.config/nvim/tui/plugin_settings/vimspector
     source $HOME/.config/nvim/tui/plugin_settings/diffview
 endif
-source $HOME/.config/nvim/tui/plugin_settings/colortheme
-" source $HOME/.config/nvim/tui/plugin_settings/syntax_highlight
 source $HOME/.config/nvim/tui/plugin_settings/lualine
 source $HOME/.config/nvim/tui/plugin_settings/blamer
 source $HOME/.config/nvim/tui/plugin_settings/vim-dispatcher

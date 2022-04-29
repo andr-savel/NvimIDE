@@ -68,7 +68,7 @@ lua << END
 
     require'lualine'.setup {
         options = {
-            icons_enabled = false, -- TODO: tune nvim-web-devicons
+            icons_enabled = vim.g.nvim_ide_allow_icons,
             theme = custom_gruvbox_material,
             component_separators = { left = '', right = ''},
             section_separators = { left = '', right = ''},
