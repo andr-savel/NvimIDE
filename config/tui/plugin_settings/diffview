@@ -13,13 +13,11 @@ inoremap <M-d> <C-o>:call NvimIdeDiffviewOpen()<CR>
 lua << EOF
     local cb = require'diffview.config'.diffview_callback
 
-    -- TODO: nvim-web-devicons should be introduced and 'use_icons' should be set to 'true'
-
     require'diffview'.setup {
-        diff_binaries = false,    -- Show diffs for binaries
-        enhanced_diff_hl = false, -- See ':h diffview-config-enhanced_diff_hl'
-        use_icons = false,        -- Requires nvim-web-devicons
-        icons = {                 -- Only applies when use_icons is true.
+        diff_binaries = false,                    -- Show diffs for binaries
+        enhanced_diff_hl = false,                 -- See ':h diffview-config-enhanced_diff_hl'
+        use_icons = vim.g.nvim_ide_allow_icons,   -- Requires nvim-web-devicons
+        icons = {                                 -- Only applies when use_icons is true.
             folder_closed = "",
             folder_open = "",
         },

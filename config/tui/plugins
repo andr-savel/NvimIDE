@@ -74,7 +74,7 @@ if exists("g:nvim_ide_project_root")
     source $HOME/.config/nvim/tui/plugin_settings/vimspector
     source $HOME/.config/nvim/tui/plugin_settings/diffview
 endif
-source $HOME/.config/nvim/tui/plugin_settings/lualine
+luafile $HOME/.config/nvim/tui/plugin_settings/lualine.lua
 source $HOME/.config/nvim/tui/plugin_settings/blamer
 source $HOME/.config/nvim/tui/plugin_settings/vim-dispatcher
 luafile $HOME/.config/nvim/tui/plugin_settings/nvim-autopairs.lua
