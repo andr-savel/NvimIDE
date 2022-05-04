@@ -90,5 +90,3 @@ fc-cache -fv
 ```
 Then you need to select one of the installed fonts in your terminal emulator
 
-TODO: try other fonts from https://www.box64.ru/2020/02/fonts-for-programming.html
-
