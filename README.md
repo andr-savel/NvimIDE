@@ -83,7 +83,9 @@ Patched font can be installed to display icons in nvim
 mkdir -p ~/.local/share/fonts
 cd ~/.local/share/fonts
 wget 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraMono.zip'
+wget 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/SourceCodePro.zip'
 unzip FiraMono.zip
+unzip  SourceCodePro.zip
 fc-cache -fv
 ```
 Then you need to select one of the installed fonts in your terminal emulator
