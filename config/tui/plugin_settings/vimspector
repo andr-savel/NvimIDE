@@ -48,6 +48,7 @@ function! s:CustomiseUI()
     q
 
     call win_gotoid(g:vimspector_session_windows.code)
+    call NvimIdeMarkCodeWindow()
     setlocal scrolloff=999
     wincmd H
 
@@ -227,4 +228,6 @@ function! s:SetCondBP()
 endfunction
 
 command! NvimIdeSetCondBP :call s:SetCondBP()
+
+" TODO: 'fzf buffer switch' should switch buffers only in code window when vimspector works
 

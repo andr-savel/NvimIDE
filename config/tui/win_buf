@@ -66,21 +66,70 @@ endfunction
 noremap <silent> <M-x> :call NvimIdeCloseCurrBuf()<CR>
 inoremap <silent> <M-x> <C-O>:call NvimIdeCloseCurrBuf()<CR>
 
+" Code window markers
+function! NvimIdeMarkCodeWindow()
+    let w:nvim_ide_is_code_window = v:true
+endfunction
+
+function! NvimIdeIsCodeWindow()
+    if exists("w:nvim_ide_is_code_window")
+        return w:nvim_ide_is_code_window
+    endif
+
+    return v:false
+endfunction
+
+"     this function should be called on startup to mark initial window as 'code' window
+call NvimIdeMarkCodeWindow()
+
 " Split window vertically
-noremap <silent> <M-m> <C-w>v<C-w>w
-inoremap <silent> <M-m> <C-O><C-w>v<C-o><C-w>w
+noremap <silent> <M-m> <C-w>v:call NvimIdeMarkCodeWindow()<CR><C-w>w
+inoremap <silent> <M-m> <C-O><C-w>v<C-o>:call NvimIdeMarkCodeWindow()<CR><C-o><C-w>w
 
 " Switch buffers
 function! s:ShowFzfBuffers()
     call fzf#vim#buffers()
 endfunction
 
+function! s:GotoCodeWindow()
+    if NvimIdeIsCodeWindow()
+        return v:true
+    endif
+
+    let initialWin = win_getid()
+    let codeWin = -1
+    while v:true
+       wincmd w
+       let currWin = win_getid()
+
+       if NvimIdeIsCodeWindow()
+           if codeWin == -1
+               let codeWin = currWin
+           else
+               call NvimIdeEchoWarning("More than 1 code window. Switch to code window manually and choose the buffer.")
+               call win_gotoid(initialWin)
+               return v:false
+           endif
+       endif
+
+       if currWin == initialWin
+           break
+       endif
+    endwhile
+
+    if codeWin == -1
+        call NvimIdeEchoWarning("No code window(s).")
+        call win_gotoid(initialWin)
+        return v:false
+    endif
+
+    call win_gotoid(codeWin)
+    return v:true
+endfunction
+
 function! NvimIdeBuffers()
-    if &filetype == "qf"
-        wincmd p
-        if &filetype == "qf"
-            return
-        endif
+    if !s:GotoCodeWindow()
+        return
     endif
 
     if !exists("g:nvim_ide_project_root")
