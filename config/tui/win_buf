@@ -35,6 +35,10 @@ onoremap <M-c> <C-O><C-w>c
 "     in 'terminal' mode
 tnoremap <M-c> <C-\><C-N><C-w>c
 
+function! s:IsCurrBufQuickFix()
+    return &filetype == 'qf'
+endfunction
+
 " Close buffer without closing window
 " Do not switch to 'QuickFix' buffer on it's existence
 function! NvimIdeCloseCurrBuf()
@@ -47,7 +51,7 @@ function! NvimIdeCloseCurrBuf()
 
     let err = ""
     try
-        if getbufinfo(bufnr())[0].variables.current_syntax == 'qf'
+        if s:IsCurrBufQuickFix()
             exe 'silent bn'
             if bufnr() == currBuf
                 let err = "NvimIde: failed to close the only file buffer"
@@ -206,8 +210,12 @@ inoremap <C-M-up> <C-o>:cpf<CR>
 
 "     Close quickfix window.
 function! NvimIdeClearAndCloseQuickfix()
+    let is_qf = s:IsCurrBufQuickFix()
     cclose
     cexpr []
+    if is_qf
+        wincmd p
+    endif
 endfunction
 
 " TODO: possibly detection quickfix existence should be checked to close it under condition and move to insert mode
