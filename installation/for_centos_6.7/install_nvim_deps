@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# some preparation
+rm -rf install_result
+mkdir install_result
+cd install_artefacts_nvim
+
+# build glibc-2.14
+tar -xzf glibc-2.14.tar.gz
+cd glibc-2.14
+mkdir build
+cd build/
+glibc_dir=$PWD/glibc_installation
+../configure --prefix=$glibc_dir
+make -j8
+make install
+export LD_LIBRARY_PATH=$glibc_dir/lib:$LD_LIBRARY_PATH
+cd ../../
+
+# install ripgrep
+tar -xzf ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
+cp ripgrep-13.0.0-x86_64-unknown-linux-musl/rg ../install_result
+
+# install nvim
+chmod +x nvim.appimage
+cp nvim.appimage ../install_result
+
+# get config for nvim
+unzip main.zip
+cp -dr NvimIDE-main ../install_result
+
+# install neovim python module
+python3.7 -m pip install --user neovim --find-links=. --no-index
+
+# env settings
+echo "---------------------------- env settings"
+echo "    LIB"
+echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+
