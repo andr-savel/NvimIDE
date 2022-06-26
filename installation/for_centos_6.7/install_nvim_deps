@@ -43,7 +43,7 @@ python3.7 -m pip install --user pyright --find-links=. --no-index
 #------------------------- build and install config and plugins
 
 mkdir -p ~/.config/nvim
-ln -s ../install_result/NvimIDE-main/config/* ~/.config/nvim
+ln -s $PWD/../install_result/NvimIDE-main/config/* ~/.config/nvim
 
 mkdir -p ~/.local/share/nvim
 cd ../

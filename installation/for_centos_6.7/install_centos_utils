@@ -6,7 +6,7 @@ cd install_artefacts
 
 yum install -y which wget tar gcc gcc-c++ unzip
 yum install -y gcc bzip2-devel libffi-devel perl
-yum install -y zlib zlib-devel
+yum install -y zlib zlib-devel git
 
 # build openssl
 wget --tries=10 --timeout=5 --no-check-certificate https://www.openssl.org/source/old/1.1.1/openssl-1.1.1g.tar.gz
