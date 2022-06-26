@@ -5,6 +5,8 @@ rm -rf install_result
 mkdir install_result
 cd install_artefacts_nvim
 
+#----------------------- build and install system parts
+
 # build glibc-2.14
 tar -xzf glibc-2.14.tar.gz
 cd glibc-2.14
@@ -29,8 +31,41 @@ cp nvim.appimage ../install_result
 unzip main.zip
 cp -dr NvimIDE-main ../install_result
 
-# install neovim python module
+# install neovim python module with dependencies
 python3.7 -m pip install --user neovim --find-links=. --no-index
+
+# install compdb python module
+python3.7 -m pip install --user ./compdb-0.2.0.tar.gz
+
+# install pyright python language server
+python3.7 -m pip install --user pyright --find-links=. --no-index
+
+#------------------------- build and install config and plugins
+
+mkdir -p ~/.config/nvim
+ln -s ../install_result/NvimIDE-main/config/* ~/.config/nvim
+
+mkdir -p ~/.local/share/nvim
+cd ../
+tar -xzf local_share_nvim.tar.gz
+cd -
+cp -dr ../local_share_nvim/* ~/.local/share/nvim
+
+for t in `ls tree-sitter-*`
+do
+    prefix=`echo $t | awk -F "." '{print $1}'`
+    mkdir $prefix
+    lang=`echo $prefix | awk -F "-" '{print $3}'`
+
+    tar -xzf $t -C $prefix
+    cd `ls -d $prefix/*`
+
+    cc -o parser.so -I./src  src/*c -shared -Os -lstdc++ -fPIC -DUINT8_MAX=255
+    mv parser.so ~/.local/share/nvim/plugged/nvim-treesitter/parser/$lang.so
+
+    cd ../../
+done
+    
 
 # env settings
 echo "---------------------------- env settings"
