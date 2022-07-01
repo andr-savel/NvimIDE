@@ -40,6 +40,17 @@ python3.7 -m pip install --user ./compdb-0.2.0.tar.gz
 # install pyright python language server
 python3.7 -m pip install --user pyright --find-links=. --no-index
 
+# install clangd C/C++ language server
+tar -xzf llvmorg-14.0.3
+cd `ls -d llvm-llvm-project-*`
+mkdir build
+cd build
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -DCMAKE_INSTALL_PREFIX=$PWD/clangd_installation $PWD/../llvm/
+make -j 16
+make install
+cp bin/clangd ../../../install_result
+cd ../../
+
 #------------------------- build and install config and plugins
 
 mkdir -p ~/.config/nvim

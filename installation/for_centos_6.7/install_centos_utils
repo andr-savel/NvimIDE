@@ -6,7 +6,19 @@ cd install_artefacts
 
 yum install -y which wget tar gcc gcc-c++ unzip
 yum install -y gcc bzip2-devel libffi-devel perl
-yum install -y zlib zlib-devel git
+yum install -y zlib zlib-devel git bzip2
+
+# build utils
+wget --tries=10 --timeout=5 https://github.com/Kitware/CMake/releases/download/v3.23.2/cmake-3.23.2-linux-x86_64.tar.gz
+tar -xzf cmake-3.23.2-linux-x86_64.tar.gz
+
+wget --tries=10 --timeout=5 --no-check-certificate https://mirror.tochlab.net/pub/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.gz
+tar -xzf gcc-8.5.0.tar.gz
+cd gcc-8.5.0
+./contrib/download_prerequisites
+./configure --prefix=$PWD/gcc_installation --enable-languages=c,c++,fortran --disable-multilib
+make -j 16
+make install
 
 # build openssl
 wget --tries=10 --timeout=5 --no-check-certificate https://www.openssl.org/source/old/1.1.1/openssl-1.1.1g.tar.gz

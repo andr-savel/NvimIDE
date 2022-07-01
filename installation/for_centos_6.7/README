@@ -6,16 +6,16 @@ cd /var/ext_dir; cp -f CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo; cp -f
 3) ./install_centos_utils
 
 4)
-export LD_LIBRARY_PATH=/var/ext_dir/install_artefacts/openssl-1.1.1g/openssl_installation/lib
-export PATH=/usr/libexec/gcc/x86_64-redhat-linux/4.4.7:/var/ext_dir/install_artefacts/Python-3.7.0/py_installation/bin:/var/ext_dir/install_artefacts/openssl-1.1.1g/openssl_installation/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export LD_LIBRARY_PATH=/var/ext_dir/install_artefacts/gcc-8.5.0/gcc_installation/lib64:/var/ext_dir/install_artefacts/openssl-1.1.1g/openssl_installation/lib
+export PATH=/var/ext_dir/install_artefacts/gcc-8.5.0/gcc_installation/bin:/var/ext_dir/install_artefacts_nvim/cmake-3.23.2-linux-x86_64/bin:/usr/libexec/gcc/x86_64-redhat-linux/4.4.7:/var/ext_dir/install_artefacts/Python-3.7.0/py_installation/bin:/var/ext_dir/install_artefacts/openssl-1.1.1g/openssl_installation/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 5) ./get_nvim_deps
 
 6) ./install_nvim_deps
 
 7)
-export LD_LIBRARY_PATH=/var/ext_dir/install_artefacts_nvim/glibc-2.14/build/glibc_installation/lib:/var/ext_dir/install_artefacts/openssl-1.1.1g/openssl_installation/lib
-export PATH=~/.local/bin:/var/ext_dir/install_result:$PATH
+export LD_LIBRARY_PATH=/var/ext_dir/install_artefacts/gcc-8.5.0/gcc_installation/lib64:/var/ext_dir/install_artefacts_nvim/glibc-2.14/build/glibc_installation/lib:/var/ext_dir/install_artefacts/openssl-1.1.1g/openssl_installation/lib
+export PATH=/var/ext_dir/install_artefacts_nvim/llvm-llvm-project-b1dfafb/build/bin:~/.local/bin:/var/ext_dir/install_result:$PATH
 
 8) ./nvim.appimage
 or
