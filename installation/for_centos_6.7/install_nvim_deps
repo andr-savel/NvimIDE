@@ -45,6 +45,8 @@ tar -xzf llvmorg-14.0.3
 cd `ls -d llvm-llvm-project-*`
 mkdir build
 cd build
+export CC=`which gcc`
+export CXX=`which g++`
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -DCMAKE_INSTALL_PREFIX=$PWD/clangd_installation $PWD/../llvm/
 make -j 16
 make install
