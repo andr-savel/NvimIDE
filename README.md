@@ -48,22 +48,23 @@ For old go versions:
 ```
     pip install pyright
 ```
-8) To use fast search in whole project install 'ripgrep'
-9) To use system clipboard please install 'xclip'.
+8) Install 'lldb', 'lldb-vscode', 'lldb-server' to debug C/C++ projects
+9) To use fast search in whole project install 'ripgrep'
+10) To use system clipboard please install 'xclip'.
 
-10) Link files from this repo to nvim dir
+11) Link files from this repo to nvim dir
 ```
     ln -s <cloned_repo_path>/config/* ~/.config/nvim
 ```
-11) Start nvim
+12) Start nvim
 
 First run leads to many errors because no plugins have been installed.
 Please install it manually via
 ```
 :PlugInstall
 ```
-12) Close nvim
-13) Start nvim again with --cmd option (see below) to install part of DAP adapters for 'vimpector' plugin
+13) Close nvim
+14) Start nvim again with --cmd option (see below) to install part of DAP adapters for 'vimpector' plugin
 
 ## Usage
 To use NvimIde project config file should be created. See 'doc/project.conf' example for details.
