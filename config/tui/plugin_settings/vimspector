@@ -70,11 +70,17 @@ function! CloseInitialDebuggerTerminalAndGetItsBufId()
     endfor
 endfunction
 
+function! s:IsLldbVscodeFileType()
+    return &filetype == "cpp" || &filetype == "c" || &filetype == "objc" || &filetype == "rust"
+endfunction
+
 function! s:CustomiseUI()
     call win_gotoid(g:vimspector_session_windows.output)
+    let bufId = winbufnr(win_getid())
     q
 
     call win_gotoid(g:vimspector_session_windows.code)
+    let isLldbVscode = s:IsLldbVscodeFileType()
     call NvimIdeMarkCodeWindow()
     setlocal scrolloff=999
     wincmd H
@@ -82,6 +88,11 @@ function! s:CustomiseUI()
     call win_gotoid(g:vimspector_session_windows.stack_trace)
     wincmd J
     15wincmd _
+    if isLldbVscode
+        vsplit
+        wincmd r
+        exe "b".string(bufId)
+    endif
 
     stopi
 endfunction
@@ -129,7 +140,7 @@ function! s:FindDebuggeePID()
 endfunction
 
 function! NvimIdeDebugAttach()
-    if &filetype == "cpp" || &filetype == "c" || &filetype == "objc" || &filetype == "rust"
+    if s:IsLldbVscodeFileType()
         let debuggeePID = s:FindDebuggeePID()
         call vimspector#LaunchWithConfigurations({
         \    "Attach C++": {
@@ -175,7 +186,7 @@ function! NvimIdeDebugLaunchOrContinue()
     if exists("g:vimspector_session_windows") && has_key(g:vimspector_session_windows, "tabpage")
         call vimspector#Continue()
     else
-        if &filetype == "cpp" || &filetype == "c" || &filetype == "objc" || &filetype == "rust"
+        if s:IsLldbVscodeFileType()
             call vimspector#LaunchWithConfigurations({
             \    "Launch C++": {
             \        "adapter": "lldb-vscode",

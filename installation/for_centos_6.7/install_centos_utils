@@ -1,40 +1,40 @@
 #!/bin/bash
 
-rm -rf install_artefacts
-mkdir install_artefacts
-cd install_artefacts
-
 yum install -y which wget tar gcc gcc-c++ unzip
 yum install -y gcc bzip2-devel libffi-devel perl
 yum install -y zlib zlib-devel git bzip2
 
-# build utils
-wget --tries=10 --timeout=5 https://github.com/Kitware/CMake/releases/download/v3.23.2/cmake-3.23.2-linux-x86_64.tar.gz
-tar -xzf cmake-3.23.2-linux-x86_64.tar.gz
+to_download=(
+"https://github.com/Kitware/CMake/releases/download/v3.23.2/cmake-3.23.2-linux-x86_64.tar.gz" \
+"https://www.openssl.org/source/old/1.1.1/openssl-1.1.1g.tar.gz" \
+"https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz"
+)
 
-wget --tries=10 --timeout=5 --no-check-certificate https://mirror.tochlab.net/pub/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.gz
-tar -xzf gcc-8.5.0.tar.gz
-cd gcc-8.5.0
-./contrib/download_prerequisites
-./configure --prefix=$PWD/gcc_installation --enable-languages=c,c++,fortran --disable-multilib
-make -j 16
-make install
+for t in ${to_download[@]}
+do
+    while ! wget --tries=10 --timeout=5 --no-check-certificate $t
+    do
+        echo "-------RETRY"
+    done
+done
+
+# build utils
+tar -xzf cmake-3.23.2-linux-x86_64.tar.gz
+export PATH=$PWD/cmake-3.23.2-linux-x86_64/bin:$PATH
 
 # build openssl
-wget --tries=10 --timeout=5 --no-check-certificate https://www.openssl.org/source/old/1.1.1/openssl-1.1.1g.tar.gz
 tar -xzf openssl-1.1.1g.tar.gz
 cd openssl-1.1.1g
 ssl_dir=$PWD/openssl_installation
 ./config --prefix=$ssl_dir --openssldir=$ssl_dir no-ssl2
-make
+make -j 16
 make install
-export LD_LIBRARY_PATH=$ssl_dir/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$ssl_dir/lib
 export PATH=$ssl_dir/bin:$PATH
 cd ../
 
 
 # build python 3.7.0
-wget --tries=10 --timeout=5 https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz
 tar -xzf Python-3.7.0.tgz
 cd Python-3.7.0
 python_dir=$PWD/py_installation
@@ -44,9 +44,6 @@ export PATH=$python_dir/bin:$PATH
 cd ../
 
 # env settings
-echo "---------------------------- env settings"
-echo "    LIB"
-echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
-echo "    PATH"
-echo "export PATH=/usr/libexec/gcc/x86_64-redhat-linux/4.4.7:$PATH"
+echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" > env
+echo "export PATH=$PATH" >> env
 

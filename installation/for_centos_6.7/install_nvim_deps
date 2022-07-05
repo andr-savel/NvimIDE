@@ -1,35 +1,57 @@
 #!/bin/bash
 
-# some preparation
-rm -rf install_result
-mkdir install_result
-cd install_artefacts_nvim
-
 #----------------------- build and install system parts
 
 # build glibc-2.14
-tar -xzf glibc-2.14.tar.gz
-cd glibc-2.14
-mkdir build
-cd build/
-glibc_dir=$PWD/glibc_installation
-../configure --prefix=$glibc_dir
-make -j8
-make install
+glibc_dir=$NVIM_IDE_INSTALL_RESULT/glibc_installation
+if [ ! -d "$glibc_dir" ]; then
+    tar -xzf glibc-2.14.tar.gz
+    cd glibc-2.14
+    mkdir build
+    cd build/
+    ../configure --prefix=$glibc_dir
+    make -j 16
+    make install
+    cd ../../
+fi
 export LD_LIBRARY_PATH=$glibc_dir/lib:$LD_LIBRARY_PATH
-cd ../../
+
+# build gcc
+gcc_dir=$NVIM_IDE_INSTALL_RESULT/gcc_installation
+if [ ! -d "$gcc_dir" ]; then
+    tar -xzf gcc-9.1.0.tar.gz
+    cd gcc-9.1.0
+    cp ../gmp-6.1.0.tar.bz2 .
+    tar -xf gmp-6.1.0.tar.bz2
+    cp -dr gmp-6.1.0 gmp
+    cp ../mpfr-3.1.4.tar.bz2 .
+    tar -xf mpfr-3.1.4.tar.bz2
+    cp -dr mpfr-3.1.4 mpfr
+    cp ../mpc-1.0.3.tar.gz .
+    tar -xzf mpc-1.0.3.tar.gz
+    cp -dr mpc-1.0.3 mpc
+    cp ../isl-0.18.tar.bz2 .
+    tar -xf isl-0.18.tar.bz2
+    cp -dr isl-0.18 isl
+    ./configure --prefix=$gcc_dir --enable-languages=c,c++,fortran --disable-multilib
+    make -j 16
+    make install
+    cd ../
+fi
+export PATH=$gcc_dir/bin:$PATH
+export LD_LIBRARY_PATH=$gcc_dir/lib64:$LD_LIBRARY_PATH
 
 # install ripgrep
 tar -xzf ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
-cp ripgrep-13.0.0-x86_64-unknown-linux-musl/rg ../install_result
+cp ripgrep-13.0.0-x86_64-unknown-linux-musl/rg $NVIM_IDE_INSTALL_RESULT
 
 # install nvim
 chmod +x nvim.appimage
-cp nvim.appimage ../install_result
+cp nvim.appimage $NVIM_IDE_INSTALL_RESULT
 
 # get config for nvim
 unzip main.zip
-cp -dr NvimIDE-main ../install_result
+cp -dr NvimIDE-main $NVIM_IDE_INSTALL_RESULT
 
 # install neovim python module with dependencies
 python3.7 -m pip install --user neovim --find-links=. --no-index
@@ -41,28 +63,46 @@ python3.7 -m pip install --user ./compdb-0.2.0.tar.gz
 python3.7 -m pip install --user pyright --find-links=. --no-index
 
 # install clangd C/C++ language server
-tar -xzf llvmorg-14.0.3
-cd `ls -d llvm-llvm-project-*`
-mkdir build
-cd build
-export CC=`which gcc`
-export CXX=`which g++`
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -DCMAKE_INSTALL_PREFIX=$PWD/clangd_installation $PWD/../llvm/
-make -j 16
+llvm_dir=$NVIM_IDE_INSTALL_RESULT/llvm_installation
+if [ ! -d "$llvm_dir" ]; then
+    tar -xzf llvmorg-14.0.3
+    cd `ls -d llvm-llvm-project-*`
+    mkdir build
+    cd build
+    export CC=`which gcc`
+    export CXX=`which g++`
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lldb" -DLLVM_TARGETS_TO_BUILD=X86 -DCMAKE_INSTALL_PREFIX=$NVIM_IDE_INSTALL_RESULT/llvm_installation $PWD/../llvm/
+    make -j 16 clangd lldb lldb-vscode lldb-server
+    mkdir -p $llvm_dir
+    cp -dr bin $llvm_dir
+    cp -dr lib $llvm_dir
+    cd ../../
+fi
+export PATH=$llvm_dir/bin:$PATH
+
+# xclip
+unzip master.zip
+cd xclip-master
+autoconf
+xclip_dir=$NVIM_IDE_INSTALL_RESULT/xclip_installation
+./configure --prefix=$xclip_dir
+make
 make install
-cp bin/clangd ../../../install_result
-cd ../../
+cd ../
+export PATH=$xclip_dir/bin:$PATH
+
 
 #------------------------- build and install config and plugins
 
+rm -rf ~/.config/nvim
 mkdir -p ~/.config/nvim
-ln -s $PWD/../install_result/NvimIDE-main/config/* ~/.config/nvim
+ln -s $NVIM_IDE_INSTALL_RESULT/NvimIDE-main/config/* ~/.config/nvim
 
+rm -rf ~/.local/share/nvim
 mkdir -p ~/.local/share/nvim
-cd ../
+cp ../../local_share_nvim.tar.gz .
 tar -xzf local_share_nvim.tar.gz
-cd -
-cp -dr ../local_share_nvim/* ~/.local/share/nvim
+cp -dr ./local_share_nvim/* ~/.local/share/nvim
 
 for t in `ls tree-sitter-*`
 do
@@ -81,7 +121,6 @@ done
     
 
 # env settings
-echo "---------------------------- env settings"
-echo "    LIB"
-echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+echo "export PATH=$NVIM_IDE_INSTALL_RESULT:$PATH" > $NVIM_IDE_INSTALL_RESULT/env
+echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $NVIM_IDE_INSTALL_RESULT/env
 

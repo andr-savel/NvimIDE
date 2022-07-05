@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd $NVIM_IDE_INSTALL_ARTEFACTS/nvim
+source $NVIM_IDE_INSTALL_ARTEFACTS/os/env
+$NVIM_IDE_SRC_ROOT/install_nvim_deps
+cd ../
+
