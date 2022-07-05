@@ -6,9 +6,36 @@ function! s:SetupVimspector()
 
     let vimspectorPath = stdpath('data') . '/plugged/vimspector'
     if !empty(glob(vimspectorPath))
-        if empty(glob(vimspectorPath . '/gadgets/linux/CodeLLDB'))
-            VimspectorInstall CodeLLDB
+         let gadgetsConfDir = vimspectorPath . '/gadgets/linux/.gadgets.d'
+         let lldbVscodeConfPath = gadgetsConfDir . '/lldb-vscode.json'
+         if empty(glob(lldbVscodeConfPath))
+             call mkdir(gadgetsConfDir, "p")
+             let lldbVscodePath = exepath("lldb-vscode")
+             let conf = {
+             \    "adapters": {
+             \        "lldb-vscode": {
+             \            "attach": {
+             \                "pidProperty": "pid",
+             \                "pidSelect": "ask"
+             \            },
+             \            "command": [
+             \                lldbVscodePath
+             \            ],
+             \            "env": {
+             \                "LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY": "YES"
+             \            },
+             \            "name": "lldb"
+             \        }
+             \    }
+             \ }
+
+             let serialized = substitute(string(conf), "'",'"','g')
+             call writefile([serialized], lldbVscodeConfPath)
         endif
+
+"        if empty(glob(vimspectorPath . '/gadgets/linux/CodeLLDB'))
+"            VimspectorInstall CodeLLDB
+"        endif
 
         if empty(glob(vimspectorPath . '/gadgets/linux/delve'))
             VimspectorInstall delve
@@ -103,17 +130,22 @@ endfunction
 
 function! NvimIdeDebugAttach()
     if &filetype == "cpp" || &filetype == "c" || &filetype == "objc" || &filetype == "rust"
+        let debuggeePID = s:FindDebuggeePID()
         call vimspector#LaunchWithConfigurations({
         \    "Attach C++": {
-        \        "adapter": "CodeLLDB",
+        \        "adapter": "lldb-vscode",
         \        "configuration": {
         \            "request": "attach",
-        \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}"
+        \            "pid#json": debuggeePID
         \        },
         \        "breakpoints": {
         \            "exception": {
         \                "cpp_throw": "Y",
-        \                "cpp_catch": "N"
+        \                "cpp_catch": "N",
+        \                "objc_throw": "Y",
+        \                "objc_catch": "N",
+        \                "swift_throw": "Y",
+        \                "swift_catch": "N"
         \            }
         \        }
         \    }
@@ -146,7 +178,7 @@ function! NvimIdeDebugLaunchOrContinue()
         if &filetype == "cpp" || &filetype == "c" || &filetype == "objc" || &filetype == "rust"
             call vimspector#LaunchWithConfigurations({
             \    "Launch C++": {
-            \        "adapter": "CodeLLDB",
+            \        "adapter": "lldb-vscode",
             \        "configuration": {
             \            "filetypes": ["cpp", "c", "objc", "rust"],
             \            "request": "launch",
@@ -157,7 +189,11 @@ function! NvimIdeDebugLaunchOrContinue()
             \        "breakpoints": {
             \            "exception": {     
             \                "cpp_throw": "Y",
-            \                "cpp_catch": "N"
+            \                "cpp_catch": "N",
+            \                "objc_throw": "Y",
+            \                "objc_catch": "N",
+            \                "swift_throw": "Y",
+            \                "swift_catch": "N"
             \            }
             \        }
             \    }
