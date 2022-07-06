@@ -117,7 +117,7 @@ snoremap <ScrollWheelUp> <Esc><ScrollWheelUp>
 snoremap <ScrollWheelDown> <Esc><ScrollWheelDown>
 
 
-command! NvimIdeFullFilePath :echo expand("%:p")
+command! NvimIdeFullFilePath : let @+ = expand("%:p") | echo @+
 
 " <Esc> complex behaviour
 function! NvimIdeHasSignatureFloatingWindow()

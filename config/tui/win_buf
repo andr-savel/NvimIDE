@@ -87,8 +87,12 @@ endfunction
 call NvimIdeMarkCodeWindow()
 
 " Split window vertically
-noremap <silent> <M-m> <C-w>v:call NvimIdeMarkCodeWindow()<CR><C-w>w
-inoremap <silent> <M-m> <C-O><C-w>v<C-o>:call NvimIdeMarkCodeWindow()<CR><C-o><C-w>w
+noremap <silent> <M-\> <C-w>v:call NvimIdeMarkCodeWindow()<CR><C-w>w
+inoremap <silent> <M-\> <C-O><C-w>v<C-o>:call NvimIdeMarkCodeWindow()<CR><C-o><C-w>w
+
+" Split windows horizontally
+noremap <silent> <M--> <C-w>s:call NvimIdeMarkCodeWindow()<CR><C-w>w
+inoremap <silent> <M--> <C-O><C-w>s<C-o>:call NvimIdeMarkCodeWindow()<CR><C-o><C-w>w
 
 " Switch buffers
 function! s:ShowFzfBuffers()
