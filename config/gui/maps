@@ -10,6 +10,10 @@ imap <C-S-z> <M-z>
 map <C-S-f> <M-f>
 imap <C-S-f> <M-f>
 
+" Toggle fullscreen mode
+map <S-f11> : call GuiWindowFullScreen(!g:GuiWindowFullScreen)<CR>
+imap <S-f11> <C-o>:call GuiWindowFullScreen(!g:GuiWindowFullScreen)<CR>
 
-" TODO: setup specific key maps via 'AutoKey' application to avoid nvim-qt usage (after this nvim from terminal can be used)
-
+" Font settings (SauceCodePro font should be installed previously. See README.md for details.)
+GuiFont SauceCodePro Nerd Font:h12
+GuiLinespace -1
