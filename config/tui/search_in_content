@@ -171,7 +171,7 @@ function! NvimIdeSearchInFilesContent(isInsertMode, extPtrn)
     set t_te=
     set t_ti=
     set noautochdir
-    let &shellpipe="&>"
+    let &shellpipe="\\&>"
     let l:cwd_au = getcwd()
     exe 'cd '.g:nvim_ide_project_root
 
