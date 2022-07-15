@@ -99,6 +99,14 @@ snoremap <Tab> <C-g>>
 " <C-home>
 " <C-end>
 
+" <Home> or move to first non 'space' symbol
+inoremap <expr> <Home> (getcurpos()[2] == 1 ? '<C-right>' : '<Home>')
+nnoremap <expr> <Home> (getcurpos()[2] == 1 ? '<C-right>' : '<Home>')
+
+" Goto open/close bracket
+imap <C-p> <C-o>%
+map <C-p> %
+
 " Goto line
 noremap <C-g> :
 inoremap <C-g> <C-O>:

@@ -65,6 +65,10 @@ if !exists("g:nvim_ide_debuggee_binary_args")
     let g:nvim_ide_debuggee_binary_args = ''
 endif
 
+if !exists("g:nvim_ide_cpp_debugger_source_map")
+    let g:nvim_ide_cpp_debugger_source_map = []
+endif
+
 "     Icons
 if !exists("g:nvim_ide_allow_icons")
     let g:nvim_ide_allow_icons = v:false

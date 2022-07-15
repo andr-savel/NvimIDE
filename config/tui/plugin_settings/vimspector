@@ -147,7 +147,8 @@ function! NvimIdeDebugAttach()
         \        "adapter": "lldb-vscode",
         \        "configuration": {
         \            "request": "attach",
-        \            "pid#json": debuggeePID
+        \            "pid#json": debuggeePID,
+        \            "sourceMap": g:nvim_ide_cpp_debugger_source_map
         \        },
         \        "breakpoints": {
         \            "exception": {
@@ -195,6 +196,7 @@ function! NvimIdeDebugLaunchOrContinue()
             \            "request": "launch",
             \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}",
             \            "args": ["*${CommandLineArgs:" . g:nvim_ide_debuggee_binary_args . "}"],
+            \            "sourceMap": g:nvim_ide_cpp_debugger_source_map,
             \            "externalConsole": v:true
             \        },
             \        "breakpoints": {
