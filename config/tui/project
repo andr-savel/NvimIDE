@@ -29,27 +29,37 @@ function! NvimIdeGetProjectExtraFilesDir()
     return s:project_extra_files_dir
 endfunction
 
+if exists("g:nvim_ide_cpp_compilation_database_command")
+    "     Num threads for C/C++ language server
+    if !exists("g:nvim_ide_cpp_language_server_threads")
+        let g:nvim_ide_cpp_language_server_threads = 4
+    endif
+endif
+
 function! s:GetCompileCommandsPath()
     return g:nvim_ide_project_root .. "/compile_commands.json"
 endfunction
 
 function! s:RegenCompdb()
-    call system("cd " .. g:nvim_ide_project_root .. "; " .. g:nvim_ide_cpp_compilation_database_command .. " > " .. s:GetCompileCommandsPath())
-    echo "Compilation database has been regenerated!"
+    exe 'Dispatch ' .. g:nvim_ide_cpp_compilation_database_command .. " > " .. s:GetCompileCommandsPath()
 endfunction
 command! NvimIdeRegenCompdb :call s:RegenCompdb()
 
-if exists("g:nvim_ide_cpp_compilation_database_command")
-    "     Num threads for C/C++ language server
-    if !exists("g:nvim_ide_cpp_language_server_threads")
-        let g:nvim_ide_cpp_language_server_threads = 4
+function! s:InitialCompDbCreation()
+    if !exists("g:nvim_ide_cpp_compilation_database_command")
+        return
     endif
 
     "     Gen compilation database
     if empty(glob(s:GetCompileCommandsPath()))
         call s:RegenCompdb()
     endif
-endif
+endfunction
+
+augroup NvimIdeGetCppCompDb
+    autocmd!
+    autocmd VimEnter * call s:InitialCompDbCreation()
+augroup END
 
 "     Build command for project (C/C++, go)
 if exists("g:nvim_ide_build_command")
