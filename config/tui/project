@@ -40,12 +40,8 @@ if exists("g:nvim_ide_cpp_compilation_database_command")
     endif
 endif
 
-function! s:GetCompileCommandsPath()
-    return g:nvim_ide_project_root .. "/compile_commands.json"
-endfunction
-
 function! s:RegenCompdb()
-    exe 'Dispatch ' .. g:nvim_ide_cpp_compilation_database_command .. " > " .. s:GetCompileCommandsPath()
+    exe 'Dispatch ' .. g:nvim_ide_cpp_compilation_database_command
 endfunction
 command! NvimIdeRegenCompdb :call s:RegenCompdb()
 
@@ -55,7 +51,8 @@ function! s:InitialCompDbCreation()
     endif
 
     "     Gen compilation database
-    if empty(glob(s:GetCompileCommandsPath()))
+    let compileCommandsPath = g:nvim_ide_project_root . "/compile_commands.json"
+    if empty(glob(compileCommandsPath))
         call s:RegenCompdb()
     endif
 endfunction
