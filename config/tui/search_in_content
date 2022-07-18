@@ -40,13 +40,13 @@ endfunction
 
 function! NvimIdeGetBuffersRelativePaths(bIds)
     let out = []
-    let startIdx = len(g:nvim_ide_project_root)
-    if g:nvim_ide_project_root[startIdx - 1] != '/'
+    let startIdx = len(g:nvim_ide_real_project_root)
+    if g:nvim_ide_real_project_root[startIdx - 1] != '/'
         let startIdx = startIdx + 1
     endif
     for bi in a:bIds
         let fullPath = expand("#".bi.":p")
-        let idx = stridx(fullPath, g:nvim_ide_project_root)
+        let idx = stridx(fullPath, g:nvim_ide_real_project_root)
         if idx != -1
             call add(out, fullPath[startIdx:])
         endif
@@ -173,7 +173,7 @@ function! NvimIdeSearchInFilesContent(isInsertMode, extPtrn)
     set noautochdir
     let &shellpipe="\\&>"
     let l:cwd_au = getcwd()
-    exe 'cd '.g:nvim_ide_project_root
+    exe 'cd ' . g:nvim_ide_real_project_root
 
     call NvimIdeSearchInFilesContentCore(a:isInsertMode, toSearch)
     call NvimIdeRemoveTmps(savedTmps)

@@ -139,6 +139,11 @@ function! s:FindDebuggeePID()
     return str2nr(system("pidof " . g:nvim_ide_debuggee_binary_path))
 endfunction
 
+let s:source_map = []
+if g:nvim_ide_project_root != g:nvim_ide_real_project_root
+    call add(s:source_map, [g:nvim_ide_real_project_root, g:nvim_ide_project_root])
+endif
+
 function! NvimIdeDebugAttach()
     if s:IsLldbVscodeFileType()
         let debuggeePID = s:FindDebuggeePID()
@@ -148,7 +153,7 @@ function! NvimIdeDebugAttach()
         \        "configuration": {
         \            "request": "attach",
         \            "pid#json": debuggeePID,
-        \            "sourceMap": g:nvim_ide_cpp_debugger_source_map
+        \            "sourceMap": s:source_map
         \        },
         \        "breakpoints": {
         \            "exception": {
@@ -196,7 +201,7 @@ function! NvimIdeDebugLaunchOrContinue()
             \            "request": "launch",
             \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}",
             \            "args": ["*${CommandLineArgs:" . g:nvim_ide_debuggee_binary_args . "}"],
-            \            "sourceMap": g:nvim_ide_cpp_debugger_source_map,
+            \            "sourceMap": s:source_map,
             \            "externalConsole": v:true
             \        },
             \        "breakpoints": {
