@@ -12,14 +12,6 @@ lsp_method_reference = 'textDocument/references'
 lsp_definition_default_handler = lsp_handlers[lsp_method_definition]
 lsp_reference_default_handler = lsp_handlers[lsp_method_reference]
 
-function center_text(mode)
-    special_symbol = ""
-    if mode == "i" then
-        special_symbol = vim.api.nvim_replace_termcodes("<C-o>", true, false, true)
-    end
-    vim.fn.feedkeys(special_symbol .. "zz")
-end
-
 -- LSP setup
 local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
@@ -81,30 +73,33 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 function show_definition(mode)
     exec_lsp_method(lsp_method_definition, function(err, result, ctx, config)
         lsp_definition_default_handler(err, result, ctx, config)
-        center_text(mode)
+        vim.fn.NvimIdeCenterText(mode)
     end)
+end
+
+function NvimIdeHighlightQuickfix(toHl)
+    ptrnLen = #toHl
+    for i, lItem in pairs(vim.fn.getqflist()) do
+        vim.fn.matchaddpos("RedBold", {{i, #vim.fn.getline(i) - #lItem.text + lItem.col, ptrnLen}})
+    end
 end
 
 function show_references()
     exec_lsp_method(lsp_method_reference, function(err, result, ctx, config)
         strToHl = vim.fn.expand("<cword>")
+        vim.fn.NvimIdeRemoveGlobalSearchPatternHighlight()
+        vim.fn.NvimIdeClearAndCloseQuickfix()
         lsp_reference_default_handler(err, result, ctx, config)
         if #vim.fn.getqflist() then
-            vim.cmd("noh")
             vim.cmd("copen")
-            vim.fn.clearmatches()
-
-            ptrnLen = #strToHl
-            for i, lItem in pairs(vim.fn.getqflist()) do
-                vim.fn.matchaddpos("Search", {{i, #vim.fn.getline(i) - #lItem.text + lItem.col, ptrnLen}})
-            end
+            NvimIdeHighlightQuickfix(strToHl)
         end
     end)
 end
 
 function goto_next_diagnostics(mode)
     vim.diagnostic.goto_next()
-    center_text(mode)
+    vim.fn.NvimIdeCenterText(mode)
 end
 
 function get_symbols(extSym)

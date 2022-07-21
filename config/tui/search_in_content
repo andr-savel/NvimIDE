@@ -94,17 +94,20 @@ function! NvimIdeEchoWarning(msg)
     echohl None
 endfunction
 
-function NvimIdeSearchInFilesContentCore(isInsertMode, ptrn)
+function NvimIdeSearchInFilesContentCore(ptrn)
     silent exe 'grep! "' . escape(a:ptrn, '()') . '"'
     if len(getqflist())
         exe 'copen'
-        redraw!
-        call NvimIdeQuickfixPostprocess(a:isInsertMode, a:ptrn)
+        call NvimIdeQuickfixPostprocess(a:ptrn)
+        call NvimIdeHighlightGlobalSearchPattern(a:ptrn)
+        return 1
     else
         cclose
-        redraw!
+        redraw
         call NvimIdeEchoWarning("Not found: " . a:ptrn)
     endif
+
+    return 0
 endfunction
 
 function! NvimIdeGenGrepScript(changedBufs)
@@ -133,11 +136,28 @@ function! NvimIdeRemoveTmps(savedTmps)
     silent exe '!rm '.strToDel
 endfunction
 
-function! NvimIdeSearchInFilesContent(isInsertMode, extPtrn)
+function! NvimIdeSearchInFilesContent(extPtrn)
+    let hasExtPtrn = len(a:extPtrn)
+
+    if hasExtPtrn
+        call NvimIdeHighlightGlobalSearchPattern(a:extPtrn)
+    endif
+
     let null_input_word = '___nvim_ide_null_input___'
-    let toSearch = input({'prompt':'Project search: ', 'default':a:extPtrn, 'cancelreturn':null_input_word})
+    let toSearch = input({'prompt':'Project search: ', 'cancelreturn':null_input_word})
     if toSearch == null_input_word
-        return
+        if hasExtPtrn
+            call NvimIdeRemoveGlobalSearchPatternHighlight()
+        endif
+
+        return 0
+    endif
+
+    if len(toSearch) == 0
+        if hasExtPtrn
+            let toSearch = a:extPtrn
+            call histadd("input", toSearch)
+        endif
     endif
 
     if len(toSearch) == 0
@@ -146,11 +166,16 @@ function! NvimIdeSearchInFilesContent(isInsertMode, extPtrn)
     endif
 
     if len(toSearch) == 0
+        if hasExtPtrn
+            call NvimIdeRemoveGlobalSearchPatternHighlight()
+        endif
+
         call NvimIdeEchoWarning("Empty search pattern")
-        return
+        return 0
     endif
 
-    cclose
+    call NvimIdeRemoveGlobalSearchPatternHighlight()
+    call NvimIdeClearAndCloseQuickfix()
 
     let changedBuffers = NvimIdeGetChangedBufferIds()
     call NvimIdeGenGrepScript(changedBuffers)
@@ -175,7 +200,7 @@ function! NvimIdeSearchInFilesContent(isInsertMode, extPtrn)
     let l:cwd_au = getcwd()
     exe 'cd ' . g:nvim_ide_real_project_root
 
-    call NvimIdeSearchInFilesContentCore(a:isInsertMode, toSearch)
+    let ret = NvimIdeSearchInFilesContentCore(toSearch)
     call NvimIdeRemoveTmps(savedTmps)
 
     exe 'cd '.l:cwd_au
@@ -185,5 +210,7 @@ function! NvimIdeSearchInFilesContent(isInsertMode, extPtrn)
     let &t_ti=l:ti
     let &grepformat = l:grepformat_au
     let &grepprg = l:grepprg_au
+
+    return ret
 endfunction
 

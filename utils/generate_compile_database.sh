@@ -7,4 +7,7 @@ if [ "$#" -eq 1 ]; then
     PROJECT_PATH="`(cd \"$1\" && pwd)`"            # absolute path
 fi
 
+(
+cd $PROJECT_PATH
 compdb -p "${PROJECT_PATH}/build" list > compile_commands.json
+)

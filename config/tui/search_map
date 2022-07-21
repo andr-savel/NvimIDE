@@ -1,28 +1,43 @@
-function! NvimIdeLocalSearch(mode)
-    let @/ = expand("<cword>")
+function! NvimIdeHighlightGlobalSearchPattern(toSearch)
+    let @/ = a:toSearch
+    let &hlsearch=1
+    redraw
+endfunction
+
+function! NvimIdeRemoveGlobalSearchPatternHighlight()
+    let @/ = ""
+    noh
+endfunction
+
+function! NvimIdeGetCtrlOSpecialSymbolNoCond()
+    return nvim_replace_termcodes("<C-o>", v:true, v:false, v:true)
+endfunction
+
+function! NvimIdeGetCtrlOSpecialSymbol(mode)
+    return (a:mode == "i" ? NvimIdeGetCtrlOSpecialSymbolNoCond() : "")
+endfunction
+
+function! NvimIdeLocalSearch(mode, toSearch)
+    call NvimIdeHighlightGlobalSearchPattern(a:toSearch)
     " TODO: to add 'expand("<cword>")' into search history only after non-null search
 
-    let special_symbol = ""
-    if a:mode == "i"
-        let special_symbol = nvim_replace_termcodes("<C-o>", v:true, v:false, v:true)
-    endif
-
-    call feedkeys(special_symbol . "/")
+    call feedkeys(NvimIdeGetCtrlOSpecialSymbol(a:mode) . "/")
 endfunction
 
 " Search in bufer
 "     Call search
 set ignorecase
 set smartcase
-nnoremap <C-F> :noh <bar> call NvimIdeLocalSearch("n")<CR>
-inoremap <C-F> <C-O>:noh <bar> call NvimIdeLocalSearch("i")<CR>
-snoremap <C-F> <C-O>y/<C-r>"
+nnoremap <C-F> :noh <bar> call NvimIdeLocalSearch("n", expand("<cword>"))<CR>
+inoremap <C-F> <C-O>:noh <bar> call NvimIdeLocalSearch("i", expand("<cword>"))<CR>
+snoremap <C-F> <C-O>y <bar> : call NvimIdeLocalSearch("s", @")<CR>
 
 "     Continue search
 " TODO: nnoremap works incorrect: when cursor in (1,1) pos, then it dos not search (possibly stop after <Left> failure)
 nnoremap <f3> <Left>nzzgn<C-g>
 inoremap <f3> <Left><C-O>n<C-O>zz<C-O>gn<C-g>
 smap <f3> <Esc><f3>
+cnoremap <f3> <CR>
 
 " Search files
 function! NvimIdeFindFiles()
@@ -40,6 +55,6 @@ inoremap <C-k> <C-o>:call NvimIdeFindFiles()<CR>
 nnoremap <C-k> :call NvimIdeFindFiles()<CR>
 
 "     Call search
-nnoremap <M-f> :call NvimIdeSearchInFilesContent(0, "")<CR>
-inoremap <M-f> <C-o>:call NvimIdeSearchInFilesContent(1, "")<CR>
-snoremap <M-f> <C-o>y:call NvimIdeSearchInFilesContent(0, getreg())<CR>
+nnoremap <M-f> : let &hlsearch = NvimIdeSearchInFilesContent("")<CR>
+inoremap <M-f> <C-o>: let &hlsearch = NvimIdeSearchInFilesContent("")<CR>
+snoremap <M-f> <C-o>y <bar> : let &hlsearch = NvimIdeSearchInFilesContent(getreg())<CR>

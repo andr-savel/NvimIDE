@@ -39,32 +39,30 @@ function! s:IsCurrBufQuickFix()
     return &filetype == 'qf'
 endfunction
 
+function! s:IsCurrWindowQuickFix()
+    return exists("w:quickfix_title")
+endfunction
+
 " Close buffer without closing window
 " Do not switch to 'QuickFix' buffer on it's existence
 function! NvimIdeCloseCurrBuf()
-    let currBuf = bufnr()
-    if getbufinfo(currBuf)[0].changed == 1
+    if s:IsCurrWindowQuickFix()
+        call NvimIdeClearAndCloseQuickfix()
+        return
+    endif
+
+    let mruBufs = fzf#vim#_buflisted_sorted()
+
+    if len(mruBufs) < 2
+        throw "NvimIde: failed to close the only file buffer"
+    endif
+
+    if &modified
         throw "NvimIde: failed to close modified buffer"
     endif
 
-    exe 'silent bn'
-
-    let err = ""
-    try
-        if s:IsCurrBufQuickFix()
-            exe 'silent bn'
-            if bufnr() == currBuf
-                let err = "NvimIde: failed to close the only file buffer"
-            endif
-        endif
-    catch
-    endtry
-
-    if len(err)
-        throw err
-    endif
-
-    exe 'bd '.currBuf
+    exe 'silent b' . mruBufs[1]
+    exe 'bd ' . mruBufs[0]
 endfunction
 
 noremap <silent> <M-x> :call NvimIdeCloseCurrBuf()<CR>
@@ -166,13 +164,13 @@ augroup NvimIdeWindows
     autocmd VimEnter * clearjumps
 augroup END
 
-noremap <M-left> <C-o>zz
-inoremap <M-left> <C-o><C-o><C-o>zz
-snoremap <M-left> <Esc><C-o>zz
+noremap <expr> <M-left> (NvimIdeIsCodeWindow() ? '<C-o>zz' : '')
+inoremap <expr> <M-left> (NvimIdeIsCodeWindow() ? '<C-o><C-o><C-o>zz' : '')
+snoremap <expr> <M-left> (NvimIdeIsCodeWindow() ? '<Esc><C-o>zz' : '')
 
-noremap <M-right> <C-i>zz
-inoremap <M-right> <C-o><C-i><C-o>zz
-snoremap <M-right> <Esc><C-i>zz
+noremap <expr> <M-right> (NvimIdeIsCodeWindow() ? '<C-i>zz' : '')
+inoremap <expr> <M-right> (NvimIdeIsCodeWindow() ? '<C-o><C-i><C-o>zz' : '')
+snoremap <expr> <M-right> (NvimIdeIsCodeWindow() ? '<Esc><C-i>zz' : '')
 
 " Quickfix window
 
@@ -184,33 +182,37 @@ augroup NvimIdeQuickfix
     autocmd BufReadPost quickfix let s:has_quickfix_movements = 0
 augroup END
 
+function! NvimIdeCenterText(mode)
+    call feedkeys(NvimIdeGetCtrlOSpecialSymbol(a:mode) . "zz")
+endfunction
+
 "     Next/prev in quickfix window. Quickfix is used for search results, 'LSP usage' results, etc.
+function! NvimIdeJumpQFItem(mode, f)
+    exe a:f
+    call NvimIdeCenterText(a:mode)
+endfunction
+
 function! NvimIdeNextQFItem(mode)
-    if s:has_quickfix_movements
-        cn
-    else
-        cc
-    endif
+    let f = (s:has_quickfix_movements ? "cn" : "cc")
+
+    call NvimIdeJumpQFItem(a:mode, f)
     let s:has_quickfix_movements = 1
-
-    let special_symbol = ""
-    if a:mode == "i"
-        let special_symbol = nvim_replace_termcodes("<C-o>", v:true, v:false, v:true)
-    endif
-
-    call feedkeys(special_symbol . "zz")
 endfunction
 
 "     item
-nnoremap <M-down> :call NvimIdeNextQFItem("")<CR>
+nnoremap <M-down> :call NvimIdeNextQFItem("n")<CR>
 inoremap <M-down> <C-o>:call NvimIdeNextQFItem("i")<CR>
-nnoremap <M-up> :cp<CR>
-inoremap <M-up> <C-o>:cp<CR>
+smap <M-down> <Esc><M-down>
+nnoremap <M-up> :call NvimIdeJumpQFItem("n", "cp")<CR>
+inoremap <M-up> <C-o>:call NvimIdeJumpQFItem("i", "cp")<CR>
+smap <M-up> <Esc><M-up>
 "     file
-nnoremap <C-M-down> :cnf<CR>
-inoremap <C-M-down> <C-o>:cnf<CR>
-nnoremap <C-M-up> :cpf<CR>
-inoremap <C-M-up> <C-o>:cpf<CR>
+nnoremap <C-M-down> :call NvimIdeJumpQFItem("n", "cnf")<CR>
+inoremap <C-M-down> <C-o>:call NvimIdeJumpQFItem("i", "cnf")<CR>
+smap <C-M-down> <Esc><C-M-down>
+nnoremap <C-M-up> :call NvimIdeJumpQFItem("n", "cpf")<CR>
+inoremap <C-M-up> <C-o>:call NvimIdeJumpQFItem("i", "cpf")<CR>
+smap <C-M-up> <Esc><C-M-up>
 
 "     Close quickfix window.
 function! NvimIdeClearAndCloseQuickfix()
@@ -225,19 +227,8 @@ endfunction
 " TODO: possibly detection quickfix existence should be checked to close it under condition and move to insert mode
 nnoremap <silent> <Esc> :call NvimIdeClearAndCloseQuickfix()<CR>i
 
-" Highlight function
-function! NvimIdeHighlightResults(isInsertMode, ptrn)
-    let @/=escape(substitute(a:ptrn, '"', '', 'g'), '|')
-
-    if a:isInsertMode
-        call feedkeys("\<C-o>:let &hlsearch=1\<CR>", 'n')
-    else
-        call feedkeys(":let &hlsearch=1\<CR>", 'n')
-    endif
-endfunction
-
-function! NvimIdeQuickfixPostprocess(isInsertMode, ptrn)
-    call NvimIdeHighlightResults(a:isInsertMode, a:ptrn)
+function! NvimIdeQuickfixPostprocess(ptrn)
+    call v:lua.NvimIdeHighlightQuickfix(a:ptrn)
     " Goto previous windows (probably with code)
     " wincmd p
 endfunction
