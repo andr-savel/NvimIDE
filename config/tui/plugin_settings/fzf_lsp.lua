@@ -182,6 +182,7 @@ local function fzf_locations(bang, prompt, source, infile)
         "--prompt", prompt .. "> ",
         "--multi",
         "--bind", g.nvim_ide_fzf_bind,
+        "--info", "inline",
         "--history", fn.NvimIdeGetProjectExtraFilesDir() .. "/workspace_symbols_history"
     }
 

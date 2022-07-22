@@ -70,17 +70,36 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 
-function show_definition(mode)
+function show_definition()
     exec_lsp_method(lsp_method_definition, function(err, result, ctx, config)
         lsp_definition_default_handler(err, result, ctx, config)
-        vim.fn.NvimIdeCenterText(mode)
+        vim.fn.NvimIdeCenterText()
     end)
 end
 
 function NvimIdeHighlightQuickfix(toHl)
     ptrnLen = #toHl
+    listToHl = {}
+    num = 0
     for i, lItem in pairs(vim.fn.getqflist()) do
-        vim.fn.matchaddpos("RedBold", {{i, #vim.fn.getline(i) - #lItem.text + lItem.col, ptrnLen}})
+        if i == 50000 then
+            -- do not highlight huge result completely, only head
+            break
+        end
+
+        if num == 8 then
+            -- highlight results by groups (8 members in group) for better performance
+            vim.fn.matchaddpos("RedBold", listToHl)
+            listToHl = {}
+            num = 0
+        end
+
+        table.insert(listToHl, {i, #vim.fn.getline(i) - #lItem.text + lItem.col, ptrnLen})
+        num = num + 1
+    end
+
+    if #listToHl then
+        vim.fn.matchaddpos("RedBold", listToHl)
     end
 end
 
@@ -92,14 +111,14 @@ function show_references()
         lsp_reference_default_handler(err, result, ctx, config)
         if #vim.fn.getqflist() then
             vim.cmd("copen")
-            NvimIdeHighlightQuickfix(strToHl)
+            vim.fn.NvimIdeQuickfixPostprocess(strToHl)
         end
     end)
 end
 
-function goto_next_diagnostics(mode)
+function goto_next_diagnostics()
     vim.diagnostic.goto_next()
-    vim.fn.NvimIdeCenterText(mode)
+    vim.fn.NvimIdeCenterText()
 end
 
 function get_symbols(extSym)
@@ -123,8 +142,8 @@ end
 
 local on_attach = function(client, bufnr)
     -- Maps
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F2>', '<cmd>lua show_definition("n")<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F2>', '<cmd>lua show_definition("i")<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F2>', '<cmd>lua show_definition()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F2>', '<cmd>lua show_definition()<CR>', opts)
 
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F1>', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F1>', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
@@ -139,8 +158,8 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-r>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-r>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
 
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F4>', '<cmd>lua goto_next_diagnostics("n")<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F4>', '<cmd>lua goto_next_diagnostics("i")<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F4>', '<cmd>lua goto_next_diagnostics()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F4>', '<cmd>lua goto_next_diagnostics()<CR>', opts)
 
     -- 'lsp_signature' plugin initialized here. Otherwize (on standalone initialization) floating window not appear after multiple files editing and save.
     require("lsp_signature").on_attach({

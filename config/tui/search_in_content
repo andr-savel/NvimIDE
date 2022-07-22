@@ -94,46 +94,126 @@ function! NvimIdeEchoWarning(msg)
     echohl None
 endfunction
 
-function NvimIdeSearchInFilesContentCore(ptrn)
-    silent exe 'grep! "' . escape(a:ptrn, '()') . '"'
+function s:HandleQuickfixSearchResult(ptrn)
     if len(getqflist())
-        exe 'copen'
+        copen
+
         call NvimIdeQuickfixPostprocess(a:ptrn)
         call NvimIdeHighlightGlobalSearchPattern(a:ptrn)
+
         return 1
-    else
-        cclose
-        redraw
-        call NvimIdeEchoWarning("Not found: " . a:ptrn)
     endif
 
     return 0
 endfunction
 
-function! NvimIdeGenGrepScript(changedBufs)
+function! NvimIdeGenGrepScript(changedBufs, savedTmps, rgExtraArgs)
     let scriptContent = []
     call add(scriptContent, '#!/bin/bash')
-    let searcher = g:nvim_ide_content_search_rg_basic_cmd.' '.NvimIdeGetRipgrepExclusionString(a:changedBufs)." \"$1\" "
+    let searcher = g:nvim_ide_content_search_rg_basic_cmd . ' ' . a:rgExtraArgs . ' ' . NvimIdeGetRipgrepExclusionString(a:changedBufs) . " \"$1\" "
     if len(a:changedBufs) > 0
         let searcher = searcher." | sed -e s/".s:nvim_ide_tmp_files_suffix."//g"
     endif
     call add(scriptContent, searcher)
 
+    call add(scriptContent, "")
+    if len(a:savedTmps)
+        let strToDel = ""
+        for i in a:savedTmps
+            let strToDel = strToDel." ".i
+        endfor
+        call add(scriptContent, "rm " . strToDel)
+    endif
+
     call writefile(scriptContent, s:GetGrepScriptPath())
     silent exe '!chmod +x '.s:GetGrepScriptPath()
 endfunction
 
-function! NvimIdeRemoveTmps(savedTmps)
-    if len(a:savedTmps) == 0
-        return
+function! NvimIdeSearchInFilesContent__OLD(extPtrn)
+    let hasExtPtrn = len(a:extPtrn)
+
+    if hasExtPtrn
+        call NvimIdeHighlightGlobalSearchPattern(a:extPtrn)
     endif
 
-    let strToDel = ""
-    for i in a:savedTmps
-        let strToDel = strToDel." ".i
-    endfor
+    let null_input_word = '___nvim_ide_null_input___'
+    let toSearch = input({'prompt':'Project search: ', 'cancelreturn':null_input_word})
+    if toSearch == null_input_word
+        if hasExtPtrn
+            call NvimIdeRemoveGlobalSearchPatternHighlight()
+        endif
 
-    silent exe '!rm '.strToDel
+        return 0
+    endif
+
+    if len(toSearch) == 0
+        if hasExtPtrn
+            let toSearch = a:extPtrn
+            call histadd("input", toSearch)
+        endif
+    endif
+
+    if len(toSearch) == 0
+        let toSearch = expand("<cword>")
+        call histadd("input", toSearch)
+    endif
+
+    if len(toSearch) == 0
+        if hasExtPtrn
+            call NvimIdeRemoveGlobalSearchPatternHighlight()
+        endif
+
+        call NvimIdeEchoWarning("Empty search pattern")
+        return 0
+    endif
+
+    call NvimIdeRemoveGlobalSearchPatternHighlight()
+    call NvimIdeClearAndCloseQuickfix()
+
+    let changedBuffers = NvimIdeGetChangedBufferIds()
+    let savedTmps = NvimIdeSaveToTmps(changedBuffers)
+    call NvimIdeGenGrepScript(changedBuffers, savedTmps, "")
+    let searcher = s:GetGrepScriptPath()
+
+
+    let l:grepprg_au = &grepprg
+    let l:grepformat_au = &grepformat
+    let l:te = &t_te
+    let l:ti = &t_ti
+    let l:autochdir_au = &autochdir
+    let l:shellpipe_au=&shellpipe
+
+    let &grepprg = searcher
+    let &grepformat = "%f:%l:%c:%m"
+    set t_te=
+    set t_ti=
+    set noautochdir
+    let &shellpipe="\\&>"
+    let l:cwd_au = getcwd()
+    exe 'cd ' . g:nvim_ide_real_project_root
+
+    silent exe 'grep! "' . escape(toSearch, '()') . '"'
+    let ret = s:HandleQuickfixSearchResult(toSearch)
+    if ret == 0
+        call NvimIdeEchoWarning("Not found: " . toSearch)
+    endif
+
+    exe 'cd '.l:cwd_au
+    let &shellpipe=l:shellpipe_au
+    let &autochdir=l:autochdir_au
+    let &t_te=l:te
+    let &t_ti=l:ti
+    let &grepformat = l:grepformat_au
+    let &grepprg = l:grepprg_au
+
+    return ret
+endfunction
+
+function! s:rg_to_qf(line)
+  let parts = matchlist(a:line, '\(.\{-}\)\s*:\s*\(\d\+\)\%(\s*:\s*\(\d\+\)\)\?\%(\s*:\(.*\)\)\?')
+  let dict = {'filename': &acd ? fnamemodify(parts[1], ':p') : parts[1], 'lnum': parts[2], 'text': parts[4]}
+  let dict.col = parts[3]
+  return dict
 endfunction
 
 function! NvimIdeSearchInFilesContent(extPtrn)
@@ -178,39 +258,31 @@ function! NvimIdeSearchInFilesContent(extPtrn)
     call NvimIdeClearAndCloseQuickfix()
 
     let changedBuffers = NvimIdeGetChangedBufferIds()
-    call NvimIdeGenGrepScript(changedBuffers)
-    let searcher = s:GetGrepScriptPath()
     let savedTmps = NvimIdeSaveToTmps(changedBuffers)
-    let numSavedTmps = len(savedTmps)
+    call NvimIdeGenGrepScript(changedBuffers, savedTmps, "--color=always")
+    let searcher = s:GetGrepScriptPath()
 
+    let cmdToSearch = searcher . ' ' . shellescape(toSearch)
+    function! OutputToQF(lines) closure
+        let list = map(a:lines, 's:rg_to_qf(v:val)')
+        if len(list) == 1
+            exe 'e ' . list[0].filename
+            call cursor(list[0].lnum, list[0].col)
+            call NvimIdeCenterText()
+            call NvimIdeHighlightGlobalSearchPattern(toSearch)
+        else
+            call setqflist([], 'r', {"title": cmdToSearch, "items": list})
+            call s:HandleQuickfixSearchResult(toSearch)
+        endif
+    endfunction
+    call fzf#run(fzf#wrap({'source': 'cd ' . g:nvim_ide_real_project_root . '; ' . searcher . ' ' . shellescape(toSearch),
+                                   \ 'options': ' --prompt="Project search> " --multi --history='.NvimIdeGetProjectExtraFilesDir().'/fzf_search_in_content_history' .
+                                   \            ' --bind=' . g:nvim_ide_fzf_bind . ',ctrl-a:select-all' .
+                                   \            ' --info=inline' .
+                                   \            ' --ansi',
+                                   \ 'dir': g:nvim_ide_real_project_root,
+                                   \ 'sink*': function('OutputToQF')}))
 
-    let l:grepprg_au = &grepprg
-    let l:grepformat_au = &grepformat
-    let l:te = &t_te
-    let l:ti = &t_ti
-    let l:autochdir_au = &autochdir
-    let l:shellpipe_au=&shellpipe
-
-    let &grepprg = searcher
-    let &grepformat = "%f:%l:%c:%m"
-    set t_te=
-    set t_ti=
-    set noautochdir
-    let &shellpipe="\\&>"
-    let l:cwd_au = getcwd()
-    exe 'cd ' . g:nvim_ide_real_project_root
-
-    let ret = NvimIdeSearchInFilesContentCore(toSearch)
-    call NvimIdeRemoveTmps(savedTmps)
-
-    exe 'cd '.l:cwd_au
-    let &shellpipe=l:shellpipe_au
-    let &autochdir=l:autochdir_au
-    let &t_te=l:te
-    let &t_ti=l:ti
-    let &grepformat = l:grepformat_au
-    let &grepprg = l:grepprg_au
-
-    return ret
+    return 1
 endfunction
 

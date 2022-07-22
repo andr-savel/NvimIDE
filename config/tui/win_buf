@@ -182,36 +182,36 @@ augroup NvimIdeQuickfix
     autocmd BufReadPost quickfix let s:has_quickfix_movements = 0
 augroup END
 
-function! NvimIdeCenterText(mode)
-    call feedkeys(NvimIdeGetCtrlOSpecialSymbol(a:mode) . "zz")
+function! NvimIdeCenterText()
+    normal! zz
 endfunction
 
 "     Next/prev in quickfix window. Quickfix is used for search results, 'LSP usage' results, etc.
-function! NvimIdeJumpQFItem(mode, f)
+function! NvimIdeJumpQFItem(f)
     exe a:f
-    call NvimIdeCenterText(a:mode)
+    call NvimIdeCenterText()
 endfunction
 
-function! NvimIdeNextQFItem(mode)
+function! NvimIdeNextQFItem()
     let f = (s:has_quickfix_movements ? "cn" : "cc")
 
-    call NvimIdeJumpQFItem(a:mode, f)
+    call NvimIdeJumpQFItem(f)
     let s:has_quickfix_movements = 1
 endfunction
 
 "     item
-nnoremap <M-down> :call NvimIdeNextQFItem("n")<CR>
-inoremap <M-down> <C-o>:call NvimIdeNextQFItem("i")<CR>
+nnoremap <M-down> :call NvimIdeNextQFItem()<CR>
+inoremap <M-down> <C-o>:call NvimIdeNextQFItem()<CR>
 smap <M-down> <Esc><M-down>
-nnoremap <M-up> :call NvimIdeJumpQFItem("n", "cp")<CR>
-inoremap <M-up> <C-o>:call NvimIdeJumpQFItem("i", "cp")<CR>
+nnoremap <M-up> :call NvimIdeJumpQFItem("cp")<CR>
+inoremap <M-up> <C-o>:call NvimIdeJumpQFItem("cp")<CR>
 smap <M-up> <Esc><M-up>
 "     file
-nnoremap <C-M-down> :call NvimIdeJumpQFItem("n", "cnf")<CR>
-inoremap <C-M-down> <C-o>:call NvimIdeJumpQFItem("i", "cnf")<CR>
+nnoremap <C-M-down> :call NvimIdeJumpQFItem("cnf")<CR>
+inoremap <C-M-down> <C-o>:call NvimIdeJumpQFItem("cnf")<CR>
 smap <C-M-down> <Esc><C-M-down>
-nnoremap <C-M-up> :call NvimIdeJumpQFItem("n", "cpf")<CR>
-inoremap <C-M-up> <C-o>:call NvimIdeJumpQFItem("i", "cpf")<CR>
+nnoremap <C-M-up> :call NvimIdeJumpQFItem("cpf")<CR>
+inoremap <C-M-up> <C-o>:call NvimIdeJumpQFItem("cpf")<CR>
 smap <C-M-up> <Esc><C-M-up>
 
 "     Close quickfix window.
@@ -230,6 +230,6 @@ nnoremap <silent> <Esc> :call NvimIdeClearAndCloseQuickfix()<CR>i
 function! NvimIdeQuickfixPostprocess(ptrn)
     call v:lua.NvimIdeHighlightQuickfix(a:ptrn)
     " Goto previous windows (probably with code)
-    " wincmd p
+    wincmd p
 endfunction
 
