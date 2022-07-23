@@ -164,13 +164,25 @@ augroup NvimIdeWindows
     autocmd VimEnter * clearjumps
 augroup END
 
-noremap <expr> <M-left> (NvimIdeIsCodeWindow() ? '<C-o>zz' : '')
-inoremap <expr> <M-left> (NvimIdeIsCodeWindow() ? '<C-o><C-o><C-o>zz' : '')
-snoremap <expr> <M-left> (NvimIdeIsCodeWindow() ? '<Esc><C-o>zz' : '')
+function! NvimIdeJumpPrev()
+    if s:GotoCodeWindow()
+        exe "normal! \<C-o>zz"
+    endif
+endfunction
 
-noremap <expr> <M-right> (NvimIdeIsCodeWindow() ? '<C-i>zz' : '')
-inoremap <expr> <M-right> (NvimIdeIsCodeWindow() ? '<C-o><C-i><C-o>zz' : '')
-snoremap <expr> <M-right> (NvimIdeIsCodeWindow() ? '<Esc><C-i>zz' : '')
+function! NvimIdeJumpNext()
+    if s:GotoCodeWindow()
+        exe "normal! \<C-i>zz"
+    endif
+endfunction
+
+noremap <M-left> :call NvimIdeJumpPrev()<CR>
+inoremap <M-left> <C-o>: call NvimIdeJumpPrev()<CR>
+smap <M-left> <Esc><M-left>
+
+noremap <M-right> :call NvimIdeJumpNext()<CR>
+inoremap <M-right> <C-o>: call NvimIdeJumpNext()<CR>
+smap <M-right> <Esc><M-right>
 
 " Quickfix window
 

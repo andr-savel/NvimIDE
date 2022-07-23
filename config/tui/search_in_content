@@ -125,6 +125,8 @@ function! NvimIdeGenGrepScript(changedBufs, savedTmps, rgExtraArgs)
         call add(scriptContent, "rm " . strToDel)
     endif
 
+    call add(scriptContent, "exit 0")
+
     call writefile(scriptContent, s:GetGrepScriptPath())
     silent exe '!chmod +x '.s:GetGrepScriptPath()
 endfunction
