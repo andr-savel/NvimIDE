@@ -135,19 +135,23 @@ augroup NvimIdeVimspector
     autocmd User VimspectorDebugEnded call s:CloseTerm()
 augroup END
 
-function! s:FindDebuggeePID()
-    return str2nr(system("pidof " . g:nvim_ide_debuggee_binary_path))
-endfunction
+function! s:SetDbgParams()
+    let g:nvim_ide_debuggee_binary_path = input({'prompt': 'Debug program path: ', 'default': g:nvim_ide_debuggee_binary_path})
+    let g:nvim_ide_debuggee_binary_args = split(input({'prompt': 'Debug program args: ', 'default': join(g:nvim_ide_debuggee_binary_args, " ")}))
 
-function! NvimIdeDebugAttach()
+    " TODO: it is used to clear command line content. Should be used something more suitable.
+    exe "normal! /"
+endfunction
+command! NvimIdeSetDbgParams :call s:SetDbgParams()
+
+function! s:AttachToProcess(debuggeePID)
     if s:IsLldbVscodeFileType()
-        let debuggeePID = s:FindDebuggeePID()
         call vimspector#LaunchWithConfigurations({
         \    "Attach C++": {
         \        "adapter": "lldb-vscode",
         \        "configuration": {
         \            "request": "attach",
-        \            "pid#json": debuggeePID
+        \            "pid#json": a:debuggeePID
         \        },
         \        "breakpoints": {
         \            "exception": {
@@ -162,30 +166,63 @@ function! NvimIdeDebugAttach()
         \    }
         \ })
     elseif &filetype == "go"
-        let debuggeePID = s:FindDebuggeePID()
         if !debuggeePID
             echoerr("Cannot find running process '" . g:nvim_ide_debuggee_binary_path . "'")
             return
         endif
 
         call vimspector#LaunchWithConfigurations({
-        \    "Attach Go": { 
+        \    "Attach Go": {
         \        "adapter": "delve",
         \        "filetypes": ["go"],
         \        "configuration": {
         \            "request": "attach",
         \            "mode": "local",
-        \            "processId#json": debuggeePID
+        \            "processId#json": a:debuggeePID
         \        }
         \    }
         \ })
     endif
 endfunction
 
+function! NvimIdeDebugAttach()
+    if len(g:nvim_ide_debuggee_binary_path) == 0
+        call s:SetDbgParams()
+    endif
+
+    let pids = split(system("pidof " . g:nvim_ide_debuggee_binary_path))
+    let pidsLen = len(pids)
+    if pidsLen == 0
+        echoerr("NvimIde: cannot find running process '" . g:nvim_ide_debuggee_binary_path . "'")
+        return
+    elseif pidsLen == 1
+        call s:AttachToProcess(str2nr(pids[0]))
+        return
+    endif
+
+
+    function! AttachToProc(line)
+        let arr = split(a:line)
+        if len(arr) > 0
+            call s:AttachToProcess(str2nr(arr[0]))
+        endif
+    endfunction
+    let binName = fnamemodify(g:nvim_ide_debuggee_binary_path, ':t')
+    call fzf#run(fzf#wrap({'source': 'ps -u ' . $USER . ' -eo "%p   %a" --no-headers | grep -v "query=' . binName . '"',
+                                   \ 'options': ' --prompt="Processes> "' .
+                                   \            ' --info=inline' .
+                                   \            ' --query=' . binName,
+                                   \ 'sink': function('AttachToProc')}))
+endfunction
+
 function! NvimIdeDebugLaunchOrContinue()
     if exists("g:vimspector_session_windows") && has_key(g:vimspector_session_windows, "tabpage")
         call vimspector#Continue()
     else
+        if len(g:nvim_ide_debuggee_binary_path) == 0
+            call s:SetDbgParams()
+        endif
+
         if s:IsLldbVscodeFileType()
             call vimspector#LaunchWithConfigurations({
             \    "Launch C++": {
@@ -193,8 +230,8 @@ function! NvimIdeDebugLaunchOrContinue()
             \        "configuration": {
             \            "filetypes": ["cpp", "c", "objc", "rust"],
             \            "request": "launch",
-            \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}",
-            \            "args": ["*${CommandLineArgs:" . g:nvim_ide_debuggee_binary_args . "}"],
+            \            "program": g:nvim_ide_debuggee_binary_path,
+            \            "args": g:nvim_ide_debuggee_binary_args,
             \            "externalConsole": v:true
             \        },
             \        "breakpoints": {
@@ -220,8 +257,8 @@ function! NvimIdeDebugLaunchOrContinue()
             \        "filetypes": ["go"],
             \        "configuration": {
             \            "request": "launch",
-            \            "program": "${ProgramPath:" . g:nvim_ide_debuggee_binary_path . "}",
-            \            "args": ["*${CommandLineArgs:" . g:nvim_ide_debuggee_binary_args . "}"],
+            \            "program": g:nvim_ide_debuggee_binary_path,
+            \            "args": g:nvim_ide_debuggee_binary_args,
             \            "mode": "exec"
             \        }
             \    }
