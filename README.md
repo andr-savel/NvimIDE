@@ -48,7 +48,7 @@ For old go versions:
 ```
     pip install pyright
 ```
-8) Install 'lldb', 'lldb-vscode', 'lldb-server' to debug C/C++ projects
+8) Install 'lldb', 'lldb-vscode', 'lldb-server', 'llvm-symbolizer' to debug C/C++ projects
 9) To use fast search in whole project install 'ripgrep'
 10) To use system clipboard please install 'xclip'.
 

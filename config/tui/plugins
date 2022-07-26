@@ -30,6 +30,8 @@ Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
 
 Plug 'puremourning/vimspector'
+Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
 
 Plug 'sainnhe/gruvbox-material'
 " Plug 'sainnhe/sonokai'
@@ -72,6 +74,7 @@ if exists("g:nvim_ide_project_root")
     luafile $HOME/.config/nvim/tui/plugin_settings/fzf_lsp.lua
     luafile $HOME/.config/nvim/tui/plugin_settings/lsp.lua
     source $HOME/.config/nvim/tui/plugin_settings/vimspector
+    source $HOME/.config/nvim/tui/plugin_settings/nvim-dap.lua
     source $HOME/.config/nvim/tui/plugin_settings/diffview
 endif
 luafile $HOME/.config/nvim/tui/plugin_settings/lualine.lua

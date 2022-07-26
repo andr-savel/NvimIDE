@@ -38,16 +38,26 @@ function! NvimIdeGetChangedBufferIds()
     return changedBuffers
 endfunction
 
-function! NvimIdeGetBuffersRelativePaths(bIds)
-    let out = []
+function! s:GetStartIdx()
     let startIdx = len(g:nvim_ide_real_project_root)
     if g:nvim_ide_real_project_root[startIdx - 1] != '/'
         let startIdx = startIdx + 1
     endif
+
+    return startIdx
+endfunction
+
+function! s:ContainsRootPath(fullPath)
+    let idx = stridx(a:fullPath, g:nvim_ide_real_project_root)
+    return idx != -1
+endfunction
+
+function! NvimIdeGetBuffersRelativePaths(bIds)
+    let out = []
+    let startIdx = s:GetStartIdx()
     for bi in a:bIds
         let fullPath = expand("#".bi.":p")
-        let idx = stridx(fullPath, g:nvim_ide_real_project_root)
-        if idx != -1
+        if s:ContainsRootPath(fullPath)
             call add(out, fullPath[startIdx:])
         endif
     endfor
@@ -107,23 +117,34 @@ function s:HandleQuickfixSearchResult(ptrn)
     return 0
 endfunction
 
+let s:search_completion_marker = "        \e[1;34m \u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584  \e[0m"
+
 function! NvimIdeGenGrepScript(changedBufs, savedTmps, rgExtraArgs)
+    let basicSearcher = g:nvim_ide_content_search_rg_basic_cmd . ' ' . a:rgExtraArgs
+
     let scriptContent = []
     call add(scriptContent, '#!/bin/bash')
-    let searcher = g:nvim_ide_content_search_rg_basic_cmd . ' ' . a:rgExtraArgs . ' ' . NvimIdeGetRipgrepExclusionString(a:changedBufs) . " \"$1\" "
-    if len(a:changedBufs) > 0
-        let searcher = searcher." | sed -e s/".s:nvim_ide_tmp_files_suffix."//g"
-    endif
-    call add(scriptContent, searcher)
 
     call add(scriptContent, "")
     if len(a:savedTmps)
-        let strToDel = ""
+        let startIdx = s:GetStartIdx()
+        let strTmps = ""
         for i in a:savedTmps
-            let strToDel = strToDel." ".i
+            if s:ContainsRootPath(i)
+                let strTmps = strTmps . " " . i[startIdx:]
+            endif
         endfor
-        call add(scriptContent, "rm " . strToDel)
+
+        call add(scriptContent, basicSearcher . " \"$1\" " . strTmps . " | sed -e s/" . s:nvim_ide_tmp_files_suffix . "//g")
+        call add(scriptContent, "rm " . strTmps)
     endif
+
+    call add(scriptContent, "")
+    call add(scriptContent, basicSearcher . ' ' . NvimIdeGetRipgrepExclusionString(a:changedBufs) . " \"$1\" ")
+
+    call add(scriptContent, "")
+    " search_completion_marker helps to distinguish long search from completed empty search
+    call add(scriptContent, 'echo "' . s:search_completion_marker . '"')
 
     call add(scriptContent, "exit 0")
 
@@ -212,10 +233,10 @@ function! NvimIdeSearchInFilesContent__OLD(extPtrn)
 endfunction
 
 function! s:rg_to_qf(line)
-  let parts = matchlist(a:line, '\(.\{-}\)\s*:\s*\(\d\+\)\%(\s*:\s*\(\d\+\)\)\?\%(\s*:\(.*\)\)\?')
-  let dict = {'filename': &acd ? fnamemodify(parts[1], ':p') : parts[1], 'lnum': parts[2], 'text': parts[4]}
-  let dict.col = parts[3]
-  return dict
+    let parts = matchlist(a:line, '\(.\{-}\)\s*:\s*\(\d\+\)\%(\s*:\s*\(\d\+\)\)\?\%(\s*:\(.*\)\)\?')
+    let dict = {'filename': &acd ? fnamemodify(parts[1], ':p') : parts[1], 'lnum': parts[2], 'text': parts[4]}
+    let dict.col = parts[3]
+    return dict
 endfunction
 
 function! NvimIdeSearchInFilesContent(extPtrn)
@@ -264,11 +285,22 @@ function! NvimIdeSearchInFilesContent(extPtrn)
     call NvimIdeGenGrepScript(changedBuffers, savedTmps, "--color=always")
     let searcher = s:GetGrepScriptPath()
 
-    let cmdToSearch = searcher . ' ' . shellescape(toSearch)
+    let cmdToSearch = searcher . ' ' . shellescape(escape(toSearch, '()'))
     function! OutputToQF(lines) closure
-        let list = map(a:lines, 's:rg_to_qf(v:val)')
+        let list = []
+        for l in a:lines
+            if l[0] == s:search_completion_marker[0]
+                continue
+            endif
+
+            call add(list, s:rg_to_qf(l))
+        endfor
+
         if len(list) == 1
-            exe 'e ' . list[0].filename
+            if resolve(expand('%:p')) != resolve(list[0].filename)
+                exe 'e ' . list[0].filename
+            endif
+
             call cursor(list[0].lnum, list[0].col)
             call NvimIdeCenterText()
             call NvimIdeHighlightGlobalSearchPattern(toSearch)
@@ -277,7 +309,7 @@ function! NvimIdeSearchInFilesContent(extPtrn)
             call s:HandleQuickfixSearchResult(toSearch)
         endif
     endfunction
-    call fzf#run(fzf#wrap({'source': 'cd ' . g:nvim_ide_real_project_root . '; ' . searcher . ' ' . shellescape(toSearch),
+    call fzf#run(fzf#wrap({'source': 'cd ' . g:nvim_ide_real_project_root . '; ' . cmdToSearch,
                                    \ 'options': ' --prompt="Project search> " --multi --history='.NvimIdeGetProjectExtraFilesDir().'/fzf_search_in_content_history' .
                                    \            ' --bind=' . g:nvim_ide_fzf_bind . ',ctrl-a:select-all' .
                                    \            ' --info=inline' .
