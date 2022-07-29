@@ -41,7 +41,7 @@ cnoremap <f3> <CR>
 
 " Search files
 function! NvimIdeFindFiles()
-    let l:dir = getcwd()
+    let l:dir = g:nvim_ide_start_dir
     if exists("g:nvim_ide_project_root")
         let l:dir = g:nvim_ide_project_root
     endif

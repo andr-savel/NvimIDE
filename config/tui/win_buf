@@ -138,15 +138,15 @@ function! NvimIdeBuffers()
         return
     endif
 
-    if !exists("g:nvim_ide_project_root")
-        call s:ShowFzfBuffers()
-        return
+    let effectiveRoot = g:nvim_ide_start_dir
+    if exists("g:nvim_ide_project_root")
+        let effectiveRoot = g:nvim_ide_project_root
     endif
 
-    let l:cwd_au = getcwd()
-    exe 'cd '.g:nvim_ide_project_root
+    let cwd_au = getcwd()
+    exe 'cd ' . effectiveRoot
     call s:ShowFzfBuffers()
-    exe 'cd '.l:cwd_au
+    exe 'cd ' . cwd_au
 endfunction
 
 inoremap <C-PageUp> <C-o>:call NvimIdeBuffers()<CR>

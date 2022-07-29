@@ -1,12 +1,14 @@
 " Default values for optional project settings
 
+let g:nvim_ide_start_dir = getcwd()
+
 if exists("g:nvim_ide_project_root")
     let g:nvim_ide_real_project_root = resolve(g:nvim_ide_project_root)
 endif
 
 "     Source for fzf
 if !exists("g:nvim_ide_fzf_source")
-    let g:nvim_ide_fzf_source = 'rg --files'
+    let g:nvim_ide_fzf_source = 'rg --files -L'
 endif
 
 "     Basic line for search in project files content using ripgrep
