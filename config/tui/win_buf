@@ -10,24 +10,29 @@ onoremap <C-w> <C-O><C-w>w
 "     in 'terminal' mode
 tnoremap <C-w> <C-\><C-N><C-w>wi
 
+" New tab
+noremap <silent> <C-t> :tab sb<CR>
+inoremap <silent> <C-t> <C-O>:tab sb<CR>
+
 " Switch tabs
-noremap <silent> <C-Up> :tabprev<CR>
-inoremap <silent> <C-Up> <C-O>:tabprev<CR>
-snoremap <silent> <C-Up> <Esc>:tabprev<CR>
-cnoremap <silent> <C-Up> <C-O>:tabprev<CR>
-onoremap <silent> <C-Up> <C-O>:tabprev<CR>
+noremap <silent> <C-PageUp> :tabprev<CR>
+inoremap <silent> <C-PageUp> <C-O>:tabprev<CR>
+snoremap <silent> <C-PageUp> <Esc>:tabprev<CR>
+cnoremap <silent> <C-PageUp> <C-O>:tabprev<CR>
+onoremap <silent> <C-PageUp> <C-O>:tabprev<CR>
 
-noremap <silent> <C-Down> :tabnext<CR>
-inoremap <silent> <C-Down> <C-O>:tabnext<CR>
-snoremap <silent> <C-Down> <Esc>:tabnext<CR>
-cnoremap <silent> <C-Down> <C-O>:tabnext<CR>
-onoremap <silent> <C-Down> <C-O>:tabnext<CR>
+noremap <silent> <C-PageDown> :tabnext<CR>
+inoremap <silent> <C-PageDown> <C-O>:tabnext<CR>
+snoremap <silent> <C-PageDown> <Esc>:tabnext<CR>
+cnoremap <silent> <C-PageDown> <C-O>:tabnext<CR>
+onoremap <silent> <C-PageDown> <C-O>:tabnext<CR>
 
-" Close tab
-noremap <M-q> :tabclose<CR>
-inoremap <M-q> <C-O>:tabclose<CR>
+" Close tab (like finish shell session in teminal)
+noremap <C-d> :tabclose<CR>
+inoremap <C-d> <C-O>:tabclose<CR>
 
 " Close window without closing buffer
+" TODO: do not close window when it is last window in tab
 noremap <M-c> <C-w>c
 inoremap <M-c> <C-O><C-w>c
 cnoremap <M-c> <C-O><C-w>c
@@ -80,6 +85,11 @@ function! NvimIdeIsCodeWindow()
 
     return v:false
 endfunction
+
+augroup NvimIdeTabNewGroup
+    autocmd!
+    autocmd TabNew * call NvimIdeMarkCodeWindow()
+augroup end
 
 "     this function should be called on startup to mark initial window as 'code' window
 call NvimIdeMarkCodeWindow()
@@ -149,12 +159,13 @@ function! NvimIdeBuffers()
     exe 'cd ' . cwd_au
 endfunction
 
-inoremap <C-PageUp> <C-o>:call NvimIdeBuffers()<CR>
-nnoremap <C-PageUp> :call NvimIdeBuffers()<CR>
-tnoremap <C-PageUp> <C-\><C-N>:call NvimIdeBuffers()<CR>
-inoremap <C-PageDown> <C-o>:call NvimIdeBuffers()<CR>
-nnoremap <C-PageDown> :call NvimIdeBuffers()<CR>
-tnoremap <C-PageDown> <C-\><C-N>:call NvimIdeBuffers()<CR>
+" Switch buffers (should be in sync with fzf parts in tui/terminal)
+inoremap <C-Up> <C-o>:call NvimIdeBuffers()<CR>
+nnoremap <C-Up> :call NvimIdeBuffers()<CR>
+tnoremap <C-Up> <C-\><C-N>:call NvimIdeBuffers()<CR>
+inoremap <C-Down> <C-o>:call NvimIdeBuffers()<CR>
+nnoremap <C-Down> :call NvimIdeBuffers()<CR>
+tnoremap <C-Down> <C-\><C-N>:call NvimIdeBuffers()<CR>
 
 " Win/Buf navigation using 'jumps'
 " TODO: test 'set jumpoptions+=stack' behaviour

@@ -278,9 +278,9 @@ nnoremap <F5> :call NvimIdeDebugLaunchOrContinue()<CR>
 inoremap <F5> <C-o>:call NvimIdeDebugLaunchOrContinue()<CR>
 snoremap <F5> <Esc>:call NvimIdeDebugLaunchOrContinue()<CR>
 
-nnoremap <C-d> :call NvimIdeDebugAttach()<CR>
-inoremap <C-d> <C-o>:call NvimIdeDebugAttach()<CR>
-snoremap <C-d> <Esc>:call NvimIdeDebugAttach()<CR>
+nnoremap <M-a> :call NvimIdeDebugAttach()<CR>
+inoremap <M-a> <C-o>:call NvimIdeDebugAttach()<CR>
+snoremap <M-a> <Esc>:call NvimIdeDebugAttach()<CR>
 
 nnoremap <F6> :call NvimIdeDebugClose()<CR>
 inoremap <F6> <C-o>:call NvimIdeDebugClose()<CR>

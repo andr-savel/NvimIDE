@@ -2,8 +2,8 @@
 " i
 
 " Open new terminal
-map <C-t> <C-g>term<CR>
-imap <C-t> <C-g>term<CR>
+map <M-t> <C-g>term<CR>
+imap <M-t> <C-g>term<CR>
 
 let s:is_in_fzf = 0
 function! s:FzfMaps()
@@ -13,8 +13,8 @@ function! s:FzfMaps()
     tunmap <Esc><Esc>
 
     " Move up/down for buffers
-    tnoremap <C-PageUp> <up>
-    tnoremap <C-PageDown> <down>
+    tnoremap <C-Up> <up>
+    tnoremap <C-Down> <down>
 endfunction
 
 function! s:ActionsOnTermClose()
@@ -23,8 +23,8 @@ function! s:ActionsOnTermClose()
 
     if s:is_in_fzf
         " Restore key maps for switch buffers
-        tnoremap <C-PageUp> <C-\><C-N>:call NvimIdeBuffers()<CR>
-        tnoremap <C-PageDown> <C-\><C-N>:call NvimIdeBuffers()<CR>
+        tnoremap <C-Up> <C-\><C-N>:call NvimIdeBuffers()<CR>
+        tnoremap <C-Down> <C-\><C-N>:call NvimIdeBuffers()<CR>
 
         " Restore key map for 'leave terminal mode'
         tnoremap <ESC><ESC> <C-\><C-N>
