@@ -9,8 +9,25 @@ The following steps should be done to install NvimIde:
     pip install neovim
     pip3 install neovim
 ```
-3) Install C/C++ language server 'clangd'.
-It is possible to use 'ccls': uncomment appropriate code in lsp.lua
+3) Install C/C++ language server 'clangd' (it is possible to use 'ccls': uncomment appropriate code in lsp.lua).
+There are cases when clangd cannot detect correctly paths to std lib headers (for example when custom non-system compiler is used).
+It can be fixed in two ways:
+-- provide '--query-driver' argument to clangd with path to compiler executable
+-- generate list of include paths which compiler is used via, for example, this command
+```
+g++ -E -x c++ - -v < /dev/null
+```
+and insert this list into CMAKE_C_FLAGS and CMAKE_CXX_FLAGS cmake file (example):
+```
+set(CMAKE_C_FLAGS "-isystem /usr/include/c++/11 \
+                   -isystem /usr/include/x86_64-linux-gnu/c++/11 \
+                   -isystem /usr/include/c++/11/backward \
+                   -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include \
+                   -isystem /usr/local/include \
+                   -isystem /usr/include/x86_64-linux-gnu \
+                   -isystem /usr/include ")
+set(CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
+```
 
 4) Install lldb (C/C++ debugger)
 5) Install 'compdb' (creates compilation database for C/C++ projects)
