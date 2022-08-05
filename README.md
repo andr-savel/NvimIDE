@@ -12,8 +12,8 @@ The following steps should be done to install NvimIde:
 3) Install C/C++ language server 'clangd' (it is possible to use 'ccls': uncomment appropriate code in lsp.lua).
 There are cases when clangd cannot detect correctly paths to std lib headers (for example when custom non-system compiler is used).
 It can be fixed in two ways:
--- provide '--query-driver' argument to clangd with path to compiler executable
--- generate list of include paths which compiler is used via, for example, this command
+ - provide '--query-driver' argument to clangd with path to compiler executable
+ - generate list of include paths which compiler is used via, for example, this command
 ```
 g++ -E -x c++ - -v < /dev/null
 ```
