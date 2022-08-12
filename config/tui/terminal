@@ -4,6 +4,7 @@
 " Open new terminal
 map <M-t> <C-g>term<CR>
 imap <M-t> <C-g>term<CR>
+tmap <M-t> <C-\><C-N><C-g>term<CR>
 
 let s:is_in_fzf = 0
 function! s:FzfMaps()

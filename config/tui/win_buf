@@ -13,6 +13,7 @@ tnoremap <C-w> <C-\><C-N><C-w>wi
 " New tab
 noremap <silent> <C-t> :tab sb<CR>
 inoremap <silent> <C-t> <C-O>:tab sb<CR>
+tnoremap <silent> <C-t> <C-\><C-N>:tab sb<CR>
 
 " Switch tabs
 noremap <silent> <C-PageUp> :tabprev<CR>
@@ -20,12 +21,16 @@ inoremap <silent> <C-PageUp> <C-O>:tabprev<CR>
 snoremap <silent> <C-PageUp> <Esc>:tabprev<CR>
 cnoremap <silent> <C-PageUp> <C-O>:tabprev<CR>
 onoremap <silent> <C-PageUp> <C-O>:tabprev<CR>
+"     in 'terminal' mode
+tnoremap <silent> <C-PageUp> <C-\><C-N>:tabprev<CR>i
 
 noremap <silent> <C-PageDown> :tabnext<CR>
 inoremap <silent> <C-PageDown> <C-O>:tabnext<CR>
 snoremap <silent> <C-PageDown> <Esc>:tabnext<CR>
 cnoremap <silent> <C-PageDown> <C-O>:tabnext<CR>
 onoremap <silent> <C-PageDown> <C-O>:tabnext<CR>
+"     in 'terminal' mode
+tnoremap <silent> <C-PageDown> <C-\><C-N>:tabnext<CR>i
 
 " Close tab (like finish shell session in teminal)
 noremap <C-d> :tabclose<CR>
@@ -97,10 +102,12 @@ call NvimIdeMarkCodeWindow()
 " Split window vertically
 noremap <silent> <M-\> <C-w>v:call NvimIdeMarkCodeWindow()<CR><C-w>w
 inoremap <silent> <M-\> <C-O><C-w>v<C-o>:call NvimIdeMarkCodeWindow()<CR><C-o><C-w>w
+tnoremap <silent> <M-\> <C-\><C-N><C-w>v:call NvimIdeMarkCodeWindow()<CR><C-w>wi
 
 " Split windows horizontally
 noremap <silent> <M--> <C-w>s:call NvimIdeMarkCodeWindow()<CR><C-w>w
 inoremap <silent> <M--> <C-O><C-w>s<C-o>:call NvimIdeMarkCodeWindow()<CR><C-o><C-w>w
+tnoremap <silent> <M--> <C-\><C-N><C-w>s:call NvimIdeMarkCodeWindow()<CR><C-w>wi
 
 " Switch buffers
 function! s:ShowFzfBuffers()
@@ -162,9 +169,11 @@ endfunction
 " Switch buffers (should be in sync with fzf parts in tui/terminal)
 inoremap <C-Up> <C-o>:call NvimIdeBuffers()<CR>
 nnoremap <C-Up> :call NvimIdeBuffers()<CR>
+snoremap <C-Up> <Esc>:call NvimIdeBuffers()<CR>
 tnoremap <C-Up> <C-\><C-N>:call NvimIdeBuffers()<CR>
 inoremap <C-Down> <C-o>:call NvimIdeBuffers()<CR>
 nnoremap <C-Down> :call NvimIdeBuffers()<CR>
+snoremap <C-Down> <Esc>:call NvimIdeBuffers()<CR>
 tnoremap <C-Down> <C-\><C-N>:call NvimIdeBuffers()<CR>
 
 " Win/Buf navigation using 'jumps'
@@ -256,3 +265,58 @@ function! NvimIdeQuickfixPostprocess(ptrn)
     wincmd p
 endfunction
 
+" Tabline settings
+function NvimIdeTabLine()
+    let s = ''
+    for i in range(tabpagenr('$'))
+        " select the highlighting
+        if i + 1 == tabpagenr()
+            let s ..= '%#TabLineSel#'
+        else
+            let s ..= '%#TabLine#'
+        endif
+
+        " set the tab page number (for mouse clicks)
+        let s ..= '%' .. (i + 1) .. 'T'
+
+        " the label is made by NvimIdeTabLabel()
+        let s ..= "\u258f" .. '%{NvimIdeTabLabel(' .. (i + 1) .. ')} '
+    endfor
+
+    " after the last tab fill with TabLineFill and reset tab page nr
+    let s ..= '%#TabLineFill#%T'
+
+    " right-align the label to close the current tab page
+    if tabpagenr('$') > 1
+        let s ..= '%=%#TabLine#%999XX'
+    endif
+
+    return s
+endfunction
+
+function NvimIdeTabLabel(n)
+    let label = ''
+    let bufnrlist = tabpagebuflist(a:n)
+
+    " Add '+' if one of the buffers in the tab page is modified
+    for bufnr in bufnrlist
+        if getbufvar(bufnr, "&modified")
+            let label = '+'
+            break
+        endif
+    endfor
+
+    " Append the number of windows in the tab page if more than one
+    let wincount = tabpagewinnr(a:n, '$')
+    if wincount > 1
+        let label ..= wincount
+    endif
+    if label != ''
+        let label ..= ' '
+    endif
+
+    " Append the buffer name
+    return label ..  fnamemodify(bufname(bufnrlist[tabpagewinnr(a:n) - 1]), ':t')
+endfunction
+
+set tabline=%!NvimIdeTabLine()

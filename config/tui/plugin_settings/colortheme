@@ -6,6 +6,7 @@ let g:gruvbox_material_background = 'medium'
 let g:gruvbox_material_enable_bold = 1
 let g:gruvbox_material_visual = 'reverse'
 let g:gruvbox_material_diagnostic_virtual_text = 'colored'
+let g:gruvbox_material_disable_terminal_colors = 1
 colorscheme gruvbox-material
 
 " let g:sonokai_style = 'shusia'
@@ -16,7 +17,7 @@ colorscheme gruvbox-material
 
 
 " Custom color settings
-"     Do not use apecial highlight for sign column
+"     Do not use special highlight for sign column
 highlight clear SignColumn
 
 "     Line highlight
@@ -31,4 +32,22 @@ hi WarningMsg ctermfg=black ctermbg=yellow guifg=black guibg=yellow gui=None
 
 "     Set color for bracket pairs
 hi MatchParen guibg=darkcyan guifg=NONE
+
+"     Terminal colors ('DimmedMonokai_without_bright_colors' terminal emulator color theme from 'utils' repository)
+let g:terminal_color_0  = '#3a3d43'
+let g:terminal_color_1  = '#be3f48'
+let g:terminal_color_2  = '#879a3b'
+let g:terminal_color_3  = '#c5a635'
+let g:terminal_color_4  = '#4f76a1'
+let g:terminal_color_5  = '#855c8d'
+let g:terminal_color_6  = '#7dd6cf'
+let g:terminal_color_7  = '#b9bcba'
+let g:terminal_color_8  = '#888987'
+let g:terminal_color_9  = '#be3f48'
+let g:terminal_color_10 = '#879a3b'
+let g:terminal_color_11 = '#c47033'
+let g:terminal_color_12 = '#547c99'
+let g:terminal_color_13 = '#9f4e85'
+let g:terminal_color_14 = '#7dd6cf'
+let g:terminal_color_15 = '#fdffb9'
 
