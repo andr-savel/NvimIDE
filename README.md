@@ -29,8 +29,7 @@ set(CMAKE_C_FLAGS "-isystem /usr/include/c++/11 \
 set(CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
 ```
 
-4) Install lldb (C/C++ debugger)
-5) Install 'compdb' (creates compilation database for C/C++ projects)
+4) Install 'compdb' (creates compilation database for C/C++ projects)
 ```
     pip install compdb
 ```
@@ -49,7 +48,7 @@ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug ..
 ```
 After this manipulations NvimIde ready to index C/C++ code using g:nvim_ide_cpp_compilation_database_command
 
-6) Install go language server
+5) Install go language server
 
 For new go versions
 ```
@@ -61,27 +60,27 @@ For old go versions:
     go get golang.org/x/tools/gopls@latest
     export PATH=$HOME/go/bin:$PATH
 ```
-7) Install python language server:
+6) Install python language server:
 ```
     pip install pyright
 ```
-8) Install 'lldb', 'lldb-vscode', 'lldb-server', 'llvm-symbolizer' to debug C/C++ projects
-9) To use fast search in whole project install 'ripgrep'
-10) To use system clipboard please install 'xclip'.
+7) Install 'lldb', 'lldb-vscode', 'lldb-server', 'llvm-symbolizer' to debug C/C++ projects
+8) To use fast search in whole project install 'ripgrep'
+9) To use system clipboard please install 'xclip'.
 
-11) Link files from this repo to nvim dir
+10) Link files from this repo to nvim dir
 ```
     ln -s <cloned_repo_path>/config/* ~/.config/nvim
 ```
-12) Start nvim
+11) Start nvim
 
 First run leads to many errors because no plugins have been installed.
 Please install it manually via
 ```
 :PlugInstall
 ```
-13) Close nvim
-14) Start nvim again with --cmd option (see below) to install part of DAP adapters for 'vimpector' plugin
+12) Close nvim
+13) Start nvim again with --cmd option (see below) to install part of DAP adapters for 'vimpector' plugin
 
 ## Usage
 To use NvimIde project config file should be created. See 'doc/project.conf' example for details.
