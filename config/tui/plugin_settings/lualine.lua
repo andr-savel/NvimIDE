@@ -27,7 +27,7 @@ local filename = function()
     if nm == "" then
         nm = "[No Name]"
     elseif vim.g.nvim_ide_project_root then
-        local _, e = nm:find(vim.g.nvim_ide_project_root, 1, true)
+        local _, e = nm:find(vim.g.nvim_ide_real_project_root, 1, true)
         if e then
             local ind = e + 1
             if nm:sub(ind, ind) == "/" then

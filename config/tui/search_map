@@ -30,7 +30,7 @@ set ignorecase
 set smartcase
 nnoremap <C-F> :noh <bar> call NvimIdeLocalSearch("n", expand("<cword>"))<CR>
 inoremap <C-F> <C-O>:noh <bar> call NvimIdeLocalSearch("i", expand("<cword>"))<CR>
-snoremap <C-F> <C-O>y <bar> : call NvimIdeLocalSearch("s", @")<CR>
+snoremap <C-F> <C-O>"ay <bar> : call NvimIdeLocalSearch("s", getreg("a"))<CR>
 
 "     Continue search
 " TODO: nnoremap works incorrect: when cursor in (1,1) pos, then it dos not search (possibly stop after <Left> failure)
