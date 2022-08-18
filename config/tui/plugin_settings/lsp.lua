@@ -161,6 +161,7 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F4>', '<cmd>lua goto_next_diagnostics()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F4>', '<cmd>lua goto_next_diagnostics()<CR>', opts)
 
+--[[
     -- 'lsp_signature' plugin initialized here. Otherwize (on standalone initialization) floating window not appear after multiple files editing and save.
     require("lsp_signature").on_attach({
         hint_enable = false,
@@ -169,6 +170,7 @@ local on_attach = function(client, bufnr)
         -- '<M-/>' key should be in sync with <Esc> mapping in 'editor' file
         toggle_key = "<M-/>"
     })
+--]]
 
     -- Highlight symbol under cursor
     require('illuminate').on_attach(client)
@@ -250,7 +252,11 @@ if vim.g.nvim_ide_cpp_compilation_database_command then
 --]]
 
     servers["clangd"] = {
-        cmd = {"clangd", "--background-index", "--compile-commands-dir", vim.g.nvim_ide_project_root, "-j", vim.fn.string(vim.g.nvim_ide_cpp_language_server_threads)},
+        cmd = {"clangd",
+                   "--background-index",
+                   "--compile-commands-dir", vim.g.nvim_ide_project_root,
+                   "--completion-style", "bundled",
+                   "-j", vim.fn.string(vim.g.nvim_ide_cpp_language_server_threads)},
         filetypes = {"c", "cpp", "objc", "objcpp"},
         single_file_support = true
     }
@@ -259,6 +265,17 @@ end
 -- Set common settings and setup servers
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 capabilities = vim.tbl_extend('keep', capabilities, lsp_status.capabilities)
+capabilities = vim.tbl_extend('keep', {
+    textDocument = {
+        completion = {
+            completionItem = {
+                -- switch-off function's full signature on autocomplete item selection (only name will be inserted)
+                snippetSupport = false
+            }
+        }
+    }
+}, capabilities)
+
 for lsp, settings in pairs(servers) do
     -- Common settings for all servers
     settings["on_attach"] = on_attach

@@ -132,10 +132,12 @@ snoremap <ScrollWheelDown> <Esc><ScrollWheelDown>
 command! NvimIdeFullFilePath : let @+ = expand("%:p") | echo @+
 
 " <Esc> complex behaviour
-function! NvimIdeHasSignatureFloatingWindow()
-    return len(filter(nvim_list_wins(), {k,v->nvim_win_get_config(v).relative == "win"})) == 1
-endfunction
+inoremap <silent> <expr> <Esc> (v:hlsearch == 1 ? '<C-O>:noh<CR>' : '<Esc>')
 
-"     Map <Esc> to close 'signature' floating window if it exests. Note that '<M-/>' map should be in sync with 'lsp_signature.toggle_key' value from 'plugin_settings/lsp' file
-inoremap <silent> <expr> <Esc> (NvimIdeHasSignatureFloatingWindow() ? '<C-o>:call feedkeys("\<M-/>")<CR>' : (v:hlsearch == 1 ? '<C-O>:noh<CR>' : '<Esc>'))
+"function! NvimIdeHasSignatureFloatingWindow()
+"    return len(filter(nvim_list_wins(), {k,v->nvim_win_get_config(v).relative == "win"})) == 1
+"endfunction
+"
+""     Map <Esc> to close 'signature' floating window if it exests. Note that '<M-/>' map should be in sync with 'lsp_signature.toggle_key' value from 'plugin_settings/lsp' file
+"inoremap <silent> <expr> <Esc> (NvimIdeHasSignatureFloatingWindow() ? '<C-o>:call feedkeys("\<M-/>")<CR>' : (v:hlsearch == 1 ? '<C-O>:noh<CR>' : '<Esc>'))
 
