@@ -19,7 +19,6 @@ tnoremap <silent> <C-t> <C-\><C-N>:tab sb<CR>
 noremap <silent> <C-PageUp> :tabprev<CR>
 inoremap <silent> <C-PageUp> <C-O>:tabprev<CR>
 snoremap <silent> <C-PageUp> <Esc>:tabprev<CR>
-cnoremap <silent> <C-PageUp> <C-O>:tabprev<CR>
 onoremap <silent> <C-PageUp> <C-O>:tabprev<CR>
 "     in 'terminal' mode
 tnoremap <silent> <C-PageUp> <C-\><C-N>:tabprev<CR>i
@@ -27,7 +26,6 @@ tnoremap <silent> <C-PageUp> <C-\><C-N>:tabprev<CR>i
 noremap <silent> <C-PageDown> :tabnext<CR>
 inoremap <silent> <C-PageDown> <C-O>:tabnext<CR>
 snoremap <silent> <C-PageDown> <Esc>:tabnext<CR>
-cnoremap <silent> <C-PageDown> <C-O>:tabnext<CR>
 onoremap <silent> <C-PageDown> <C-O>:tabnext<CR>
 "     in 'terminal' mode
 tnoremap <silent> <C-PageDown> <C-\><C-N>:tabnext<CR>i

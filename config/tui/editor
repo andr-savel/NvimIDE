@@ -25,10 +25,10 @@ set number
 set signcolumn=yes
 
 " tab settings
-set tabstop=4
+set tabstop=8
+set expandtab
 set shiftwidth=4
 set smarttab
-set expandtab
 
 " Show warning message on search after last match (and do not show search progress 'x/y')
 set shortmess+=S
@@ -43,6 +43,7 @@ augroup END
 " indents
 set autoindent
 set smartindent
+set cindent
 
 " prevent escape from moving the cursor one character to the left
 let CursorColumnI = 0 "the cursor column position in INSERT
@@ -74,6 +75,13 @@ cmap <C-v> <C-r>=getreg()<CR>
 "     in 'terminal' mode
 tmap <C-v> <C-\><C-N><C-v>
 
+" Do not copy deleted text into 'default', but into 'blackhole' register
+augroup NvimIdeMap
+    autocmd!
+    autocmd VimEnter * snoremap <BS> <C-g>"_d
+augroup END
+snoremap <Del> <C-g>"_d
+
 " CTRL-Z is Undo
 noremap <C-z> u
 inoremap <C-z> <C-O>u
@@ -97,7 +105,8 @@ snoremap <C-A> <C-C>gggH<C-O>G
 xnoremap <C-A> <C-C>ggVG
 
 " Tab selected text
-snoremap <Tab> <C-g>>
+"snoremap <Tab> <C-g>>
+snoremap <Tab> <C-o>=
 
 " Goto begin/end of file
 " <C-home>
@@ -106,6 +115,8 @@ snoremap <Tab> <C-g>>
 " <Home> or move to first non 'space' symbol
 inoremap <expr> <Home> (getcurpos()[2] == 1 ? '<C-right>' : '<Home>')
 nnoremap <expr> <Home> (getcurpos()[2] == 1 ? '<C-right>' : '<Home>')
+inoremap <expr> <S-Home> (getcurpos()[2] == 1 ? '<C-o><C-S-right>' : '<S-Home>')
+snoremap <expr> <S-Home> (getcurpos()[2] == 1 ? '<C-o><C-S-right>' : '<S-Home>')
 
 " Goto open/close bracket
 imap <C-p> <C-o>%

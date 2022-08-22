@@ -3,4 +3,5 @@ local function map(mode, lhs, rhs)
 end
 
 -- Linewise toggle using C-/
-map('s', '<C-_>', '<ESC><CMD>lua require("Comment.api").toggle_linewise_op(vim.fn.visualmode())<CR>')
+map('s', '<C-_>', '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>')
+
