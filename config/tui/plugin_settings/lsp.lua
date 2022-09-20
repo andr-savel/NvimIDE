@@ -256,6 +256,7 @@ if vim.g.nvim_ide_cpp_compilation_database_command then
                    "--background-index",
                    "--compile-commands-dir", vim.g.nvim_ide_project_root,
                    "--completion-style", "bundled",
+                   "-use-dirty-headers",
                    "-j", vim.fn.string(vim.g.nvim_ide_cpp_language_server_threads)},
         filetypes = {"c", "cpp", "objc", "objcpp"},
         single_file_support = true
