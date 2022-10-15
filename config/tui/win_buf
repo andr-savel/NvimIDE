@@ -190,7 +190,7 @@ endfunction
 
 function! NvimIdeJumpNext()
     if s:GotoCodeWindow()
-        exe "normal! \<C-i>zz"
+        exe "normal! 1\<C-i>zz"
     endif
 endfunction
 
