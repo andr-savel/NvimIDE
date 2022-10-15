@@ -51,7 +51,7 @@ local function check_capabilities(feature, client_id)
 
     local supported_client = false
     for _, client in pairs(clients) do
-        supported_client = client.resolved_capabilities[feature]
+        supported_client = client.server_capabilities[feature]
         if supported_client then goto continue end
     end
 
@@ -217,7 +217,7 @@ end
 
 -- COMMANDS {{{
 function nvim_ide_workspace_symbol(bang, q)
-    if not check_capabilities("workspace_symbol") then
+    if not check_capabilities("workspaceSymbolProvider") then
         return
     end
 
