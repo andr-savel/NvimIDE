@@ -68,8 +68,7 @@ vmap <C-c> y
 
 " CTRL-V is Paste
 map <C-v> gPi
-" imap <C-v> <C-O>gP
-imap <C-v> <C-O>gP<C-o>: exe 'normal! mb`[=e`b' <CR>
+imap <C-v> <Left><Right><C-O>gP
 vmap <C-v> <C-O>gP
 snoremap <C-v> <C-g>"_dgP
 cmap <C-v> <C-r>=getreg()<CR>
