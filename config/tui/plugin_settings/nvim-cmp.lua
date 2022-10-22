@@ -33,8 +33,8 @@ cmp.setup {
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
         },
-        ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
-        ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
+        ['<M-Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
+        ['<M-Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
         ['<Tab>'] = cmp.mapping(confirm, { 'i', 'c' }),
         ['<Esc>'] = close
     },
