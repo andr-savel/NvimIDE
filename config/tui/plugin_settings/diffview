@@ -7,7 +7,7 @@ endfunction
 noremap <M-d> :call NvimIdeDiffviewOpen()<CR>
 inoremap <M-d> <C-o>:call NvimIdeDiffviewOpen()<CR>
 
-" To close diffview tab type <M-q>
+" To close diffview tab type <C-d>
 
 
 lua << EOF
@@ -90,8 +90,8 @@ lua << EOF
             -- The `view` bindings are active in the diff buffers, only when the current
             -- tabpage is a Diffview.
             view = {
-                {{"n", "i"}, "<C-PageDown>", cb("select_next_entry"), opt},
-                {{"n", "i"}, "<C-PageUp>", cb("select_prev_entry"), opt},
+                {{"n", "i"}, "<C-down>", cb("select_next_entry"), opt},
+                {{"n", "i"}, "<C-up>", cb("select_prev_entry"), opt},
                 ["<leader>e"]  = cb("focus_files"),        -- Bring focus to the files panel
                 ["<leader>b"]  = cb("toggle_files"),       -- Toggle the files panel.
             },
@@ -100,8 +100,8 @@ lua << EOF
                 {{"n", "i"}, "<up>", cb("prev_entry"), opt},
                 {{"n", "i"}, "<cr>", cb("select_entry"), opt},    -- Open the diff for the selected entry.
                 {{"n", "i"}, "<2-LeftMouse>", cb("select_entry"), opt},
-                {{"n", "i"}, "<C-PageDown>", cb("select_next_entry"), opt},
-                {{"n", "i"}, "<C-PageUp>", cb("select_prev_entry"), opt},
+                {{"n", "i"}, "<C-down>", cb("select_next_entry"), opt},
+                {{"n", "i"}, "<C-up>", cb("select_prev_entry"), opt},
                 ["<leader>e"]     = cb("focus_files"),
                 ["<leader>b"]     = cb("toggle_files"),
             },
@@ -110,8 +110,8 @@ lua << EOF
                 {{"n", "i"}, "<up>", cb("prev_entry"), opt},
                 {{"n", "i"}, "<cr>", cb("select_entry"), opt},
                 {{"n", "i"}, "<2-LeftMouse>", cb("select_entry"), opt},
-                {{"n", "i"}, "<C-PageDown>", cb("select_next_entry"), opt},
-                {{"n", "i"}, "<C-PageUp>", cb("select_prev_entry"), opt},
+                {{"n", "i"}, "<C-down>", cb("select_next_entry"), opt},
+                {{"n", "i"}, "<C-up>", cb("select_prev_entry"), opt},
                 ["<leader>e"]     = cb("focus_files"),
                 ["<leader>b"]     = cb("toggle_files"),
             },
