@@ -1,7 +1,12 @@
-local function map(mode, lhs, rhs)
-    vim.api.nvim_set_keymap(mode, lhs, rhs, { noremap = true, silent = true })
-end
-
 -- Linewise toggle using C-/
-map('s', '<C-_>', '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>')
+
+local commentKey = '<C-_>'
+
+vim.keymap.set('v', commentKey, require("Comment.api").call('toggle.linewise', 'g@'), {expr = true})
+
+local commentKeysCombination = vim.api.nvim_replace_termcodes('<C-o>' .. commentKey, true, false, true)
+vim.keymap.set('s', commentKey, function()
+                    vim.api.nvim_feedkeys(commentKeysCombination, 'sv', false)
+                end,
+                {expr = true})
 
