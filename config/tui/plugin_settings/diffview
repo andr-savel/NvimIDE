@@ -4,8 +4,16 @@ function! NvimIdeDiffviewOpen()
     DiffviewRefresh
 endfunction
 
+function! NvimIdeDiffviewFileHistory()
+    exe 'DiffviewFileHistory' . g:nvim_ide_project_root
+    stopinsert
+endfunction
+
 noremap <M-d> :call NvimIdeDiffviewOpen()<CR>
 inoremap <M-d> <C-o>:call NvimIdeDiffviewOpen()<CR>
+
+noremap <M-h> :call NvimIdeDiffviewFileHistory()<CR>
+inoremap <M-h> <C-o>:call NvimIdeDiffviewFileHistory()<CR>
 
 " To close diffview tab type <C-d>
 
