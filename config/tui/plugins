@@ -38,12 +38,16 @@ Plug 'sainnhe/gruvbox-material'
 
 " Plug 'bfrg/vim-cpp-modern'
 
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 
 Plug 'nvim-lualine/lualine.nvim'
-Plug 'kyazdani42/nvim-web-devicons'
 
+Plug 'kyazdani42/nvim-web-devicons'
 Plug 'nvim-lua/plenary.nvim'
+Plug 'MunifTanjim/nui.nvim'
+
+Plug 'nvim-neo-tree/neo-tree.nvim', { 'branch': 'v2.x' }
+
 Plug 'sindrets/diffview.nvim'
 Plug 'APZelos/blamer.nvim'
 
@@ -75,6 +79,7 @@ if exists("g:nvim_ide_project_root")
     source $HOME/.config/nvim/tui/plugin_settings/vimspector
     source $HOME/.config/nvim/tui/plugin_settings/diffview
 endif
+source $HOME/.config/nvim/tui/plugin_settings/neo-tree.nvim
 luafile $HOME/.config/nvim/tui/plugin_settings/lualine.lua
 source $HOME/.config/nvim/tui/plugin_settings/blamer
 source $HOME/.config/nvim/tui/plugin_settings/vim-dispatcher
