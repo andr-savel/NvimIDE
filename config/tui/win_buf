@@ -109,7 +109,24 @@ tnoremap <silent> <M--> <C-\><C-N><C-w>s:call NvimIdeMarkCodeWindow()<CR><C-w>wi
 
 " Switch buffers
 function! s:ShowFzfBuffers()
-    call fzf#vim#buffers()
+    function! Bufopen(lines) closure
+        if len(a:lines) != 1
+            return
+        endif
+
+        let b = matchstr(a:lines[0], '\[\zs[0-9]*\ze\]')
+        execute 'buffer' b
+    endfunction
+
+    let sorted = fzf#vim#_buflisted_sorted()
+    let header_lines = '--header-lines=' . (bufnr('') == get(sorted, 0, 0) ? 1 : 0)
+    call fzf#run(fzf#wrap({'source': map(sorted, 'fzf#vim#_format_buffer(v:val)'),
+                                   \ 'options': ['+m', '-x', '--tiebreak=index', header_lines, '--ansi', '-d', '\t', '--with-nth', '3..', '-n', '2,1..2',
+                                   \             '--prompt', 'Buffers> ',
+                                   \             '--info', 'inline',
+                                   \             '--history', NvimIdeGetProjectExtraFilesDir() . '/fzf_buffers_history',
+                                   \             '--bind', g:nvim_ide_fzf_bind],
+                                   \ 'sink*': function('Bufopen')}))
 endfunction
 
 function! s:GotoCodeWindow()
@@ -159,9 +176,9 @@ function! NvimIdeBuffers()
     endif
 
     let cwd_au = getcwd()
-    exe 'cd ' . effectiveRoot
+    exe 'lcd ' . effectiveRoot
     call s:ShowFzfBuffers()
-    exe 'cd ' . cwd_au
+    exe 'lcd ' . cwd_au
 endfunction
 
 " Switch buffers (should be in sync with fzf parts in tui/terminal)
