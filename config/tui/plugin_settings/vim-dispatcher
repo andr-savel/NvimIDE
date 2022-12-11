@@ -2,14 +2,14 @@ function! NvimIdeBuild()
     let l:cwd_au = getcwd()
 
     if exists("g:nvim_ide_build_root")
-        exe 'cd '.g:nvim_ide_build_root
+        exe 'lcd '.g:nvim_ide_build_root
     endif
 
     wa
     Make
 
     if exists("g:nvim_ide_build_root")
-        exe 'cd '.l:cwd_au
+        exe 'lcd '.l:cwd_au
     endif
 endfunction
 

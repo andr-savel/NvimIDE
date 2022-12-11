@@ -213,7 +213,7 @@ function! NvimIdeSearchInFilesContent__OLD(extPtrn)
     set noautochdir
     let &shellpipe="\\&>"
     let l:cwd_au = getcwd()
-    exe 'cd ' . g:nvim_ide_real_project_root
+    exe 'lcd ' . g:nvim_ide_real_project_root
 
     silent exe 'grep! "' . escape(toSearch, '()') . '"'
     let ret = s:HandleQuickfixSearchResult(toSearch)
@@ -221,7 +221,7 @@ function! NvimIdeSearchInFilesContent__OLD(extPtrn)
         call NvimIdeEchoWarning("Not found: " . toSearch)
     endif
 
-    exe 'cd '.l:cwd_au
+    exe 'lcd '.l:cwd_au
     let &shellpipe=l:shellpipe_au
     let &autochdir=l:autochdir_au
     let &t_te=l:te
