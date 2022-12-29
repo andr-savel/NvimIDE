@@ -11,5 +11,5 @@ map <S-f11> : call GuiWindowFullScreen(!g:GuiWindowFullScreen)<CR>
 imap <S-f11> <C-o>:call GuiWindowFullScreen(!g:GuiWindowFullScreen)<CR>
 
 " Font settings (SauceCodePro font should be installed previously. See README.md for details.)
-GuiFont SauceCodePro Nerd Font:h12
+GuiFont SauceCodePro Nerd Font:h11
 GuiLinespace -1
