@@ -7,4 +7,6 @@ cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex 
 -- add a lisp filetype (wrap my-function), FYI: Hardcoded = { "clojure", "clojurescript", "fennel", "janet" }
 -- cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
 
-require('nvim-autopairs').setup{}
+require('nvim-autopairs').setup({
+    disable_filetype = {"dap-repl"}
+})
