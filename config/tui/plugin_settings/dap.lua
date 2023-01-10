@@ -7,15 +7,17 @@ dap.adapters.lldb = {
     name = 'lldb'
 }
 
+local configCppLaunch = {
+    name = 'Launch',
+    type = 'lldb',
+    request = 'launch',
+    program = vim.g.nvim_ide_debuggee_binary_path,
+    args = vim.g.nvim_ide_debuggee_binary_args,
+    stopOnEntry = false
+}
+
 dap.configurations.cpp = {
-    {
-        name = 'Launch',
-        type = 'lldb',
-        request = 'launch',
-        program = vim.g.nvim_ide_debuggee_binary_path,
-        args = vim.g.nvim_ide_debuggee_binary_args,
-        stopOnEntry = false
-    },
+    configCppLaunch,
 }
 dap.defaults.fallback.exception_breakpoints = {'cpp_throw'}
 
@@ -138,15 +140,30 @@ local function SetDbgParams()
             vim.g.nvim_ide_debuggee_binary_args = vim.split(inp, ' ')
         end
     end)
+
+    -- TODO: it is used to clear command line content. Should be used something more suitable.
+    vim.cmd('normal! /')
 end
 
+local function IsLldbVscodeFileType()
+    return vim.bo.filetype == "cpp" or vim.bo.filetype == "c" or vim.bo.filetype == "objc" or vim.bo.filetype == "rust"
+end 
+
 vim.keymap.set({'n', 'i', 's'}, '<f5>', function()
-    if dap.session() == nil and #vim.g.nvim_ide_debuggee_binary_path == 0 then
+    if dap.session() then
+        dap.continue()
+        return
+    end
+
+    if #vim.g.nvim_ide_debuggee_binary_path == 0 then
         SetDbgParams()
     end
 
     StartGdbPreActions()
-    dap.continue()
+
+    if IsLldbVscodeFileType() then
+        dap.run(configCppLaunch)
+    end
 end)
 
 vim.keymap.set({'n', 'i', 's'}, '<f6>', function()
@@ -177,7 +194,6 @@ vim.keymap.set({'n', 'v'}, '<C-e>', function()
     dapui.eval()
 end)
 
-vim.cmd[[
-    command! NvimIdeSetCondBP lua require('dap').set_breakpoint(vim.fn.input('Enter condition expression: '))
-]]
+vim.api.nvim_create_user_command('NvimIdeSetCondBP', dap.set_breakpoint(vim.fn.input('Enter condition expression: ')), {})
+vim.api.nvim_create_user_command('NvimIdeSetDbgParams', SetDbgParams, {})
 
