@@ -28,6 +28,16 @@ local function GetConfigCppAttach(procId)
     }
 end
 
+local function GetConfigCppCoreFile(pathToCoreFile)
+    return {
+        name = "Load C++ core file",
+        type = "lldb",
+        request = "attach",
+        program = vim.g.nvim_ide_debuggee_binary_path,
+        coreFile = pathToCoreFile
+    }
+end
+
 dap.defaults.fallback.exception_breakpoints = {'cpp_throw'}
 
 local function IsLldbVscodeFileType()
@@ -43,6 +53,12 @@ end
 local function GetAttachConfig(procId)
     if IsLldbVscodeFileType() then
         return GetConfigCppAttach(procId)
+    end
+end
+
+local function GetCoreFileConfig(pathToCoreFile)
+    if IsLldbVscodeFileType() then
+        return GetConfigCppCoreFile(pathToCoreFile)
     end
 end
 
@@ -274,5 +290,14 @@ end)
 vim.api.nvim_create_user_command('NvimIdeSetCondBP', function()
     dap.set_breakpoint(vim.fn.input('Enter condition expression: '))
 end, {})
+
 vim.api.nvim_create_user_command('NvimIdeSetDbgParams', SetDbgParams, {})
+
+vim.api.nvim_create_user_command('NvimIdeOpenCoreFile', function ()
+    pathToCore = vim.fn.input('Path to core file: ')
+    cc = GetCoreFileConfig(pathToCore)
+    if cc then
+        RunDebug(cc)
+    end 
+end, {})
 
