@@ -8,7 +8,7 @@ dap.adapters.lldb = {
 }
 
 local configCppLaunch = {
-    name = 'Launch',
+    name = 'Launch C++',
     type = 'lldb',
     request = 'launch',
     program = vim.g.nvim_ide_debuggee_binary_path,
@@ -16,12 +16,35 @@ local configCppLaunch = {
     stopOnEntry = false
 }
 
-dap.configurations.cpp = {
-    configCppLaunch,
-}
+local function GetConfigCppAttach(procId) 
+    return {
+        -- If you get an "Operation not permitted" error using this, try disabling YAMA:
+        --  echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+        name = "Attach C++",
+        type = 'lldb',
+        request = 'attach',
+        pid = procId,
+        args = {},
+    }
+end
+
 dap.defaults.fallback.exception_breakpoints = {'cpp_throw'}
 
-dap.configurations.c = dap.configurations.cpp
+local function IsLldbVscodeFileType()
+    return vim.bo.filetype == "cpp" or vim.bo.filetype == "c" or vim.bo.filetype == "objc" or vim.bo.filetype == "rust"
+end
+
+local function GetLaunchConfig()
+    if IsLldbVscodeFileType() then
+        return configCppLaunch
+    end
+end
+
+local function GetAttachConfig(procId)
+    if IsLldbVscodeFileType() then
+        return GetConfigCppAttach(procId)
+    end
+end
 
 
 ----------------------- dap-ui config
@@ -137,7 +160,7 @@ local function SetDbgParams()
 
     vim.ui.input({prompt = 'Debug program args: ', default = table.concat(vim.g.nvim_ide_debuggee_binary_args, ' ')}, function(inp)
         if inp then
-            vim.g.nvim_ide_debuggee_binary_args = vim.split(inp, ' ')
+            vim.g.nvim_ide_debuggee_binary_args = vim.fn.split(inp)
         end
     end)
 
@@ -145,28 +168,82 @@ local function SetDbgParams()
     vim.cmd('normal! /')
 end
 
-local function IsLldbVscodeFileType()
-    return vim.bo.filetype == "cpp" or vim.bo.filetype == "c" or vim.bo.filetype == "objc" or vim.bo.filetype == "rust"
-end 
-
-vim.keymap.set({'n', 'i', 's'}, '<f5>', function()
-    if dap.session() then
-        dap.continue()
-        return
-    end
-
+local function RunDebug(config)
     if #vim.g.nvim_ide_debuggee_binary_path == 0 then
         SetDbgParams()
     end
 
     StartGdbPreActions()
+    dap.run(config)
+end
 
-    if IsLldbVscodeFileType() then
-        dap.run(configCppLaunch)
+vim.keymap.set({'n', 'i'}, '<f5>', function()
+    if dap.session() then
+        dap.continue()
+        return
+    end
+
+    lc = GetLaunchConfig()
+    if lc then
+        RunDebug(lc)
     end
 end)
 
-vim.keymap.set({'n', 'i', 's'}, '<f6>', function()
+function NvimIdeAttachToProcess(procId)
+    ac = GetAttachConfig(procId)
+    if ac then
+        RunDebug(ac)
+    end
+end
+
+vim.cmd[[
+function! NvimIdeSelectPidAndAttach(isInsertMode)
+    function! AttachToProc(line)
+        let arr = split(a:line) 
+        if len(arr) > 0
+            call luaeval('NvimIdeAttachToProcess(_A)', str2nr(arr[0]))
+        endif    
+    endfunction      
+    let binName = fnamemodify(g:nvim_ide_debuggee_binary_path, ':t')
+    call fzf#run(fzf#wrap({'source': 'ps -u ' . $USER . ' -eo "%p   %a" --no-headers | grep -v "query=' . binName . '"',
+                                   \ 'options': ' --prompt="Processes> "' .
+                                   \            ' --info=inline' .
+                                   \            ' --query=' . binName,
+                                   \ 'sink': function('AttachToProc')}))
+
+    if a:isInsertMode
+        call feedkeys('i', 'n')
+    endif
+endfunction
+]]
+
+local function AttachImpl(isInsertMode)
+    pids = vim.fn.split(vim.fn.system("pidof " .. vim.g.nvim_ide_debuggee_binary_path))
+    pidsLen = #pids
+    if pidsLen == 0 then
+        vim.api.nvim_err_writeln("NvimIde: cannot find running process '" .. vim.g.nvim_ide_debuggee_binary_path .. "'")
+        return
+    elseif pidsLen == 1 then
+        NvimIdeAttachToProcess(vim.fn.str2nr(pids[1]))
+        return
+    end
+
+    if isInsertMode then
+        vim.cmd("stopinsert")
+        vim.cmd('call NvimIdeSelectPidAndAttach(v:true)')
+    else
+        vim.cmd('call NvimIdeSelectPidAndAttach(v:false)')
+    end
+end
+
+vim.keymap.set({'n'}, '<M-a>', function()
+    AttachImpl(false)
+end)
+vim.keymap.set({'i'}, '<M-a>', function()
+    AttachImpl(true)
+end)
+
+vim.keymap.set({'n', 'i'}, '<f6>', function()
     if dap.session() then
         dap.terminate()
     else
@@ -194,6 +271,8 @@ vim.keymap.set({'n', 'v'}, '<C-e>', function()
     dapui.eval()
 end)
 
-vim.api.nvim_create_user_command('NvimIdeSetCondBP', dap.set_breakpoint(vim.fn.input('Enter condition expression: ')), {})
+vim.api.nvim_create_user_command('NvimIdeSetCondBP', function()
+    dap.set_breakpoint(vim.fn.input('Enter condition expression: '))
+end, {})
 vim.api.nvim_create_user_command('NvimIdeSetDbgParams', SetDbgParams, {})
 
