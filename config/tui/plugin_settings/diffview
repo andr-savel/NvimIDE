@@ -1,5 +1,13 @@
 function! NvimIdeDiffviewOpen()
-    exe 'DiffviewOpen --untracked-files=no -C' . g:nvim_ide_project_root
+    let untrackedFiles = "--untracked-files=no"
+
+    let fileToSelect = ""
+    let firstFileStatus = split(system('git status --short ' . untrackedFiles . ' | head -n 1'))
+    if len(firstFileStatus) >=2
+        let fileToSelect = " --selected-file=" . firstFileStatus[1]
+    endif
+
+    exe 'DiffviewOpen ' . untrackedFiles . ' -C' . g:nvim_ide_project_root . fileToSelect
     stopinsert
     DiffviewRefresh
 endfunction
@@ -21,6 +29,26 @@ inoremap <M-h> <C-o>:call NvimIdeDiffviewFileHistory()<CR>
 lua << EOF
     local cb = require'diffview.config'.diffview_callback
     local opt = {noremap = true, silent = true, nowait = true}
+
+    local function LineGE(newLine, line)
+        return newLine >= line
+    end
+
+    local function LineLE(newLine, line)
+        return newLine <= line
+    end
+
+    local function SelectFileEntry(arg, direction, lineCmp, wrnMessage)
+        line = vim.api.nvim_win_get_cursor(vim.t.nvim_ide_diffview_files_win_id)[1]
+        cb(direction)(arg)
+        newLine = vim.api.nvim_win_get_cursor(vim.t.nvim_ide_diffview_files_win_id)[1]
+        print(newLine, line)
+        if lineCmp(newLine, line) then
+            vim.cmd("normal! /")
+        else
+            vim.fn.NvimIdeEchoWarning(wrnMessage)
+        end
+    end
 
     require'diffview'.setup {
         diff_binaries = false,                    -- Show diffs for binaries
@@ -79,6 +107,7 @@ lua << EOF
         },
         hooks = {
             view_opened = function(view)
+                vim.t.nvim_ide_diffview_files_win_id = vim.api.nvim_get_current_win()
                 -- goto left diff window
                 vim.cmd('wincmd w')
                 vim.cmd('wincmd w')
@@ -100,8 +129,13 @@ lua << EOF
             -- The `view` bindings are active in the diff buffers, only when the current
             -- tabpage is a Diffview.
             view = {
-                {{"n", "i"}, "<C-down>", cb("select_next_entry"), opt},
-                {{"n", "i"}, "<C-up>", cb("select_prev_entry"), opt},
+                {{"n", "i"}, "<C-down>", function(arg)
+                    SelectFileEntry(arg, "select_next_entry", LineGE, "files hit BOTTOM, continuing at TOP")
+                end, opt},
+                {{"n", "i"}, "<C-up>", function(arg)
+                    SelectFileEntry(arg, "select_prev_entry", LineLE, "files hit TOP, continuing at BOTTOM")
+                end, opt},
+                {{"n", "i"}, "<M-s>", cb("toggle_stage_entry"), opt},
                 ["<leader>e"]  = cb("focus_files"),        -- Bring focus to the files panel
                 ["<leader>b"]  = cb("toggle_files"),       -- Toggle the files panel.
             },
@@ -109,6 +143,7 @@ lua << EOF
                 {{"n", "i"}, "<down>", cb("next_entry"), opt},
                 {{"n", "i"}, "<up>", cb("prev_entry"), opt},
                 {{"n", "i"}, "<cr>", cb("select_entry"), opt},    -- Open the diff for the selected entry.
+                {{"n", "i"}, "<M-s>", cb("toggle_stage_entry"), opt},
                 {{"n", "i"}, "<2-LeftMouse>", cb("select_entry"), opt},
                 {{"n", "i"}, "<C-down>", cb("select_next_entry"), opt},
                 {{"n", "i"}, "<C-up>", cb("select_prev_entry"), opt},
