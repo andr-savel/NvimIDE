@@ -80,8 +80,8 @@ if exists("g:nvim_ide_project_root")
     luafile $HOME/.config/nvim/tui/plugin_settings/fzf_lsp.lua
     luafile $HOME/.config/nvim/tui/plugin_settings/lsp.lua
 "    source $HOME/.config/nvim/tui/plugin_settings/vimspector
-    source $HOME/.config/nvim/tui/plugin_settings/dap.lua
-    source $HOME/.config/nvim/tui/plugin_settings/diffview
+    luafile $HOME/.config/nvim/tui/plugin_settings/dap.lua
+    luafile $HOME/.config/nvim/tui/plugin_settings/diffview
 endif
 source $HOME/.config/nvim/tui/plugin_settings/neo-tree.nvim
 luafile $HOME/.config/nvim/tui/plugin_settings/lualine.lua
