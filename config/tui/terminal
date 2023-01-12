@@ -20,7 +20,10 @@ endfunction
 
 function! s:ActionsOnTermClose()
     " Change buffer mode to 'insert' when close terminal. It helps to open files selected with fzf in 'insert' mode
-    call feedkeys("i")
+    if !exists("g:nvim_ide_starting_debug_attach") || !g:nvim_ide_starting_debug_attach
+        call feedkeys("i")
+    endif
+    let g:nvim_ide_starting_debug_attach = v:false
 
     if s:is_in_fzf
         " Restore key maps for switch buffers

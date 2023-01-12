@@ -213,7 +213,7 @@ function NvimIdeAttachToProcess(procId)
 end
 
 vim.cmd[[
-function! NvimIdeSelectPidAndAttach(isInsertMode)
+function! NvimIdeSelectPidAndAttach()
     function! AttachToProc(line)
         let arr = split(a:line) 
         if len(arr) > 0
@@ -221,19 +221,16 @@ function! NvimIdeSelectPidAndAttach(isInsertMode)
         endif    
     endfunction      
     let binName = fnamemodify(g:nvim_ide_debuggee_binary_path, ':t')
+    let g:nvim_ide_starting_debug_attach = v:true
     call fzf#run(fzf#wrap({'source': 'ps -u ' . $USER . ' -eo "%p   %a" --no-headers | grep -v "query=' . binName . '"',
                                    \ 'options': ' --prompt="Processes> "' .
                                    \            ' --info=inline' .
                                    \            ' --query=' . binName,
                                    \ 'sink': function('AttachToProc')}))
-
-    if a:isInsertMode
-        call feedkeys('i', 'n')
-    endif
 endfunction
 ]]
 
-local function AttachImpl(isInsertMode)
+function NvimIdeAttachImpl()
     pids = vim.fn.split(vim.fn.system("pidof " .. vim.g.nvim_ide_debuggee_binary_path))
     pidsLen = #pids
     if pidsLen == 0 then
@@ -244,20 +241,11 @@ local function AttachImpl(isInsertMode)
         return
     end
 
-    if isInsertMode then
-        vim.cmd("stopinsert")
-        vim.cmd('call NvimIdeSelectPidAndAttach(v:true)')
-    else
-        vim.cmd('call NvimIdeSelectPidAndAttach(v:false)')
-    end
+    vim.cmd('call NvimIdeSelectPidAndAttach()')
 end
 
-vim.keymap.set({'n'}, '<M-a>', function()
-    AttachImpl(false)
-end)
-vim.keymap.set({'i'}, '<M-a>', function()
-    AttachImpl(true)
-end)
+vim.keymap.set({'n'}, '<M-a>', NvimIdeAttachImpl)
+vim.keymap.set({'i'}, '<M-a>', '<C-o><cmd>lua NvimIdeAttachImpl()<CR>')
 
 vim.keymap.set({'n', 'i'}, '<f6>', function()
     if dap.session() then
