@@ -83,7 +83,7 @@ if exists("g:nvim_ide_project_root")
     luafile $HOME/.config/nvim/tui/plugin_settings/dap.lua
     luafile $HOME/.config/nvim/tui/plugin_settings/diffview.lua
 endif
-source $HOME/.config/nvim/tui/plugin_settings/neo-tree.nvim
+luafile $HOME/.config/nvim/tui/plugin_settings/neo-tree.nvim
 luafile $HOME/.config/nvim/tui/plugin_settings/lualine.lua
 source $HOME/.config/nvim/tui/plugin_settings/blamer
 source $HOME/.config/nvim/tui/plugin_settings/vim-dispatcher
