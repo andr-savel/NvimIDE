@@ -1,3 +1,4 @@
-nnoremap <C-b> :BlamerToggle<CR>
-inoremap <C-b> <C-o>:BlamerToggle<CR>
+vim.keymap.set({'n', 'i'}, '<C-b>', function()
+    vim.cmd('BlamerToggle')
+end)
 
