@@ -1,21 +1,19 @@
-function! NvimIdeBuild()
-    let l:cwd_au = getcwd()
+vim.keymap.set({'n', 'i'}, '<f8>', function()
+    cwd_au = vim.fn.getcwd()
 
-    if exists("g:nvim_ide_build_root")
-        exe 'lcd '.g:nvim_ide_build_root
-    endif
+    if vim.g.nvim_ide_build_root then
+        vim.cmd('lcd ' .. vim.g.nvim_ide_build_root)
+    end
 
-    wa
-    Make
+    vim.cmd('wa')
+    vim.cmd('Make')
 
-    if exists("g:nvim_ide_build_root")
-        exe 'lcd '.l:cwd_au
-    endif
-endfunction
+    if vim.g.nvim_ide_build_root then 
+        vim.cmd('lcd ' .. cwd_au)
+    end
+end)
 
-nnoremap <f8> :call NvimIdeBuild()<CR>
-inoremap <f8> <C-o>:call NvimIdeBuild()<CR>
-
-nnoremap <f7> :AbortDispatch<CR>
-inoremap <f7> <C-o>:AbortDispatch<CR>
+vim.keymap.set({'n', 'i'}, '<f7>', function()
+    vim.cmd('AbortDispatch')
+end)
 
