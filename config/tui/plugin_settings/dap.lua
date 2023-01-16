@@ -7,14 +7,16 @@ dap.adapters.lldb = {
     name = 'lldb'
 }
 
-local configCppLaunch = {
-    name = 'Launch C++',
-    type = 'lldb',
-    request = 'launch',
-    program = vim.g.nvim_ide_debuggee_binary_path,
-    args = vim.g.nvim_ide_debuggee_binary_args,
-    stopOnEntry = false
-}
+local function GetConfigCppLaunch()
+    return {
+        name = 'Launch C++',
+        type = 'lldb',
+        request = 'launch',
+        program = vim.g.nvim_ide_debuggee_binary_path,
+        args = vim.g.nvim_ide_debuggee_binary_args,
+        stopOnEntry = false
+    }
+end
 
 local function GetConfigCppAttach(procId) 
     return {
@@ -46,7 +48,7 @@ end
 
 local function GetLaunchConfig()
     if IsLldbVscodeFileType() then
-        return configCppLaunch
+        return GetConfigCppLaunch()
     end
 end
 
@@ -64,9 +66,16 @@ end
 
 
 ----------------------- dap-ui config
+dapui_icons = {}
+if vim.g.nvim_ide_allow_icons then
+    dapui_icons = {expanded = "", collapsed = "", current_frame = ""}
+else
+    dapui_icons = {expanded = "-", collapsed = "+", current_frame = ">"}
+end
+
 local dapui = require('dapui')
 dapui.setup({
-    icons = {expanded = "", collapsed = "", current_frame = ""},
+    icons = dapui_icons,
     mappings = {
         -- Use a table to apply multiple mappings
         expand = {},
