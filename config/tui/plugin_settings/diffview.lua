@@ -100,10 +100,10 @@ require'diffview'.setup {
         -- The `view` bindings are active in the diff buffers, only when the current
         -- tabpage is a Diffview.
         view = {
-            {{"n", "i"}, "<C-down>", function(arg)
+            {{"n", "i"}, "<M-PageDown>", function(arg)
                 SelectFileEntry(arg, "select_next_entry", LineGE, "files hit BOTTOM, continuing at TOP")
             end, opt},
-            {{"n", "i"}, "<C-up>", function(arg)
+            {{"n", "i"}, "<M-PageUp>", function(arg)
                 SelectFileEntry(arg, "select_prev_entry", LineLE, "files hit TOP, continuing at BOTTOM")
             end, opt},
             {{"n", "i"}, "<M-s>", cb("toggle_stage_entry"), opt},
@@ -116,8 +116,8 @@ require'diffview'.setup {
             {{"n", "i"}, "<cr>", cb("select_entry"), opt},    -- Open the diff for the selected entry.
             {{"n", "i"}, "<M-s>", cb("toggle_stage_entry"), opt},
             {{"n", "i"}, "<2-LeftMouse>", cb("select_entry"), opt},
-            {{"n", "i"}, "<C-down>", cb("select_next_entry"), opt},
-            {{"n", "i"}, "<C-up>", cb("select_prev_entry"), opt},
+            {{"n", "i"}, "<M-PageDown>", cb("select_next_entry"), opt},
+            {{"n", "i"}, "<M-PageUp>", cb("select_prev_entry"), opt},
             ["<leader>e"]     = cb("focus_files"),
             ["<leader>b"]     = cb("toggle_files"),
         },
@@ -126,8 +126,8 @@ require'diffview'.setup {
             {{"n", "i"}, "<up>", cb("prev_entry"), opt},
             {{"n", "i"}, "<cr>", cb("select_entry"), opt},
             {{"n", "i"}, "<2-LeftMouse>", cb("select_entry"), opt},
-            {{"n", "i"}, "<C-down>", cb("select_next_entry"), opt},
-            {{"n", "i"}, "<C-up>", cb("select_prev_entry"), opt},
+            {{"n", "i"}, "<M-PageDown>", cb("select_next_entry"), opt},
+            {{"n", "i"}, "<M-PageUp>", cb("select_prev_entry"), opt},
             ["<leader>e"]     = cb("focus_files"),
             ["<leader>b"]     = cb("toggle_files"),
         },

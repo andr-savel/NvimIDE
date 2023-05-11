@@ -254,12 +254,12 @@ nnoremap <M-up> :call NvimIdeJumpQFItem("cp")<CR>
 inoremap <M-up> <C-o>:call NvimIdeJumpQFItem("cp")<CR>
 smap <M-up> <Esc><M-up>
 "     file
-nnoremap <C-M-down> :call NvimIdeJumpQFItem("cnf")<CR>
-inoremap <C-M-down> <C-o>:call NvimIdeJumpQFItem("cnf")<CR>
-smap <C-M-down> <Esc><C-M-down>
-nnoremap <C-M-up> :call NvimIdeJumpQFItem("cpf")<CR>
-inoremap <C-M-up> <C-o>:call NvimIdeJumpQFItem("cpf")<CR>
-smap <C-M-up> <Esc><C-M-up>
+nnoremap <M-PageDown> :call NvimIdeJumpQFItem("cnf")<CR>
+inoremap <M-PageDown> <C-o>:call NvimIdeJumpQFItem("cnf")<CR>
+smap <M-PageDown> <Esc><C-M-down>
+nnoremap <M-PageUp> :call NvimIdeJumpQFItem("cpf")<CR>
+inoremap <M-PageUp> <C-o>:call NvimIdeJumpQFItem("cpf")<CR>
+smap <M-PageUp> <Esc><C-M-up>
 
 "     Close quickfix window.
 function! NvimIdeClearAndCloseQuickfix()
