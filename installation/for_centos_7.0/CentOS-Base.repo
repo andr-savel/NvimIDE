@@ -1,0 +1,39 @@
+[base]
+name=CentOS-6.7 - Base
+baseurl=http://linuxsoft.cern.ch/centos-vault/6.7/os/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+enabled=1
+metadata_expire=never
+
+[updates]
+name=CentOS-6.7 - Updates
+baseurl=http://linuxsoft.cern.ch/centos-vault/6.7/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+enabled=1
+metadata_expire=never
+
+[extras]
+name=CentOS-6.7 - Extras
+baseurl=http://linuxsoft.cern.ch/centos-vault/6.7/extras/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+enabled=1
+metadata_expire=never
+
+[contrib]
+name=CentOS-6.7 - Contrib
+baseurl=http://linuxsoft.cern.ch/centos-vault/6.7/contrib/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+enabled=0
+metadata_expire=never
+
+[centosplus]
+name=CentOS-6.7 - CentOSPlus
+baseurl=http://linuxsoft.cern.ch/centos-vault/6.7/centosplus/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+enabled=0
+metadata_expire=never

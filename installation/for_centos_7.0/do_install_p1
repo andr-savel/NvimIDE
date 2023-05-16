@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#------------ prepare
+cd $NVIM_IDE_SRC_ROOT
+cp -f CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
+cp -f epel.repo /etc/yum.repos.d/epel.repo;
+yum clean all
+
+rm -rf $NVIM_IDE_INSTALL_ARTEFACTS
+rm -rf $NVIM_IDE_INSTALL_RESULT
+
+mkdir -p $NVIM_IDE_INSTALL_ARTEFACTS
+mkdir -p $NVIM_IDE_INSTALL_RESULT
+
+#------------ install centos utils
+mkdir $NVIM_IDE_INSTALL_ARTEFACTS/os
+cd $NVIM_IDE_INSTALL_ARTEFACTS/os
+
+$NVIM_IDE_SRC_ROOT/install_centos_utils
+
+cd ../
+
+#------------ install nvim deps
+mkdir $NVIM_IDE_INSTALL_ARTEFACTS/nvim
+cd $NVIM_IDE_INSTALL_ARTEFACTS/nvim
+
+$NVIM_IDE_SRC_ROOT/get_nvim_deps
+
+cd ../
+

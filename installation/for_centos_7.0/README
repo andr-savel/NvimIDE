@@ -1,0 +1,23 @@
+1) sudo docker run --privileged -v /home/andr-savel/Docker:/var/ext_dir -it centos:6.7 bash
+
+2)
+export NVIM_IDE_SRC_ROOT="/var/ext_dir"
+export NVIM_IDE_INSTALL_ARTEFACTS="$NVIM_IDE_SRC_ROOT/nvim_ide_install_artefacts"
+export NVIM_IDE_INSTALL_RESULT="$NVIM_IDE_SRC_ROOT/nvim_ide_install_result"
+export NVIM_IDE_INSTALL_CC1PLUS_PATH="/usr/libexec/gcc/x86_64-redhat-linux/4.4.7"
+
+cd $NVIM_IDE_SRC_ROOT
+
+3) ./do_install_p1
+
+4) ./do_install_p2
+
+5)
+
+source $NVIM_IDE_INSTALL_RESULT/env
+
+cd $NVIM_IDE_INSTALL_RESULT
+./nvim.appimage --appimage-extract
+./squashfs-root/usr/bin/nvim --cmd "source /var/ext_dir/DEV/project.conf"
+
+

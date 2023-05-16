@@ -1,0 +1,56 @@
+#!/bin/bash
+
+to_download=(
+#---------------------------------------------------- get system parts
+"http://ftp.gnu.org/gnu/glibc/glibc-2.14.tar.gz" \
+"https://mirror.tochlab.net/pub/gnu/gcc/gcc-9.1.0/gcc-9.1.0.tar.gz" \
+"ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2" \
+"ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-3.1.4.tar.bz2" \
+"ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz" \
+"ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.18.tar.bz2" \
+"https://www.openssl.org/source/old/1.1.1/openssl-1.1.1g.tar.gz" \
+"https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz" \
+#---------------------------------------------------- get main parts of NvimIde
+"https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz" \
+"https://github.com/neovim/neovim/releases/latest/download/nvim.appimage" \
+"https://github.com/andr-savel/NvimIDE/archive/refs/heads/main.zip" \
+    # get neovim python module with deps
+"https://files.pythonhosted.org/packages/0c/10/754e21b5bea89d0e73f99d60c83754df7cc64db74f47d98ab187669ce341/greenlet-1.1.2.tar.gz" \
+"https://files.pythonhosted.org/packages/ad/58/015e95071f70522c71d54bf5deddffbca07967bfebc78e7ae0e545723d84/Cython-0.29.30-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl" \
+"https://files.pythonhosted.org/packages/e9/86/b2ede1d87122a6d4da86d84cc35d0e48b4aa2476e4281d06101c772c1961/setuptools-62.6.0-py3-none-any.whl" \
+"https://files.pythonhosted.org/packages/22/44/0829b19ac243211d1d2bd759999aa92196c546518b0be91de9cacc98122a/msgpack-1.0.4.tar.gz" \
+"https://files.pythonhosted.org/packages/7a/01/2d0898ba6cefbe2736283ee3155cba1c602de641ca5667ac55a0e4857276/pynvim-0.4.3.tar.gz" \
+"https://files.pythonhosted.org/packages/78/ec/ac9905ccab8774b64c37cdff9e08db320c349eda0ae3161aebcac83e5590/neovim-0.3.1.tar.gz" \
+    # get compdb python module
+"https://files.pythonhosted.org/packages/7a/14/979e6c597d5e5c106462f98c6373e7684f5a771a73e10cef59eb9fce3f93/compdb-0.2.0.tar.gz" \
+    # clangd C/C++ language server, lldb, lldb-vscode
+"https://github.com/llvm/llvm-project/tarball/llvmorg-14.0.3" \
+    # get pyright python language server
+"https://files.pythonhosted.org/packages/27/d6/003e593296a85fd6ed616ed962795b2f87709c3eee2bca4f6d0fe55c6d00/wheel-0.37.1-py2.py3-none-any.whl" \
+"https://files.pythonhosted.org/packages/54/73/56c89b343befb9c63e8117294d265458f0ff726fa2abcdc6bb5ec5e66a1a/nodeenv-1.6.0-py2.py3-none-any.whl" \
+"https://files.pythonhosted.org/packages/75/e1/932e06004039dd670c9d5e1df0cd606bf46e29a28e65d5bb28e894ea29c9/typing_extensions-4.2.0-py3-none-any.whl" \
+"https://files.pythonhosted.org/packages/0d/eb/69f29526327431ddd76a372d1ba696a176debb8da7b15af933227759d125/pyright-1.1.255.tar.gz" \
+    # interaction with system X11 clipboard
+"https://github.com/milki/xclip/archive/refs/heads/master.zip" \
+    # fonts for development
+"https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraMono.zip" \
+"https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/SourceCodePro.zip" \
+#--------------------------------------------------- get parts of plugins
+    # treesitter parsers
+"https://github.com/tree-sitter/tree-sitter-cpp/archive/2d2c4aee8672af4c7c8edff68e7dd4c07e88d2b1.tar.gz" \
+"https://github.com/tree-sitter/tree-sitter-go/archive/64457ea6b73ef5422ed1687178d4545c3e91334a.tar.gz" \
+"https://github.com/tree-sitter/tree-sitter-python/archive/9e53981ec31b789ee26162ea335de71f02186003.tar.gz"
+)
+
+for t in ${to_download[@]}
+do
+    while ! wget --tries=10 --timeout=5 --no-check-certificate $t
+    do
+        echo "-------RETRY"
+    done
+done
+
+mv 2d2c4aee8672af4c7c8edff68e7dd4c07e88d2b1.tar.gz tree-sitter-cpp.tar.gz
+mv 64457ea6b73ef5422ed1687178d4545c3e91334a.tar.gz tree-sitter-go.tar.gz
+mv 9e53981ec31b789ee26162ea335de71f02186003.tar.gz tree-sitter-python.tar.gz
+
