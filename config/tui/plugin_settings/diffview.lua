@@ -88,8 +88,8 @@ require'diffview'.setup {
 
             vim.api.nvim_buf_set_keymap(bufnr, "n", "<M-down>", "]c", opt)
             vim.api.nvim_buf_set_keymap(bufnr, "n", "<M-up>", "[c", opt)
-            vim.api.nvim_buf_set_keymap(bufnr, "i", "<M-down>", "<C-o>]c", opt)
-            vim.api.nvim_buf_set_keymap(bufnr, "i", "<M-up>", "<C-o>[c", opt)
+--            vim.api.nvim_buf_set_keymap(bufnr, "i", "<M-down>", "<C-o>]c", opt)
+--            vim.api.nvim_buf_set_keymap(bufnr, "i", "<M-up>", "<C-o>[c", opt)
         end,
         view_closed = function(view)
             vim.cmd('startinsert')
@@ -100,34 +100,34 @@ require'diffview'.setup {
         -- The `view` bindings are active in the diff buffers, only when the current
         -- tabpage is a Diffview.
         view = {
-            {{"n", "i"}, "<M-PageDown>", function(arg)
+            {{"n"}, "<M-PageDown>", function(arg)
                 SelectFileEntry(arg, "select_next_entry", LineGE, "files hit BOTTOM, continuing at TOP")
             end, opt},
-            {{"n", "i"}, "<M-PageUp>", function(arg)
+            {{"n"}, "<M-PageUp>", function(arg)
                 SelectFileEntry(arg, "select_prev_entry", LineLE, "files hit TOP, continuing at BOTTOM")
             end, opt},
-            {{"n", "i"}, "<M-s>", cb("toggle_stage_entry"), opt},
+            {{"n"}, "<M-s>", cb("toggle_stage_entry"), opt},
             ["<leader>e"]  = cb("focus_files"),        -- Bring focus to the files panel
             ["<leader>b"]  = cb("toggle_files"),       -- Toggle the files panel.
         },
         file_panel = {
-            {{"n", "i"}, "<down>", cb("next_entry"), opt},
-            {{"n", "i"}, "<up>", cb("prev_entry"), opt},
-            {{"n", "i"}, "<cr>", cb("select_entry"), opt},    -- Open the diff for the selected entry.
-            {{"n", "i"}, "<M-s>", cb("toggle_stage_entry"), opt},
-            {{"n", "i"}, "<2-LeftMouse>", cb("select_entry"), opt},
-            {{"n", "i"}, "<M-PageDown>", cb("select_next_entry"), opt},
-            {{"n", "i"}, "<M-PageUp>", cb("select_prev_entry"), opt},
+            {{"n"}, "<down>", cb("next_entry"), opt},
+            {{"n"}, "<up>", cb("prev_entry"), opt},
+            {{"n"}, "<cr>", cb("select_entry"), opt},    -- Open the diff for the selected entry.
+            {{"n"}, "<M-s>", cb("toggle_stage_entry"), opt},
+            {{"n"}, "<2-LeftMouse>", cb("select_entry"), opt},
+            {{"n"}, "<M-PageDown>", cb("select_next_entry"), opt},
+            {{"n"}, "<M-PageUp>", cb("select_prev_entry"), opt},
             ["<leader>e"]     = cb("focus_files"),
             ["<leader>b"]     = cb("toggle_files"),
         },
         file_history_panel = {
-            {{"n", "i"}, "<down>", cb("next_entry"), opt},
-            {{"n", "i"}, "<up>", cb("prev_entry"), opt},
-            {{"n", "i"}, "<cr>", cb("select_entry"), opt},
-            {{"n", "i"}, "<2-LeftMouse>", cb("select_entry"), opt},
-            {{"n", "i"}, "<M-PageDown>", cb("select_next_entry"), opt},
-            {{"n", "i"}, "<M-PageUp>", cb("select_prev_entry"), opt},
+            {{"n"}, "<down>", cb("next_entry"), opt},
+            {{"n"}, "<up>", cb("prev_entry"), opt},
+            {{"n"}, "<cr>", cb("select_entry"), opt},
+            {{"n"}, "<2-LeftMouse>", cb("select_entry"), opt},
+            {{"n"}, "<M-PageDown>", cb("select_next_entry"), opt},
+            {{"n"}, "<M-PageUp>", cb("select_prev_entry"), opt},
             ["<leader>e"]     = cb("focus_files"),
             ["<leader>b"]     = cb("toggle_files"),
         },

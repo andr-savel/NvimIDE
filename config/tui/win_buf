@@ -247,17 +247,17 @@ function! NvimIdeNextQFItem()
 endfunction
 
 "     item
-nnoremap <M-down> :call NvimIdeNextQFItem()<CR>
+" nnoremap <M-down> :call NvimIdeNextQFItem()<CR>
 inoremap <M-down> <C-o>:call NvimIdeNextQFItem()<CR>
 smap <M-down> <Esc><M-down>
-nnoremap <M-up> :call NvimIdeJumpQFItem("cp")<CR>
+" nnoremap <M-up> :call NvimIdeJumpQFItem("cp")<CR>
 inoremap <M-up> <C-o>:call NvimIdeJumpQFItem("cp")<CR>
 smap <M-up> <Esc><M-up>
 "     file
-nnoremap <M-PageDown> :call NvimIdeJumpQFItem("cnf")<CR>
+" nnoremap <M-PageDown> :call NvimIdeJumpQFItem("cnf")<CR>
 inoremap <M-PageDown> <C-o>:call NvimIdeJumpQFItem("cnf")<CR>
 smap <M-PageDown> <Esc><C-M-down>
-nnoremap <M-PageUp> :call NvimIdeJumpQFItem("cpf")<CR>
+" nnoremap <M-PageUp> :call NvimIdeJumpQFItem("cpf")<CR>
 inoremap <M-PageUp> <C-o>:call NvimIdeJumpQFItem("cpf")<CR>
 smap <M-PageUp> <Esc><C-M-up>
 
