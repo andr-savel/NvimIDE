@@ -6,5 +6,8 @@ set(CMAKE_CXX_STANDARD 23)
 
 project(demo)
 
-add_executable(demo demo.cpp)
+set(DEMO_FILES /
+        demo.cpp)
+
+add_executable(demo ${DEMO_FILES})
 
