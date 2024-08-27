@@ -1,6 +1,7 @@
 ----------------------- dap config
 local dap = require('dap')
-local lldbVscodePath = vim.fn.exepath("lldb-vscode")
+-- local lldbVscodePath = vim.fn.exepath("lldb-vscode")
+local lldbVscodePath = vim.fn.exepath("lldb-dap")
 dap.adapters.lldb = {
     type = 'executable',
     command = lldbVscodePath,

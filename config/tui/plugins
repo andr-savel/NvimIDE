@@ -33,6 +33,7 @@ Plug 'hrsh7th/vim-vsnip'
 " Plug 'puremourning/vimspector'
 
 Plug 'mfussenegger/nvim-dap'
+Plug 'nvim-neotest/nvim-nio'
 Plug 'rcarriga/nvim-dap-ui'
 
 Plug 'sainnhe/gruvbox-material'
