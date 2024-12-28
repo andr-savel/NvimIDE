@@ -1,6 +1,7 @@
 -- Linewise toggle using C-/
 
-local commentKey = '<C-_>'
+-- local commentKey = '<C-_>'
+local commentKey = '<C-/>'
 
 vim.keymap.set('v', commentKey, require("Comment.api").call('toggle.linewise', 'g@'), {expr = true})
 
