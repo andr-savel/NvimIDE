@@ -37,9 +37,9 @@ to_download=(
 "https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/SourceCodePro.zip" \
 #--------------------------------------------------- get parts of plugins
     # treesitter parsers
-"https://github.com/tree-sitter/tree-sitter-cpp/archive/f41b4f66a42100be405f96bdc4ebc4a61095d3e8.tar.gz" \
-"https://github.com/tree-sitter/tree-sitter-go/archive/12fe553fdaaa7449f764bc876fd777704d4fb752.tar.gz" \
-"https://github.com/tree-sitter/tree-sitter-python/archive/bffb65a8cfe4e46290331dfef0dbf0ef3679de11.tar.gz"
+"https://github.com/tree-sitter/tree-sitter-cpp/archive/16bf9d2c451957aee976c982c2c668b1c0d12014.tar.gz" \
+"https://github.com/tree-sitter/tree-sitter-go/archive/df2ce2e206d2810bf010d73055055bfcff1b55aa.tar.gz" \
+"https://github.com/tree-sitter/tree-sitter-python/archive/7f4b9c2d8039701b0579b7c060a918f8548aa7cd.tar.gz"
 )
 
 for t in ${to_download[@]}
@@ -50,7 +50,7 @@ do
     done
 done
 
-mv f41b4f66a42100be405f96bdc4ebc4a61095d3e8.tar.gz tree-sitter-cpp.tar.gz
-mv 12fe553fdaaa7449f764bc876fd777704d4fb752.tar.gz tree-sitter-go.tar.gz
-mv bffb65a8cfe4e46290331dfef0dbf0ef3679de11.tar.gz tree-sitter-python.tar.gz
+mv 16bf9d2c451957aee976c982c2c668b1c0d12014.tar.gz tree-sitter-cpp.tar.gz
+mv df2ce2e206d2810bf010d73055055bfcff1b55aa.tar.gz tree-sitter-go.tar.gz
+mv 7f4b9c2d8039701b0579b7c060a918f8548aa7cd.tar.gz tree-sitter-python.tar.gz
 
