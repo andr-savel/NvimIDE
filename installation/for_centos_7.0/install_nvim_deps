@@ -72,7 +72,7 @@ if [ ! -d "$llvm_dir" ]; then
     export CC=`which gcc`
     export CXX=`which g++`
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lldb" -DLLVM_TARGETS_TO_BUILD=X86 -DCMAKE_INSTALL_PREFIX=$NVIM_IDE_INSTALL_RESULT/llvm_installation $PWD/../llvm/
-    make -j 16 clangd lldb lldb-vscode lldb-server llvm-sybolizer
+    make -j 16 clangd lldb lldb-dap lldb-server llvm-symbolizer
     mkdir -p $llvm_dir
     cp -dr bin $llvm_dir
     cp -dr lib $llvm_dir
