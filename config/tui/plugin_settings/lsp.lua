@@ -1,19 +1,4 @@
--- Utils
-function exec_lsp_method(method, custom_handler)
-    local util = require 'vim.lsp.util'
-    local params = util.make_position_params()
-    vim.lsp.buf_request(0, method, params, custom_handler)
-end
-
-local lsp_handlers = require("vim.lsp.handlers")
-lsp_method_definition = 'textDocument/definition'
-lsp_method_reference = 'textDocument/references'
-
-lsp_definition_default_handler = lsp_handlers[lsp_method_definition]
-lsp_reference_default_handler = lsp_handlers[lsp_method_reference]
-
 -- LSP setup
-local lspconfig = require('lspconfig')
 local lsp_status = require('lsp-status')
 
 local signs = {}
@@ -61,20 +46,29 @@ local opts = {noremap=true, silent=true}
 -- vim.lsp.set_log_level("debug")
 
 lsp_status.register_progress()
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-        update_in_insert = true
-    }
-)
+vim.diagnostic.config({
+    update_in_insert = true
+})
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 
 function show_definition()
-    exec_lsp_method(lsp_method_definition, function(err, result, ctx, config)
-        lsp_definition_default_handler(err, result, ctx, config)
-        vim.fn.NvimIdeCenterText()
-    end)
+    vim.lsp.buf.definition({
+        on_list = function(list)
+            if not list.items or vim.tbl_isempty(list.items) then
+                return
+            end
+            
+            -- Jump directly to the first definition
+            local first = list.items[1]
+            vim.cmd(string.format('edit %s', vim.fn.fnameescape(first.filename)))
+            vim.fn.cursor(first.lnum, first.col)
+            
+            -- Center the screen
+            vim.fn.NvimIdeCenterText()
+        end
+    })
 end
 
 function NvimIdeHighlightQuickfix(toHl)
@@ -104,16 +98,19 @@ function NvimIdeHighlightQuickfix(toHl)
 end
 
 function show_references()
-    exec_lsp_method(lsp_method_reference, function(err, result, ctx, config)
-        strToHl = vim.fn.expand("<cword>")
-        vim.fn.NvimIdeRemoveGlobalSearchPatternHighlight()
-        vim.fn.NvimIdeClearAndCloseQuickfix()
-        lsp_reference_default_handler(err, result, ctx, config)
-        if #vim.fn.getqflist() then
-            vim.cmd("copen")
-            vim.fn.NvimIdeQuickfixPostprocess(strToHl)
+    strToHl = vim.fn.expand("<cword>")
+    vim.fn.NvimIdeRemoveGlobalSearchPatternHighlight()
+    vim.fn.NvimIdeClearAndCloseQuickfix()
+
+    vim.lsp.buf.references(nil, {
+        on_list = function(items, title, context)
+            vim.fn.setqflist({}, " ", items)
+            if #vim.fn.getqflist() then
+                vim.cmd.copen()
+                vim.fn.NvimIdeQuickfixPostprocess(strToHl)
+            end
         end
-    end)
+    })
 end
 
 function goto_next_diagnostics()
@@ -216,41 +213,6 @@ local servers = {
 }
 
 if vim.g.nvim_ide_cpp_compilation_database_command then
---[[
-    function GetCCLSCacheDir()
-        return vim.fn["NvimIdeGetProjectExtraFilesDir"]() .. "/ccls-cache"
-    end
-
-    function GetCCLSInitialBlacklist()
-        if vim.fn["empty"](vim.fn["glob"](GetCCLSCacheDir())) == 1 then
-            return {}
-        end
-
-        return {"."}
-    end
-
-    servers["ccls"] = {
-        init_options = {
-            compilationDatabaseCommand = vim.g.nvim_ide_cpp_compilation_database_command,
-            cache = {
-                directory = GetCCLSCacheDir()
-            },
-            index = {
-                onChange = true,
-                -- Whole project should be reindexed on startup ony when ccls-cache dir is absent
-                initialBlacklist = GetCCLSInitialBlacklist()
-            },
-            diagnostics = {
-                onChange = 50
-            },
-            completion = {
-                -- Disable snippets on confirmed completion (insert the name of selected function/variable without parameters)
-                placeholder = false
-            }
-        }
-    }
---]]
-
     servers["clangd"] = {
         cmd = {"clangd",
                    "--background-index",
@@ -281,15 +243,11 @@ capabilities = vim.tbl_extend('keep', {
 for lsp, settings in pairs(servers) do
     -- Common settings for all servers
     settings["on_attach"] = on_attach
-    settings["flags"] = {
-        -- This will be the default in neovim 0.7+
-        debounce_text_changes = 150
-    }
-    settings["root_dir"] = function(nm)
-        return vim.g["nvim_ide_project_root"] 
-    end
+    settings["root_markers"] = {"neovim_ide_project.conf"}
     settings["capabilities"] = capabilities
 
     -- Setup final set of settings fo particular server
-    lspconfig[lsp].setup(settings)
+    vim.lsp.config(lsp, settings)
+    vim.lsp.enable(lsp)
 end
+
