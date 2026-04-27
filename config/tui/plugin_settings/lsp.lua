@@ -147,8 +147,34 @@ function get_symbols(extSym)
     nvim_ide_workspace_symbol(0, sym)
 end
 
+local function setup_document_highlight(client, bufnr)
+    if not client or not client.supports_method("textDocument/documentHighlight") then
+        return
+    end
+
+    local group = vim.api.nvim_create_augroup("lsp_document_highlight_" .. bufnr, { clear = true })
+
+    -- setup highlight
+    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", "WinEnter", "BufEnter" }, {
+        group = group,
+        buffer = bufnr,
+        callback = function()
+            vim.lsp.buf.document_highlight()
+        end,
+    })
+
+    -- clear highlight
+    vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave", "WinLeave" }, {
+        group = group,
+        buffer = bufnr,
+        callback = function()
+            vim.lsp.buf.clear_references()
+        end,
+    })
+end
+
 local on_attach = function(client, bufnr)
-    -- Maps
+    -- keymaps
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F2>', '<cmd>lua show_definition()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'i', '<F2>', '<cmd>lua show_definition()<CR>', opts)
 
@@ -179,17 +205,26 @@ local on_attach = function(client, bufnr)
     })
 --]]
 
-    -- Highlight symbol under cursor
-    require('illuminate').on_attach(client)
-    vim.cmd([[hi LspReferenceText cterm=underline gui=underline]])
-    vim.cmd([[hi LspReferenceRead cterm=underline gui=underline]])
-    vim.cmd([[hi LspReferenceWrite cterm=underline gui=underline]])
-    vim.cmd([[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]])
-    vim.cmd([[autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()]])
-    vim.cmd([[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]])
-
+    setup_document_highlight(client, bufnr)
     lsp_status.on_attach(client)
 end
+
+-- add highlight for buf/win switch
+vim.api.nvim_create_autocmd({"WinEnter", "BufWinEnter"}, {
+    callback = function()
+        local bufnr = vim.api.nvim_get_current_buf()
+        for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+            setup_document_highlight(client, bufnr)
+        end
+    end,
+})
+
+-- highlight via underline
+local hl_groups = {"LspReferenceText", "LspReferenceRead", "LspReferenceWrite"}
+for _, group in ipairs(hl_groups) do
+    vim.api.nvim_set_hl(0, group, {underline = true})
+end
+
 
 -- Server-specific settings
 

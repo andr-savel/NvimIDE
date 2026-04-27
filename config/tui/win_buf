@@ -1,6 +1,9 @@
 " To change current directory automatically according to opened file in current window
 set autochdir
 
+" Update time (used in LSP symbol highlight)
+set updatetime=300
+
 " Switch windows
 noremap <C-w> <C-w>w
 inoremap <C-w> <C-O><C-w>w
