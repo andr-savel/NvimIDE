@@ -35,10 +35,16 @@ lsp_status.config({
     status_symbol = ''
 })
 
-for type, icon in pairs(signs) do
-    local hl = "DiagnosticSign" .. type
-    vim.fn.sign_define(hl, {text = icon, texthl = hl, numhl = hl})
-end
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = signs.Error,
+            [vim.diagnostic.severity.WARN] = signs.Warn,
+            [vim.diagnostic.severity.HINT] = signs.Hint,
+            [vim.diagnostic.severity.INFO] = signs.Info,
+        },
+    },
+})
 
 -- Common settings and maps
 local opts = {noremap=true, silent=true}
@@ -59,14 +65,18 @@ function show_definition()
             if not list.items or vim.tbl_isempty(list.items) then
                 return
             end
-            
-            -- Jump directly to the first definition
-            local first = list.items[1]
-            vim.cmd(string.format('edit %s', vim.fn.fnameescape(first.filename)))
-            vim.fn.cursor(first.lnum, first.col)
-            
-            -- Center the screen
-            vim.fn.NvimIdeCenterText()
+
+            if #list.items == 1 then
+                -- If only one definition, jump directly
+                local first = list.items[1]
+                vim.cmd(string.format('edit %s', vim.fn.fnameescape(first.filename)))
+                vim.fn.cursor(first.lnum, first.col)
+                vim.fn.NvimIdeCenterText()
+            else
+                -- Show multiple definitions in quickfix list
+                vim.fn.setqflist({}, ' ', {title = 'Definitions', items = list.items})
+                vim.cmd('copen')
+            end
         end
     })
 end
