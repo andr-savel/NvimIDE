@@ -1,63 +1,9 @@
 -- LSP setup
-local lsp_status = require('lsp-status')
-
-local signs = {}
-local lsp_status_ok_sign = ''
-
-if vim.g.nvim_ide_allow_icons then
-    signs = {
-        Error = '',
-        Warn = '',
-        Info = '',
-        Hint = ''
-    }
-    lsp_status_ok_sign = ''
-else
-    signs = {
-        Error = 'E',
-        Warn = 'W',
-        Info = 'i',
-        Hint = 'h'
-    }
-    lsp_status_ok_sign = 'Ok'
-end
-
-lsp_status.config({
-    current_function = false,
-    show_filename = false,
-
-    indicator_errors = signs.Error,
-    indicator_warnings = signs.Warn,
-    indicator_info = signs.Info,
-    indicator_hint = signs.Hint,
-    indicator_ok = lsp_status_ok_sign,
-
-    status_symbol = ''
-})
-
-vim.diagnostic.config({
-    signs = {
-        text = {
-            [vim.diagnostic.severity.ERROR] = signs.Error,
-            [vim.diagnostic.severity.WARN] = signs.Warn,
-            [vim.diagnostic.severity.HINT] = signs.Hint,
-            [vim.diagnostic.severity.INFO] = signs.Info,
-        },
-    },
-})
 
 -- Common settings and maps
 local opts = {noremap=true, silent=true}
 
 -- vim.lsp.set_log_level("debug")
-
-lsp_status.register_progress()
-vim.diagnostic.config({
-    update_in_insert = true
-})
-
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
 
 function show_definition()
     vim.lsp.buf.definition({
@@ -206,7 +152,6 @@ local on_attach = function(client, bufnr)
 --]]
 
     setup_document_highlight(client, bufnr)
-    lsp_status.on_attach(client)
 end
 
 -- add highlight for buf/win switch
@@ -273,7 +218,6 @@ end
 
 -- Set common settings and setup servers
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-capabilities = vim.tbl_extend('keep', capabilities, lsp_status.capabilities)
 capabilities = vim.tbl_extend('keep', {
     textDocument = {
         completion = {

@@ -64,6 +64,74 @@ custom_gruvbox_material.inactive.a.bg = colors.grey_inactive
 custom_gruvbox_material.inactive.b.bg = colors.grey_inactive
 custom_gruvbox_material.inactive.c.bg = colors.grey_inactive
 
+local signs = {}
+
+if vim.g.nvim_ide_allow_icons then
+    signs = {
+        error = '',
+        warn = '',
+        info = '',
+        hint = ''
+    }
+else
+    signs = {
+        error = 'E',
+        warn = 'W',
+        info = 'i',
+        hint = 'h'
+    }
+end
+
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = signs.error,
+            [vim.diagnostic.severity.WARN]  = signs.warn,
+            [vim.diagnostic.severity.HINT]  = signs.hint,
+            [vim.diagnostic.severity.INFO]  = signs.info,
+        },
+    },
+    update_in_insert = true,
+    severity_sort = true,
+})
+
+require('lsp-progress').setup({
+    decay = 1000,
+    format = function(client_messages)
+        local active_clients = vim.lsp.get_active_clients({bufnr = 0})
+        local client_names = {}
+        
+        for _, client in ipairs(active_clients) do
+            local message = nil
+            for _, msg in ipairs(client_messages) do
+                if msg:find("%[" .. client.name .. "%]") then
+                    message = msg
+                    break
+                end
+            end
+
+            if message then
+                table.insert(client_names, message)
+            else
+                table.insert(client_names, "[" .. client.name .. "]")
+            end
+        end
+
+        if #client_names == 0 then
+            return ""
+        end
+
+        return table.concat(client_names, " ")
+    end,
+    client_format = function(client_name, spinner, series_messages)
+        local ret = "[" .. client_name .. "]";
+        if #series_messages > 0 then
+            ret = ret .. " " .. spinner .. " " .. table.concat(series_messages, ", ")
+        end
+        return ret
+    end,
+    done_icon = ""
+})
 
 require'lualine'.setup {
     options = {
@@ -78,9 +146,34 @@ require'lualine'.setup {
         lualine_a = {'mode'},
         lualine_b = {},
         lualine_c = {filename},
-        lualine_x = {"require'lsp-status'.status()"},
-        lualine_y = {'progress'},
-        lualine_z = {'location'}
+        lualine_x = {
+            {
+                'diagnostics',
+                symbols = {
+                    error = signs.error .. ' ',
+                    warn = signs.warn .. ' ',
+                    info = signs.info .. ' ',
+                    hint = signs.hint .. ' '
+                },
+                diagnostics_color = {
+                    error = {gui = 'bold'},
+                    warn  = {gui = 'bold'},
+                    info  = {gui = 'bold'},
+                    hint  = {gui = 'bold'},
+                },
+                update_in_insert = true,
+            },
+            {
+                function()
+                    return require('lsp-progress').progress()
+                end,
+            },
+        },
+        lualine_y = {},
+        lualine_z = {
+            'progress',
+            'location'
+        }
     },
     inactive_sections = {
         lualine_a = {},
