@@ -1,66 +1,78 @@
-" Get VIM-PLUG plugin manager
-if empty(glob("~/.local/share/nvim/site/autoload/plug.vim"))
-    execute '!curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-endif
+" Get lazy.nvim plugin manager and inistall plugins
 
-call plug#begin()
-" The default plugin directory will be as follows:
-"   - Vim (Linux/macOS): '~/.vim/plugged'
-"   - Vim (Windows): '~/vimfiles/plugged'
-"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
-" You can specify a custom plugin directory by passing it as the argument
-"   - e.g. `call plug#begin('~/.vim/plugged')`
-"   - Avoid using standard Vim directory names like 'plugin'
+lua << EOF
 
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+    vim.fn.system({
+        "git", "clone", "--filter=blob:none", "--branch=stable",
+        "https://github.com/folke/lazy.nvim.git", lazypath
+    })
+end
+vim.opt.rtp:prepend(lazypath)
 
-Plug 'linrongbin16/lsp-progress.nvim'
+require("lazy").setup({
+    {
+        'sainnhe/gruvbox-material',
+        lazy = false,
+        priority = 1    -- before lualine.nvim
+    },
 
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
+    {'junegunn/fzf', build = "./install --all"},
+    {'junegunn/fzf.vim'},
 
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/vim-vsnip'
+    {'linrongbin16/lsp-progress.nvim'},
 
-Plug 'mfussenegger/nvim-dap'
-Plug 'nvim-neotest/nvim-nio'
-Plug 'rcarriga/nvim-dap-ui'
+    {
+        'hrsh7th/nvim-cmp',
+        dependencies = {
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-path',
+            'hrsh7th/cmp-cmdline',
+            'hrsh7th/cmp-nvim-lsp-signature-help',
+            'hrsh7th/cmp-vsnip',
+            'hrsh7th/vim-vsnip',
+        },
+    },
 
-Plug 'sainnhe/gruvbox-material'
-" Plug 'sainnhe/sonokai'
-" Plug 'ray-x/aurora'
+    {
+        'mfussenegger/nvim-dap',
+        dependencies = {
+            'rcarriga/nvim-dap-ui',
+            'nvim-neotest/nvim-nio'
+        },
+    },
 
-Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
+    {
+        'nvim-treesitter/nvim-treesitter',
+        build = ':TSUpdate'
+    },
 
-Plug 'nvim-lualine/lualine.nvim'
+    {
+        'nvim-lualine/lualine.nvim',
+        dependencies = {
+            'nvim-tree/nvim-web-devicons'
+        },
+        priority = 2    -- after gruvbox-material
+    },
+    {
+        'nvim-neo-tree/neo-tree.nvim',
+        branch = 'v3.x',
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+            'nvim-tree/nvim-web-devicons',
+            'MunifTanjim/nui.nvim'
+        },
+    },
 
-Plug 'kyazdani42/nvim-web-devicons'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'MunifTanjim/nui.nvim'
+    {'sindrets/diffview.nvim'},
+    {'APZelos/blamer.nvim'},
 
-Plug 'nvim-neo-tree/neo-tree.nvim', { 'branch': 'v2.x' }
+    {'tpope/vim-dispatch'},
+    {'windwp/nvim-autopairs'},
+})
 
-Plug 'sindrets/diffview.nvim'
-Plug 'APZelos/blamer.nvim'
-
-Plug 'tpope/vim-dispatch'
-
-Plug 'windwp/nvim-autopairs'
-
-" TODO: possibly useful plugin: https://github.com/folke/trouble.nvim
-
-
-" TODO: add python lsp/dap support
-
-call plug#end()
-
-" Automatic plugins installation and close installation status window (switched-off because has errors on status window close. please install plugins manually)
-"PlugInstall
-"wincmd c
+EOF
 
 " Plugin settings
 source $HOME/.config/nvim/tui/plugin_settings/colortheme

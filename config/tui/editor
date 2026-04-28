@@ -53,7 +53,8 @@ autocmd InsertLeave * if col('.') != CursorColumnI | call cursor(0, col('.')+1) 
 
 " set 'selection', 'selectmode', 'mousemodel' and 'keymodel' for MS-Windows
 " behave mswin
-runtime mswin.vim
+" runtime mswin.vim
+source $VIMRUNTIME/scripts/mswin.vim
 
 " backspace and cursor keys wrap to previous/next line
 set backspace=indent,eol,start whichwrap+=<,>,[,]
