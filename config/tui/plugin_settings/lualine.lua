@@ -98,10 +98,10 @@ vim.diagnostic.config({
 require('lsp-progress').setup({
     decay = 1000,
     format = function(client_messages)
-        local active_clients = vim.lsp.get_active_clients({bufnr = 0})
+        local clients = vim.lsp.get_clients({bufnr = 0})
         local client_names = {}
         
-        for _, client in ipairs(active_clients) do
+        for _, client in ipairs(clients) do
             local message = nil
             for _, msg in ipairs(client_messages) do
                 if msg:find("%[" .. client.name .. "%]") then
@@ -171,8 +171,8 @@ require'lualine'.setup {
         },
         lualine_y = {},
         lualine_z = {
-            'progress',
-            'location'
+            'location',
+            'progress'
         }
     },
     inactive_sections = {

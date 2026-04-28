@@ -94,7 +94,7 @@ function get_symbols(extSym)
 end
 
 local function setup_document_highlight(client, bufnr)
-    if not client or not client.supports_method("textDocument/documentHighlight") then
+    if not client or not client:supports_method("textDocument/documentHighlight") then
         return
     end
 
