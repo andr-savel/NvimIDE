@@ -83,7 +83,6 @@ luafile $HOME/.config/nvim/tui/plugin_settings/treesitter.lua
 if exists("g:nvim_ide_project_root")
     luafile $HOME/.config/nvim/tui/plugin_settings/fzf_lsp.lua
     luafile $HOME/.config/nvim/tui/plugin_settings/lsp.lua
-"    source $HOME/.config/nvim/tui/plugin_settings/vimspector
     luafile $HOME/.config/nvim/tui/plugin_settings/dap.lua
     luafile $HOME/.config/nvim/tui/plugin_settings/diffview.lua
 endif
