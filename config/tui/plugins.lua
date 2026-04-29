@@ -1,6 +1,4 @@
-" Get lazy.nvim plugin manager and inistall plugins
-
-lua << EOF
+-- Get lazy.nvim plugin manager and inistall plugins
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -72,23 +70,26 @@ require("lazy").setup({
     {'windwp/nvim-autopairs'},
 })
 
-EOF
+-- Plugin settings
 
-" Plugin settings
-source $HOME/.config/nvim/tui/plugin_settings/colortheme
-luafile $HOME/.config/nvim/tui/plugin_settings/nvim-web-devicons.lua
-source $HOME/.config/nvim/tui/plugin_settings/fzf
-luafile $HOME/.config/nvim/tui/plugin_settings/nvim-cmp.lua
-luafile $HOME/.config/nvim/tui/plugin_settings/treesitter.lua
-if exists("g:nvim_ide_project_root")
-    luafile $HOME/.config/nvim/tui/plugin_settings/fzf_lsp.lua
-    luafile $HOME/.config/nvim/tui/plugin_settings/lsp.lua
-    luafile $HOME/.config/nvim/tui/plugin_settings/dap.lua
-    luafile $HOME/.config/nvim/tui/plugin_settings/diffview.lua
-endif
-luafile $HOME/.config/nvim/tui/plugin_settings/neo-tree.nvim
-luafile $HOME/.config/nvim/tui/plugin_settings/lualine.lua
-luafile $HOME/.config/nvim/tui/plugin_settings/blamer
-luafile $HOME/.config/nvim/tui/plugin_settings/vim-dispatcher
-luafile $HOME/.config/nvim/tui/plugin_settings/nvim-autopairs.lua
+local prefix_part = os.getenv("HOME") .. "/.config/nvim/tui/plugin_settings/"
+local prefix = "source " .. prefix_part
+local lua_prefix = "luafile " .. prefix_part
+
+vim.cmd(prefix .. "colortheme")
+vim.cmd(prefix .. "nvim-web-devicons.lua")
+vim.cmd(prefix .. "fzf")
+vim.cmd(prefix .. "nvim-cmp.lua")
+vim.cmd(prefix .. "treesitter.lua")
+if vim.g.nvim_ide_project_root ~= nil then
+    vim.cmd(prefix .. "fzf_lsp.lua")
+    vim.cmd(prefix .. "lsp.lua")
+    vim.cmd(prefix .. "dap.lua")
+    vim.cmd(prefix .. "diffview.lua")
+end
+vim.cmd(lua_prefix .. "neo-tree.nvim")
+vim.cmd(prefix .. "lualine.lua")
+vim.cmd(lua_prefix .. "blamer")
+vim.cmd(lua_prefix .. "vim-dispatcher")
+vim.cmd(prefix .. "nvim-autopairs.lua")
 
