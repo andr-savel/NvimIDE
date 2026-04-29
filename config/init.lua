@@ -1,6 +1,6 @@
 local prefix = "source " .. os.getenv("HOME") .. "/.config/nvim/tui/"
 
-vim.cmd(prefix .. "project")
+vim.cmd(prefix .. "project.lua")
 vim.cmd(prefix .. "plugins")
 vim.cmd(prefix .. "editor")
 vim.cmd(prefix .. "file")

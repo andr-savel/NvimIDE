@@ -135,7 +135,7 @@ function! s:ShowFzfBuffers()
                                    \ 'options': ['+m', '-x', '--tiebreak=index', header_lines, '--ansi', '-d', '\t', '--with-nth', '3..', '-n', '2,1..2',
                                    \             '--prompt', 'Buffers> ',
                                    \             '--info', 'inline',
-                                   \             '--history', NvimIdeGetProjectExtraFilesDir() . '/fzf_buffers_history',
+                                   \             '--history', v:lua.NvimIdeGetProjectExtraFilesDir() . '/fzf_buffers_history',
                                    \             '--bind', g:nvim_ide_fzf_bind],
                                    \ 'sink*': function('Bufopen')}))
 endfunction

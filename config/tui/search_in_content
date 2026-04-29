@@ -6,7 +6,7 @@ let s:nvim_ide_tmp_files_suffix = "_nvim_ide_tmp"
 
 " Special script for searhing by file content
 function! s:GetGrepScriptPath()
-    return NvimIdeGetProjectExtraFilesDir().'/search_in_content_grep'
+    return v:lua.NvimIdeGetProjectExtraFilesDir().'/search_in_content_grep'
 endfunction
 
 function! NvimIdeGetAliveBuffersOutput()
@@ -310,7 +310,7 @@ function! NvimIdeSearchInFilesContent(extPtrn)
         endif
     endfunction
     call fzf#run(fzf#wrap({'source': 'cd ' . g:nvim_ide_real_project_root . '; ' . cmdToSearch,
-                                   \ 'options': ' --prompt="Project search> " --multi --history='.NvimIdeGetProjectExtraFilesDir().'/fzf_search_in_content_history' .
+                                   \ 'options': ' --prompt="Project search> " --multi --history='.v:lua.NvimIdeGetProjectExtraFilesDir().'/fzf_search_in_content_history' .
                                    \            ' --bind=' . g:nvim_ide_fzf_bind . ',ctrl-a:select-all' .
                                    \            ' --info=inline' .
                                    \            ' --ansi',

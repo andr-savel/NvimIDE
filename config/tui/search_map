@@ -46,7 +46,7 @@ function! NvimIdeFindFiles()
         let l:dir = g:nvim_ide_project_root
     endif
     call fzf#run(fzf#wrap({'source': 'cd ' . l:dir . '; ' . g:nvim_ide_fzf_source,
-                                   \ 'options': ' --prompt="File> " --multi --history='.NvimIdeGetProjectExtraFilesDir().'/fzf_search_files_history' .
+                                   \ 'options': ' --prompt="File> " --multi --history='.v:lua.NvimIdeGetProjectExtraFilesDir().'/fzf_search_files_history' .
                                    \            ' --bind=' . g:nvim_ide_fzf_bind .
                                    \            ' --info=inline',
                                    \ 'dir': l:dir}))
