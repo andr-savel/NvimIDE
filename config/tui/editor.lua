@@ -1,6 +1,9 @@
 -- Set 'insert' mode as default
 vim.cmd('startinsert')
 
+-- zero delay for <Esc>
+vim.env.ESCDELAY = "0"
+
 -- Enable mouse for all modes
 vim.opt.mouse = 'a'
 

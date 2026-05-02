@@ -6,17 +6,17 @@ map <M-t> <C-g>term<CR>
 imap <M-t> <C-g>term<CR>
 tmap <M-t> <C-\><C-N><C-g>term<CR>
 
-let s:is_in_fzf = 0
-function! s:FzfMaps()
-    let s:is_in_fzf = 1
-
-    " Allows to use <Esc> to close fzf search window
-    tunmap <Esc><Esc>
-
-    " Move up/down for buffers
-    tnoremap <C-Up> <up>
-    tnoremap <C-Down> <down>
-endfunction
+"let s:is_in_fzf = 0
+"function! s:FzfMaps()
+"    let s:is_in_fzf = 1
+"
+"    " Allows to use <Esc> to close fzf search window
+"    tunmap <Esc><Esc>
+"
+"    " Move up/down for buffers
+"    tnoremap <C-Up> <up>
+"    tnoremap <C-Down> <down>
+"endfunction
 
 function! s:ActionsOnTermClose()
     " Change buffer mode to 'insert' when close terminal. It helps to open files selected with fzf in 'insert' mode
@@ -25,16 +25,15 @@ function! s:ActionsOnTermClose()
     endif
     let g:nvim_ide_starting_debug_attach = v:false
 
-    if s:is_in_fzf
-        " Restore key maps for switch buffers
-        tnoremap <C-Up> <C-\><C-N>:call NvimIdeBuffers()<CR>
-        tnoremap <C-Down> <C-\><C-N>:call NvimIdeBuffers()<CR>
-
-        " Restore key map for 'leave terminal mode'
-        tnoremap <ESC><ESC> <C-\><C-N>
-
-        let s:is_in_fzf = 0
-    endif
+"    if s:is_in_fzf
+"        " Restore key maps for switch buffers
+"        call luaeval('setNvimIdeBuffersTerminalMappings()')
+"
+"        " Restore key map for 'leave terminal mode'
+"        tnoremap <ESC><ESC> <C-\><C-N>
+"
+"        let s:is_in_fzf = 0
+"    endif
 endfunction
 
 augroup NvimIdeTerminalAutocmds
@@ -46,8 +45,8 @@ augroup NvimIdeTerminalAutocmds
     " Leave terminal mode
     autocmd TermOpen * tnoremap <ESC><ESC> <C-\><C-N>
 
-    " Tune fzf maps
-    autocmd FileType fzf call s:FzfMaps()
+"""    " Tune fzf maps
+"""    autocmd FileType fzf call s:FzfMaps()
 
     " Postprocess and maps restore
     autocmd TermClose * call s:ActionsOnTermClose()

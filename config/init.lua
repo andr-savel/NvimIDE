@@ -9,5 +9,5 @@ if vim.g.nvim_ide_project_root ~= nil then
 end
 vim.cmd(prefix .. "search_map")
 vim.cmd(prefix .. "terminal")
-vim.cmd(prefix .. "win_buf")
+vim.cmd(prefix .. "win_buf.lua")
 

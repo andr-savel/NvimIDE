@@ -16,6 +16,12 @@ require("lazy").setup({
         priority = 1    -- before lualine.nvim
     },
 
+    {
+        "ibhagwan/fzf-lua",
+        dependencies = {
+            "nvim-tree/nvim-web-devicons"
+        }
+    },
     {'junegunn/fzf', build = "./install --all"},
     {'junegunn/fzf.vim'},
 
@@ -78,6 +84,7 @@ local lua_prefix = "luafile " .. prefix_part
 
 vim.cmd(prefix .. "colortheme")
 vim.cmd(prefix .. "nvim-web-devicons.lua")
+vim.cmd(prefix .. "fzf-lua.lua")
 vim.cmd(prefix .. "fzf")
 vim.cmd(prefix .. "nvim-cmp.lua")
 vim.cmd(prefix .. "treesitter.lua")

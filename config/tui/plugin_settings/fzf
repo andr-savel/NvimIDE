@@ -4,5 +4,5 @@ let g:nvim_ide_fzf_bind = 'alt-up:previous-history,alt-down:next-history,shift-d
 let $FZF_DEFAULT_OPTS = '--info=hidden --layout=reverse --cycle --exact'
 
 "         set '0' delay to fast close fzf window by <Esc>
-let $ESCDELAY = '0'
+" let $ESCDELAY = '0'
 

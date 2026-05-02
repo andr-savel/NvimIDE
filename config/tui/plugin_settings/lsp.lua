@@ -17,7 +17,7 @@ function show_definition()
                 local first = list.items[1]
                 vim.cmd(string.format('edit %s', vim.fn.fnameescape(first.filename)))
                 vim.fn.cursor(first.lnum, first.col)
-                vim.fn.NvimIdeCenterText()
+                NvimIdeCenterText()
             else
                 -- Show multiple definitions in quickfix list
                 vim.fn.setqflist({}, ' ', {title = 'Definitions', items = list.items})
@@ -56,14 +56,14 @@ end
 function show_references()
     strToHl = vim.fn.expand("<cword>")
     vim.fn.NvimIdeRemoveGlobalSearchPatternHighlight()
-    vim.fn.NvimIdeClearAndCloseQuickfix()
+    NvimIdeClearAndCloseQuickfix()
 
     vim.lsp.buf.references(nil, {
         on_list = function(items, title, context)
             vim.fn.setqflist({}, " ", items)
             if #vim.fn.getqflist() then
                 vim.cmd.copen()
-                vim.fn.NvimIdeQuickfixPostprocess(strToHl)
+                NvimIdeQuickfixPostprocess(strToHl)
             end
         end
     })
@@ -71,7 +71,7 @@ end
 
 function goto_next_diagnostics()
     vim.diagnostic.goto_next()
-    vim.fn.NvimIdeCenterText()
+    NvimIdeCenterText()
 end
 
 function get_symbols(extSym)
