@@ -22,6 +22,10 @@ vim.api.nvim_create_autocmd("TermOpen", {
     group = group,
     pattern = "*",
     callback = function()
+        if vim.bo.filetype == 'fzf' or vim.api.nvim_buf_get_name(0):match("fzf") then
+            return
+        end
+
         vim.keymap.set('t', '<ESC><ESC>', [[<C-\><C-N>]], {buffer = true})
     end
 })
