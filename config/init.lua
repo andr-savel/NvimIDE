@@ -7,7 +7,7 @@ vim.cmd(prefix .. "file.lua")
 if vim.g.nvim_ide_project_root ~= nil then
     vim.cmd(prefix .. "search_in_content")
 end
-vim.cmd(prefix .. "search_map")
+vim.cmd(prefix .. "search_map.lua")
 vim.cmd(prefix .. "terminal.lua")
 vim.cmd(prefix .. "win_buf.lua")
 

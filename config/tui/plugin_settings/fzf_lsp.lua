@@ -47,7 +47,7 @@ local function call_sync(method, params, handler)
 end
 
 local function check_capabilities(feature, client_id)
-    local clients = vim.lsp.buf_get_clients(client_id or 0)
+    local clients = vim.lsp.get_clients({id = client_id, bufnr = 0})
 
     local supported_client = false
     for _, client in pairs(clients) do
@@ -183,7 +183,7 @@ local function fzf_locations(bang, prompt, source, infile)
         "--multi",
         "--bind", g.nvim_ide_fzf_bind,
         "--info", "inline",
-        "--history", fn.NvimIdeGetProjectExtraFilesDir() .. "/workspace_symbols_history"
+        "--history", NvimIdeGetProjectExtraFilesDir() .. "/workspace_symbols_history"
     }
 
     fzf_run(fzf_wrap("fzf_lsp", {

@@ -108,8 +108,8 @@ function s:HandleQuickfixSearchResult(ptrn)
     if len(getqflist())
         copen
 
-        call NvimIdeQuickfixPostprocess(a:ptrn)
-        call NvimIdeHighlightGlobalSearchPattern(a:ptrn)
+        call v:lua.NvimIdeQuickfixPostprocess(a:ptrn)
+        call v:lua.NvimIdeHighlightGlobalSearchPattern(a:ptrn)
 
         return 1
     endif
@@ -156,14 +156,14 @@ function! NvimIdeSearchInFilesContent__OLD(extPtrn)
     let hasExtPtrn = len(a:extPtrn)
 
     if hasExtPtrn
-        call NvimIdeHighlightGlobalSearchPattern(a:extPtrn)
+        call v:lua.NvimIdeHighlightGlobalSearchPattern(a:extPtrn)
     endif
 
     let null_input_word = '___nvim_ide_null_input___'
     let toSearch = input({'prompt':'Project search: ', 'cancelreturn':null_input_word})
     if toSearch == null_input_word
         if hasExtPtrn
-            call NvimIdeRemoveGlobalSearchPatternHighlight()
+            call v:lua.NvimIdeRemoveGlobalSearchPatternHighlight()
         endif
 
         return 0
@@ -183,15 +183,15 @@ function! NvimIdeSearchInFilesContent__OLD(extPtrn)
 
     if len(toSearch) == 0
         if hasExtPtrn
-            call NvimIdeRemoveGlobalSearchPatternHighlight()
+            call v:lua.NvimIdeRemoveGlobalSearchPatternHighlight()
         endif
 
         call NvimIdeEchoWarning("Empty search pattern")
         return 0
     endif
 
-    call NvimIdeRemoveGlobalSearchPatternHighlight()
-    call NvimIdeClearAndCloseQuickfix()
+    call v:lua.NvimIdeRemoveGlobalSearchPatternHighlight()
+    call v:lua.NvimIdeClearAndCloseQuickfix()
 
     let changedBuffers = NvimIdeGetChangedBufferIds()
     let savedTmps = NvimIdeSaveToTmps(changedBuffers)
@@ -243,17 +243,17 @@ function! NvimIdeSearchInFilesContent(extPtrn)
     let hasExtPtrn = len(a:extPtrn)
 
     if hasExtPtrn
-        call NvimIdeHighlightGlobalSearchPattern(a:extPtrn)
+        call v:lua.NvimIdeHighlightGlobalSearchPattern(a:extPtrn)
     endif
 
     let null_input_word = '___nvim_ide_null_input___'
     let toSearch = input({'prompt':'Project search: ', 'cancelreturn':null_input_word})
     if toSearch == null_input_word
         if hasExtPtrn
-            call NvimIdeRemoveGlobalSearchPatternHighlight()
+            call v:lua.NvimIdeRemoveGlobalSearchPatternHighlight()
         endif
 
-        return 0
+        return v:false
     endif
 
     if len(toSearch) == 0
@@ -270,15 +270,15 @@ function! NvimIdeSearchInFilesContent(extPtrn)
 
     if len(toSearch) == 0
         if hasExtPtrn
-            call NvimIdeRemoveGlobalSearchPatternHighlight()
+            call v:lua.NvimIdeRemoveGlobalSearchPatternHighlight()
         endif
 
         call NvimIdeEchoWarning("Empty search pattern")
-        return 0
+        return v:false
     endif
 
-    call NvimIdeRemoveGlobalSearchPatternHighlight()
-    call NvimIdeClearAndCloseQuickfix()
+    call v:lua.NvimIdeRemoveGlobalSearchPatternHighlight()
+    call v:lua.NvimIdeClearAndCloseQuickfix()
 
     let changedBuffers = NvimIdeGetChangedBufferIds()
     let savedTmps = NvimIdeSaveToTmps(changedBuffers)
@@ -302,8 +302,8 @@ function! NvimIdeSearchInFilesContent(extPtrn)
             endif
 
             call cursor(list[0].lnum, list[0].col)
-            call NvimIdeCenterText()
-            call NvimIdeHighlightGlobalSearchPattern(toSearch)
+            call v:lua.NvimIdeCenterText()
+            call v:lua.NvimIdeHighlightGlobalSearchPattern(toSearch)
         else
             call setqflist([], 'r', {"title": cmdToSearch, "items": list})
             call s:HandleQuickfixSearchResult(toSearch)
@@ -317,6 +317,6 @@ function! NvimIdeSearchInFilesContent(extPtrn)
                                    \ 'dir': g:nvim_ide_real_project_root,
                                    \ 'sink*': function('OutputToQF')}))
 
-    return 1
+    return v:true
 endfunction
 
