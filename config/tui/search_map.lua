@@ -39,23 +39,28 @@ vim.keymap.set('i', '<f3>', '<Left><C-O>n<C-O>zz<C-O>gn<C-g>')
 vim.keymap.set('s', '<f3>', '<Esc><f3>', {remap = true})
 vim.keymap.set('c', '<f3>', '<CR>')
 
--- Search files
-vim.cmd([[
-function! NvimIdeFindFiles()
-    let l:dir = g:nvim_ide_start_dir
-    if exists("g:nvim_ide_project_root")
-        let l:dir = g:nvim_ide_project_root
-    endif
-    call fzf#run(fzf#wrap({'source': 'cd ' . l:dir . '; ' . g:nvim_ide_fzf_source,
-                                   \ 'options': ' --prompt="File> " --multi --history=' . v:lua.NvimIdeGetProjectExtraFilesDir() . '/fzf_search_files_history' .
-                                   \            ' --bind=' . 'alt-up:previous-history,alt-down:next-history,shift-down:toggle+down,shift-up:toggle+up' .
-                                   \            ' --info=inline',
-                                   \ 'dir': l:dir}))
-endfunction
-]])
+function NvimIdeFindFiles()
+    local dir = vim.g.nvim_ide_start_dir
+    if vim.g.nvim_ide_project_root then
+        dir = vim.g.nvim_ide_project_root
+    end
 
-vim.keymap.set('i', '<C-k>', '<C-o>:call NvimIdeFindFiles()<CR>')
-vim.keymap.set('n', '<C-k>', ':call NvimIdeFindFiles()<CR>')
+    require('fzf-lua').fzf_exec(vim.g.nvim_ide_fzf_source, {
+        cwd = dir,
+        prompt = "File> ",
+        fzf_opts = {
+            ['--history'] = NvimIdeGetProjectExtraFilesDir() .. '/fzf_search_files_history',
+            ['--multi']   = true,
+            ['--info']    = 'inline'
+        },
+        actions = {
+            ["default"] = require('fzf-lua').actions.file_edit,
+        }
+    })
+end
+
+vim.keymap.set('i', '<C-k>', '<C-o>:lua NvimIdeFindFiles()<CR>')
+vim.keymap.set('n', '<C-k>', ':lua NvimIdeFindFiles()<CR>')
 
 --     Call search
 vim.keymap.set('n', '<M-f>', function() vim.opt.hlsearch = vim.fn.NvimIdeSearchInFilesContent("") end)
