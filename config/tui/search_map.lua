@@ -54,7 +54,12 @@ function NvimIdeFindFiles()
             ['--info']    = 'inline'
         },
         actions = {
-            ["default"] = require('fzf-lua').actions.file_edit,
+            ["default"] = function(selected, opts)
+                require('fzf-lua').actions.file_edit(selected, opts)
+                vim.schedule(function()
+                    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("i", true, false, true), "n", true)
+                end)
+            end
         }
     })
 end
