@@ -47,7 +47,7 @@ function NvimIdeFindFiles()
 
     require('fzf-lua').fzf_exec(vim.g.nvim_ide_fzf_source, {
         cwd = dir,
-        prompt = "File> ",
+        prompt = "Files> ",
         fzf_opts = {
             ['--history'] = NvimIdeGetProjectExtraFilesDir() .. '/fzf_search_files_history',
             ['--multi']   = true,

@@ -19,7 +19,8 @@ require('fzf-lua').setup({
             ["alt-up"]     = "prev-history",
             ["alt-down"]   = "next-history",
             ["shift-down"] = "toggle+down",
-            ["shift-up"]   = "toggle+up"
+            ["shift-up"]   = "toggle+up",
+            ["ctrl-a"]     = "select-all"
         },
     }
 })
