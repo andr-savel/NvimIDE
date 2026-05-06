@@ -9,7 +9,7 @@ The following steps should be done to install NvimIde:
     pip install neovim
     pip3 install neovim
 ```
-3) Install C/C++ language server 'clangd' (it is possible to use 'ccls': uncomment appropriate code in lsp.lua).
+3) Install C/C++ language server 'clangd'.
 There are cases when clangd cannot detect correctly paths to std lib headers (for example when custom non-system compiler is used).
 It can be fixed in two ways:
  - provide '--query-driver' argument to clangd with path to compiler executable
@@ -46,7 +46,7 @@ To build with debug info use the following command instead:
 ```
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug ..
 ```
-After this manipulations NvimIde ready to index C/C++ code using g:nvim_ide_cpp_compilation_database_command
+After this manipulations NvimIde ready to index C/C++ code using vim.g.nvim_ide_cpp_compilation_database_command
 
 5) Install go language server
 
@@ -74,16 +74,13 @@ For old go versions:
 ```
 11) Start nvim
 
-First run leads to many errors because no plugins have been installed.
-Please install it manually via
-```
-:PlugInstall
-```
+First run leads to plugins install.
+
 12) Close nvim
-13) Start nvim again with --cmd option (see below) to install part of DAP adapters for 'vimpector' plugin
+13) Start nvim again with --cmd option (see below).
 
 ## Usage
-To use NvimIde project config file should be created. See 'doc/project.conf' example for details.
+To use NvimIde project config file should be created. See 'doc/project.conf.lua' example for details.
 
 Then nvim should be started with mentioned config file (this file will be sourced first, before other NvimIde files):
 ```
