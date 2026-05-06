@@ -72,9 +72,7 @@ For old go versions:
 ```
     ln -s <cloned_repo_path>/config/* ~/.config/nvim
 ```
-11) Start nvim
-First run leads to plugins install.
-
+11) Start nvim (first run leads to plugins install)
 12) Close nvim
 13) Start nvim again with --cmd option (see below).
 
