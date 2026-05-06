@@ -68,10 +68,10 @@ vim.keymap.set('i', '<C-k>', '<C-o>:lua NvimIdeFindFiles()<CR>')
 vim.keymap.set('n', '<C-k>', ':lua NvimIdeFindFiles()<CR>')
 
 --     Call search
-vim.keymap.set('n', '<M-f>', function() vim.opt.hlsearch = vim.fn.NvimIdeSearchInFilesContent("") end)
-vim.keymap.set('i', '<M-f>', function() vim.opt.hlsearch = vim.fn.NvimIdeSearchInFilesContent("") end)
+vim.keymap.set('n', '<M-f>', function() vim.opt.hlsearch = NvimIdeSearchInFilesContent("") end)
+vim.keymap.set('i', '<M-f>', function() vim.opt.hlsearch = NvimIdeSearchInFilesContent("") end)
 vim.keymap.set('s', '<M-f>', function() 
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-O>y", true, false, true), 'x', false)
-    vim.opt.hlsearch = vim.fn.NvimIdeSearchInFilesContent(vim.fn.getreg())
+    vim.opt.hlsearch = NvimIdeSearchInFilesContent(vim.fn.getreg())
 end)
 

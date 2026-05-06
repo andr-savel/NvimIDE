@@ -17,7 +17,7 @@ local function SelectFileEntry(arg, direction, lineCmp, wrnMessage)
     if lineCmp(newLine, line) then
         vim.cmd("normal! /")
     else
-        vim.fn.NvimIdeEchoWarning(wrnMessage)
+        NvimIdeEchoWarning(wrnMessage)
     end
 end
 

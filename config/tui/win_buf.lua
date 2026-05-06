@@ -285,7 +285,7 @@ local function GotoCodeWindow()
             if code_win == -1 then
                 code_win = curr_win
             else
-                vim.fn.NvimIdeEchoWarning("More than 1 code window. Switch to code window manually and choose the buffer.")
+                NvimIdeEchoWarning("More than 1 code window. Switch to code window manually and choose the buffer.")
                 vim.fn.win_gotoid(initial_win)
                 return false
             end
@@ -297,7 +297,7 @@ local function GotoCodeWindow()
     end
 
     if code_win == -1 then
-        vim.fn.NvimIdeEchoWarning("No code window(s).")
+        NvimIdeEchoWarning("No code window(s).")
         vim.fn.win_gotoid(initial_win)
         return false
     end
@@ -341,7 +341,7 @@ function NvimIdeJumpPrev()
     end
 end
 
-function _G.NvimIdeJumpNext()
+function NvimIdeJumpNext()
     if GotoCodeWindow() then
         vim.cmd([[execute "normal! 1\<C-i>zz"]])
     end
@@ -359,13 +359,13 @@ vim.keymap.set('s', '<M-right>', '<Esc><M-right>', opts)
 
 -- TODO: 'has_quickfix_movements' detection should be rewritten: set var local for quickfix buffer which indicates should we move farward or not
 
-local has_quickfix_movements = 0
+local has_quickfix_movements = false
 local nvim_ide_quickfix_group = vim.api.nvim_create_augroup("NvimIdeQuickfix", {clear = true})
 vim.api.nvim_create_autocmd("BufReadPost", {
     group = nvim_ide_quickfix_group,
     pattern = "quickfix",
     callback = function()
-        has_quickfix_movements = 0
+        has_quickfix_movements = false
     end,
 })
 

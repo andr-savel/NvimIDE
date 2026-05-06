@@ -13,6 +13,7 @@ require('fzf-lua').setup({
         ['--layout'] = 'reverse',
         ['--cycle']  = '',
         ['--exact']  = '',
+        ['--expect'] = 'esc'
     },
     keymap = {
         fzf = {

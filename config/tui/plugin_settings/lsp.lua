@@ -55,7 +55,7 @@ end
 
 function show_references()
     strToHl = vim.fn.expand("<cword>")
-    vim.fn.NvimIdeRemoveGlobalSearchPatternHighlight()
+    NvimIdeRemoveGlobalSearchPatternHighlight()
     NvimIdeClearAndCloseQuickfix()
 
     vim.lsp.buf.references(nil, {
