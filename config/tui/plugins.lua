@@ -78,7 +78,6 @@ require("lazy").setup({
 
 local prefix_part = os.getenv("HOME") .. "/.config/nvim/tui/plugin_settings/"
 local prefix = "source " .. prefix_part
-local lua_prefix = "luafile " .. prefix_part
 
 vim.cmd(prefix .. "colortheme.lua")
 vim.cmd(prefix .. "nvim-web-devicons.lua")
@@ -91,9 +90,9 @@ if vim.g.nvim_ide_project_root ~= nil then
     vim.cmd(prefix .. "dap.lua")
     vim.cmd(prefix .. "diffview.lua")
 end
-vim.cmd(lua_prefix .. "neo-tree.nvim")
+vim.cmd(prefix .. "neo-tree.nvim.lua")
 vim.cmd(prefix .. "lualine.lua")
-vim.cmd(lua_prefix .. "blamer")
-vim.cmd(lua_prefix .. "vim-dispatcher")
+vim.cmd(prefix .. "blamer.lua")
+vim.cmd(prefix .. "vim-dispatcher.lua")
 vim.cmd(prefix .. "nvim-autopairs.lua")
 
