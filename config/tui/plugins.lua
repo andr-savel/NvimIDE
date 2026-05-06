@@ -80,7 +80,7 @@ local prefix_part = os.getenv("HOME") .. "/.config/nvim/tui/plugin_settings/"
 local prefix = "source " .. prefix_part
 local lua_prefix = "luafile " .. prefix_part
 
-vim.cmd(prefix .. "colortheme")
+vim.cmd(prefix .. "colortheme.lua")
 vim.cmd(prefix .. "nvim-web-devicons.lua")
 vim.cmd(prefix .. "fzf-lua.lua")
 vim.cmd(prefix .. "nvim-cmp.lua")
