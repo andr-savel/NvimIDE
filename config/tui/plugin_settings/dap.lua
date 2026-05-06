@@ -222,23 +222,34 @@ function NvimIdeAttachToProcess(procId)
     end
 end
 
-vim.cmd[[
-function! NvimIdeSelectPidAndAttach()
-    function! AttachToProc(line)
-        let arr = split(a:line) 
-        if len(arr) > 0
-            call luaeval('NvimIdeAttachToProcess(_A)', str2nr(arr[0]))
-        endif    
-    endfunction      
-    let binName = fnamemodify(g:nvim_ide_debuggee_binary_path, ':t')
-    let g:nvim_ide_starting_debug_attach = v:true
-    call fzf#run(fzf#wrap({'source': 'ps -u ' . $USER . ' -eo "%p   %a" --no-headers | grep -v "query=' . binName . '"',
-                                   \ 'options': ' --prompt="Processes> "' .
-                                   \            ' --info=inline' .
-                                   \            ' --query=' . binName,
-                                   \ 'sink': function('AttachToProc')}))
-endfunction
-]]
+function NvimIdeSelectPidAndAttach()
+    local binName = vim.fn.fnamemodify(vim.g.nvim_ide_debuggee_binary_path, ':t')
+    vim.g.nvim_ide_starting_debug_attach = true
+
+    local ps_cmd = string.format(
+        "ps -u %s -eo \"%%p   %%a\" --no-headers | grep -v 'Processes>'",
+        os.getenv("USER"),
+        binName
+    )
+
+    require("fzf-lua").fzf_exec(ps_cmd, {
+        prompt = "Processes> ",
+        fzf_opts = {
+            ["--info"] = "inline",
+            ["--query"] = binName,
+        },
+        actions = {
+            ['default'] = function(selected)
+                if selected and #selected > 0 then
+                    local pid = tonumber(selected[1]:match("%d+"))  -- find first number anywhere
+                    if pid then
+                        NvimIdeAttachToProcess(pid)
+                    end
+                end
+            end
+        }
+    })
+end
 
 function NvimIdeAttachImpl()
     pids = vim.fn.split(vim.fn.system("pidof " .. vim.g.nvim_ide_debuggee_binary_path))
@@ -251,7 +262,7 @@ function NvimIdeAttachImpl()
         return
     end
 
-    vim.cmd('call NvimIdeSelectPidAndAttach()')
+    NvimIdeSelectPidAndAttach()
 end
 
 vim.keymap.set({'n'}, '<M-a>', NvimIdeAttachImpl)
