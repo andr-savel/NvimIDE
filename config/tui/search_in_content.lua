@@ -85,7 +85,6 @@ function NvimIdeEchoWarning(msg)
 end
 
 local function HandleQuickfixSearchResult(ptrn)
-    -- Open quickfix if not empty and run postprocessing
     local qflist = vim.fn.getqflist()
     if #qflist > 0 then
         vim.cmd('copen')
@@ -156,7 +155,7 @@ end
 
 function NvimIdeSearchInFilesContent(extPtrn)
     -- Main search function: highlight if external pattern given, prompt for search term,
-    -- search both on-disk and modified buffers using fzf-lua
+    -- search both on-disk and modified buffers
     local hasExtPtrn = #extPtrn > 0
     if hasExtPtrn then
         NvimIdeHighlightGlobalSearchPattern(extPtrn)
@@ -212,7 +211,6 @@ function NvimIdeSearchInFilesContent(extPtrn)
         },
         actions = {
             ['default'] = function(selected)
-                -- selected is a table of strings (lines chosen by the user)
                 local list = {}
                 for _, l in ipairs(selected) do
                     local _, blockcount = l:gsub("▄", "")
