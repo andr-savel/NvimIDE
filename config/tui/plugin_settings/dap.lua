@@ -241,7 +241,7 @@ function NvimIdeSelectPidAndAttach()
         actions = {
             ['default'] = function(selected)
                 if selected and #selected > 0 then
-                    local pid = tonumber(selected[1]:match("%d+"))  -- find first number anywhere
+                    local pid = tonumber(selected[1]:match("%d+"))
                     if pid then
                         NvimIdeAttachToProcess(pid)
                     end

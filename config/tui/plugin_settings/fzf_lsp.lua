@@ -124,73 +124,63 @@ end
 -- }}}
 
 -- FZF functions {{{
-local function fzf_wrap(name, opts, bang)
-    name = name or ""
-    opts = opts or {}
-    bang = bang or 0
 
-    local sink_fn = opts["sink*"] or opts["sink"]
-    if sink_fn ~= nil then
-        opts["sink"] = nil; opts["sink*"] = 0
+local function handle_selected_in_fzf(selected, infile)
+    local lines = {}
+    for _, item in ipairs(selected) do
+        if type(item) == "table" and item.text then
+            lines[#lines + 1] = item.text
+        elseif type(item) == "string" then
+            lines[#lines + 1] = item
+        end
     end
-    local wrapped = fn["fzf#wrap"](name, opts, bang)
-    wrapped["sink*"] = sink_fn
 
-    return wrapped
-end
-
-local function fzf_run(...)
-    return fn["fzf#run"](...)
-end
-
-local function common_sink(infile, lines)
     local locations = locations_from_lines(lines, not infile)
     if #lines > 1 then
         vim.fn.setqflist({}, ' ', {
             title = 'Language Server';
             items = locations;
         })
-        api.nvim_command("copen")
-        api.nvim_command("wincmd p")
-
+        vim.api.nvim_command("copen")
+        vim.api.nvim_command("wincmd p")
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("i", true, false, true), "n", true)
         return
     end
 
-    action = "e"
-
+    local action = "e"
     for _, loc in ipairs(locations) do
         local edit_infile = (
-            (infile or fn.expand("%:~:.") == loc["filename"]) and
+            (infile or vim.fn.expand("%:~:.") == loc["filename"]) and
             (action == "e" or action == "edit")
         )
-        -- if i'm editing the same file i'm in, i can just move the cursor
         if not edit_infile then
-            -- otherwise i can start executing the actions
-            local err = api.nvim_command(action .. " " .. loc["filename"])
+            local err = vim.api.nvim_command(action .. " " .. loc["filename"])
             if err ~= nil then
-                api.nvim_command("echoerr " .. err)
+                vim.api.nvim_command("echoerr " .. err)
             end
         end
-
-        fn.cursor(loc["lnum"], loc["col"])
-        api.nvim_command("normal! zvzz")
+        vim.fn.cursor(loc["lnum"], loc["col"])
+        vim.api.nvim_command("normal! zvzz")
     end
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("i", true, false, true), "n", true)
 end
 
-local function fzf_locations(bang, prompt, source, infile)
-    local options = {
-        "--prompt", prompt .. "> ",
-        "--multi",
-        "--bind", g.nvim_ide_fzf_bind,
-        "--info", "inline",
-        "--history", NvimIdeGetProjectExtraFilesDir() .. "/workspace_symbols_history"
-    }
-
-    fzf_run(fzf_wrap("fzf_lsp", {
-        source = source,
-        sink = partial(common_sink, infile),
-        options = options,
-    }, bang))
+local function fzf_locations(prompt, source, infile)
+    require('fzf-lua').fzf_exec(source, {
+        prompt = prompt .. "> ",
+        multi = true,
+        fullscreen = false,
+        fzf_opts = {
+            ['--multi'] = '',
+            ['--info'] = 'inline',
+            ['--history'] = NvimIdeGetProjectExtraFilesDir() .. "/workspace_symbols_history",
+        },
+        actions = {
+            ['default'] = function(selected)
+                handle_selected_in_fzf(selected, infile)
+            end
+        },
+    })
 end
 
 -- }}}
@@ -210,7 +200,7 @@ local function workspace_symbol_handler(bang, err, result, ctx, _)
     local lines = lines_from_locations(
         vim.lsp.util.symbols_to_items(result, ctx.bufnr), true
     )
-    fzf_locations(bang, "Workspace symbols", lines, false)
+    fzf_locations("Workspace symbols", lines, false)
 end
 
 -- }}}
