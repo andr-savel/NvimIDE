@@ -22,8 +22,6 @@ require("lazy").setup({
             "nvim-tree/nvim-web-devicons"
         }
     },
-    {'junegunn/fzf', build = "./install --all"},
-    {'junegunn/fzf.vim'},
 
     {'linrongbin16/lsp-progress.nvim'},
 
@@ -85,7 +83,6 @@ local lua_prefix = "luafile " .. prefix_part
 vim.cmd(prefix .. "colortheme")
 vim.cmd(prefix .. "nvim-web-devicons.lua")
 vim.cmd(prefix .. "fzf-lua.lua")
-vim.cmd(prefix .. "fzf")
 vim.cmd(prefix .. "nvim-cmp.lua")
 vim.cmd(prefix .. "treesitter.lua")
 if vim.g.nvim_ide_project_root ~= nil then
