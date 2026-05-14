@@ -72,11 +72,13 @@ require("lazy").setup({
 
     {'tpope/vim-dispatch'},
     {'windwp/nvim-autopairs'},
+
+    {"coder/claudecode.nvim"}
 })
 
 -- Plugin settings
 
-local prefix_part = os.getenv("HOME") .. "/.config/nvim/tui/plugin_settings/"
+local prefix_part = vim.fn.stdpath("config") .. "/tui/plugin_settings/"
 local prefix = "source " .. prefix_part
 
 vim.cmd(prefix .. "colortheme.lua")
@@ -90,6 +92,7 @@ if vim.g.nvim_ide_project_root ~= nil then
     vim.cmd(prefix .. "dap.lua")
     vim.cmd(prefix .. "diffview.lua")
 end
+vim.cmd(prefix .. "claudecode.lua")
 vim.cmd(prefix .. "neo-tree.nvim.lua")
 vim.cmd(prefix .. "lualine.lua")
 vim.cmd(prefix .. "blamer.lua")

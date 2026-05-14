@@ -1,4 +1,4 @@
-local parsers = { "c", "cpp", "go", "python", "lua", "vim", "vimdoc", "markdown" }
+local parsers = {"c", "cpp", "go", "python", "lua", "vim", "vimdoc", "markdown", "yaml"}
 local ts = require('nvim-treesitter')
 
 ts.setup({
